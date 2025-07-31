@@ -1,21 +1,133 @@
+"use client";
+import { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 export default function HomePage() {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6 text-blue-400">
-        Welcome to Football EyeQ!
-      </h1>
-      <p className="mb-6 text-lg">
-        Your smart soccer exercise catalogue and session planner.
-      </p>
-      <ul className="list-disc ml-6 text-white/90">
-        <li>Browse 100+ football training exercises</li>
-        <li>Build and manage weekly session plans</li>
-        <li>Control smart LED cones from the web</li>
-        <li>Export plans to PDF and add coach notes</li>
-      </ul>
-      <p className="mt-10 text-sm text-gray-400">
-        Use the navigation bar above to get started.
-      </p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans">
+      {/* Top Bar */}
+      <header className="flex justify-between items-center px-8 py-4 bg-transparent">
+        <div className="flex items-center space-x-2 font-bold text-lg text-gray-900">
+          ⚽Football EyeQ
+        </div>
+        <div className="space-x-4">
+          <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+            Sign Up
+          </button>
+          <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+            Log In
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="text-center mt-24 px-6">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+          Smart Training <br />
+          <span className="text-blue-600">Made Simple</span>
+        </h1>
+        <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
+          Plan, organize, and execute professional football training sessions
+          with our intelligent coaching platform. Connect seamlessly with smart
+          cone technology for next-level training experiences.
+        </p>
+
+        <div className="mt-8 flex justify-center space-x-4">
+          <button className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-md hover:bg-blue-50">
+            About Us
+          </button>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="mt-32 px-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+        {[
+          {
+            title: "Browse Exercises",
+            desc: "Access 100+ football drills with powerful search and filtering."
+          },
+          {
+            title: "Plan Sessions",
+            desc: "Easily create, save, and edit your weekly training plans."
+          },
+          {
+            title: "Control Smart Cones",
+            desc: "Trigger LED patterns directly from your device in real time."
+          }
+        ].map((feature, i) => (
+          <div
+            key={i}
+            data-aos="fade-up"
+            data-aos-delay={i * 150}
+            className="p-8 bg-white rounded-xl shadow hover:shadow-lg transition text-center"
+          >
+            <div className="text-4xl mb-4">⚽</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+            <p className="text-gray-600">{feature.desc}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* Animated Second Section */}
+      <section className="mt-40 px-6 max-w-6xl mx-auto space-y-32">
+        {[
+          {
+            title: "Plan Like a Pro",
+            desc: "Design sessions with drag-and-drop simplicity. Our platform allows you to create structured, professional training plans that are always at your fingertips.",
+            img: "/images/homepage1.png",
+            reverse: false
+          },
+          {
+            title: "Control On The Field",
+            desc: "Use any device to control your smart LED cones in real time. Seamlessly switch exercises and run your training without delays.",
+            img: "/images/homepage2.png",
+            reverse: true
+          },
+          {
+            title: "Track & Improve",
+            desc: "Analyze your sessions and get insights on drill usage to continuously improve your team’s performance.",
+            img: "/images/homepage3.png",
+            reverse: false
+          }
+        ].map((section, i) => (
+          <div
+            key={i}
+            className={`flex flex-col items-center md:flex-row ${
+              section.reverse ? "md:flex-row-reverse" : ""
+            } gap-12`}
+          >
+            <div
+              data-aos={section.reverse ? "fade-left" : "fade-right"}
+              className="flex-1"
+            >
+              <img
+                src={section.img}
+                alt={section.title}
+                className="rounded-xl shadow-lg"
+              />
+            </div>
+            <div
+              data-aos={section.reverse ? "fade-right" : "fade-left"}
+              className="flex-1 text-center md:text-left"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {section.title}
+              </h2>
+              <p className="text-gray-600 text-lg">{section.desc}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* Footer */}
+      <footer className="mt-40 py-10 text-center text-gray-500 text-sm border-t border-gray-200">
+        &copy; {new Date().getFullYear()} Football EyeQ. All rights reserved.
+      </footer>
     </div>
   );
 }
