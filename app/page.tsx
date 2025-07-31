@@ -2,6 +2,8 @@
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Link from "next/link";
+import { link } from "fs";
 
 export default function HomePage() {
   useEffect(() => {
@@ -49,29 +51,41 @@ export default function HomePage() {
         {[
           {
             title: "Browse Exercises",
-            desc: "Access 100+ football drills with powerful search and filtering."
+            desc: "Access 100+ football drills with powerful search and filtering.",
+            link: null
           },
           {
             title: "Plan Sessions",
-            desc: "Easily create, save, and edit your weekly training plans."
+            desc: "Easily create, save, and edit your weekly training plans.",
+            link: "/planner"
           },
           {
             title: "Control Smart Cones",
-            desc: "Trigger LED patterns directly from your device in real time."
+            desc: "Trigger LED patterns directly from your device in real time.",
+            link: null
           }
-        ].map((feature, i) => (
-          <div
-            key={i}
-            data-aos="fade-up"
-            data-aos-delay={i * 150}
-            className="p-8 bg-white rounded-xl shadow hover:shadow-lg transition text-center"
-          >
-            <div className="text-4xl mb-4">⚽</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-            <p className="text-gray-600">{feature.desc}</p>
-          </div>
-        ))}
-      </section>
+        ].map((feature, i) => {
+    const content = (
+      <div
+        data-aos="fade-up"
+        data-aos-delay={i * 150}
+        className="p-8 bg-white rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer"
+      >
+        <div className="text-4xl mb-4">⚽</div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+        <p className="text-gray-600">{feature.desc}</p>
+      </div>
+    );
+
+    return feature.link ? (
+      <Link key={i} href={feature.link}>
+        {content}
+      </Link>
+    ) : (
+      <div key={i}>{content}</div>
+    );
+  })}
+</section>
 
       {/* Animated Second Section */}
       <section className="mt-40 px-6 max-w-6xl mx-auto space-y-32">
