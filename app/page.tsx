@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
-import { link } from "fs";
+
 
 export default function HomePage() {
   useEffect(() => {
