@@ -52,7 +52,7 @@ export default function HomePage() {
           {
             title: "Browse Exercises",
             desc: "Access 100+ football drills with powerful search and filtering.",
-            link: null
+            link: "/catalog"
           },
           {
             title: "Plan Sessions",
