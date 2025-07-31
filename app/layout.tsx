@@ -15,10 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black text-white min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4">{children}</main>
-      </body>
+        <main className="w-full">{children}</main>
 
+      </body>
     </html>
   );
 }
