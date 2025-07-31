@@ -9,14 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "next": "15.4.4",
     "next-auth": "^4.24.11",
+=======
+    "aos": "^2.3.4",
+    "next": "15.4.4",
+>>>>>>> f6825096c0885b5eeb45e8089754004a41c64fea
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+<<<<<<< HEAD
+=======
+    "@types/aos": "^3.0.7",
+>>>>>>> f6825096c0885b5eeb45e8089754004a41c64fea
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

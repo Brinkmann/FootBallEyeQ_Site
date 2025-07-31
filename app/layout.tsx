@@ -1,5 +1,5 @@
 import "./globals.css";
-import SessionWrapper from "./SessionWrapper";
+import Navbar from './components/Navbar'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -14,10 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-[#101d42] text-white min-h-screen">
-        <SessionWrapper>
-          {children}
-        </SessionWrapper>
+      <body className="bg-black text-white min-h-screen">
+        <Navbar />
+        <main className="container mx-auto px-4">{children}</main>
       </body>
 
     </html>
