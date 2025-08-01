@@ -18,12 +18,14 @@ export default function HomePage() {
           ⚽Football EyeQ
         </div>
         <div className="space-x-4">
+          <Link href="/signup">
           <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
             Sign Up
-          </button>
+          </button></Link>
+          <Link href="/login">
           <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
             Log In
-          </button>
+          </button></Link>
         </div>
       </header>
 
