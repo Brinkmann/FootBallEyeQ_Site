@@ -16,17 +16,28 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, lastName, email, password, organization }),
-    });
+    try {
+      const res = await fetch("http://localhost:8811/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name: name,     // match backend expected keys
+          last_name: lastName,
+          email,
+          password,
+          organization,
+        }),
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      router.push("/login"); // redirect to login after successful signup
-    } else {
-      setError(data.message || "Something went wrong.");
+      const data = await res.json();
+
+      if (res.ok) {
+        router.push("/login"); // redirect after successful signup
+      } else {
+        setError(data.message || "Something went wrong.");
+      }
+    } catch (err) {
+      setError("Failed to connect to server.");
     }
   }
 
@@ -35,7 +46,9 @@ export default function SignupPage() {
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-blue-100">
         <div className="flex flex-col items-center gap-3">
           <img src="/logo.svg" alt="Logo" className="h-14 mb-2 drop-shadow" />
-          <h1 className="text-3xl font-extrabold text-blue-400 mb-2 tracking-tight text-center">Sign Up</h1>
+          <h1 className="text-3xl font-extrabold text-blue-400 mb-2 tracking-tight text-center">
+            Sign Up
+          </h1>
           <p className="text-1xl font-extrabold text-blue-300 mb-2 tracking-tight text-center">
             Create your EyeQVision account.
           </p>
@@ -46,7 +59,7 @@ export default function SignupPage() {
             type="text"
             placeholder="First Name"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             required
           />
           <input
@@ -54,7 +67,7 @@ export default function SignupPage() {
             type="text"
             placeholder="Last Name"
             value={lastName}
-            onChange={e => setLastName(e.target.value)}
+            onChange={(e) => setLastName(e.target.value)}
             required
           />
           <input
@@ -62,7 +75,7 @@ export default function SignupPage() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
@@ -70,7 +83,7 @@ export default function SignupPage() {
             type="text"
             placeholder="Organization"
             value={organization}
-            onChange={e => setOrganization(e.target.value)}
+            onChange={(e) => setOrganization(e.target.value)}
             required
           />
           <input
@@ -78,7 +91,7 @@ export default function SignupPage() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button

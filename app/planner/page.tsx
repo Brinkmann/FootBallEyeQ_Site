@@ -19,7 +19,6 @@ export default function SeasonPlanningPage() {
       <header className="flex justify-between items-center mb-6">
         <div className="text-2xl font-bold">⚽ Football EyeQ</div>
         <div className="flex items-center space-x-4">
-          <button className="border rounded px-3 py-1 text-sm">Install App</button>
           <span className="text-gray-700">Test Coach</span>
           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
             🧑‍🏫
