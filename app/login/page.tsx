@@ -1,6 +1,6 @@
 'use client';
+
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -12,21 +12,33 @@ export default function LoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-    if (res?.ok) {
-      router.push("/");
-    } else {
-      setError("Invalid email or password");
+
+    try {
+      const res = await fetch("http://localhost:8811/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Optional: store user in localStorage or use a global state like Zustand
+        localStorage.setItem("user", JSON.stringify(data.user));
+        router.push("/"); // Redirect to home
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      setError("Network error. Is the backend running?");
     }
   }
 
   return (
-  <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
-    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-blue-100">
+    <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-blue-100">
         <div className="flex flex-col items-center gap-3">
           <img src="/logo.svg" alt="Logo" className="h-14 mb-2 drop-shadow" />
           <h1 className="text-3xl font-extrabold text-blue-400 mb-2 tracking-tight text-center">Sign In</h1>
