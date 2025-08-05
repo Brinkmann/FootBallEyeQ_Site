@@ -42,9 +42,12 @@ export default function HomePage() {
         </p>
 
         <div className="mt-8 flex justify-center space-x-4">
-          <button className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-md hover:bg-blue-50">
+          <Link
+            href="/about"
+            className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-md hover:bg-blue-50"
+          >
             About Us
-          </button>
+          </Link>
         </div>
       </section>
 
