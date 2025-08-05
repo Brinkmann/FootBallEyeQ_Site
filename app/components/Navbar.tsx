@@ -1,30 +1,58 @@
-'use client';
-
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/catalog", label: "Catalog" },
-  { href: "/planner", label: "Planner" },
-  { href: "/cones", label: "Cones" },
+const tabs = [
+  { label: "Exercise Library", href: "/catalog" },
+  { label: "Season Planning", href: "/planning" },
+  { label: "Session Codes", href: "/sessions" },
+  { label: "Admin", href: "/admin" },
 ];
 
-export default function Navbar() {
+export default function NavBar() {
   const pathname = usePathname();
+
   return (
-    <nav className="bg-gray-900 text-white px-6 py-3 flex gap-8 shadow mb-8">
-      {navItems.map(({ href, label }) => (
-        <Link
-          key={href}
-          href={href}
-          className={`hover:underline transition ${
-            pathname === href ? "font-bold underline text-blue-400" : ""
-          }`}
-        >
-          {label}
-        </Link>
-      ))}
-    </nav>
+    <div className="bg-gray-50 px-6 pt-6">
+      {/* Header */}
+      <header className="flex justify-between items-center mb-6">
+        <div className="text-2xl font-bold">⚽ Football EyeQ</div>
+        <div className="flex items-center space-x-4">
+          <button className="border rounded px-3 py-1 text-sm">Install App</button>
+          <span className="text-gray-700">Test Coach</span>
+          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+            🧑‍🏫
+          </div>
+        </div>
+      </header>
+
+      {/* Welcome Message */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Welcome back, Test</h2>
+        <p className="text-gray-600">
+          Plan your training sessions and manage your exercise library
+        </p>
+      </div>
+
+      {/* Navigation Tabs */}
+      <nav className="flex space-x-4 border-b border-gray-200 mb-6">
+        {tabs.map((tab) => {
+          const isActive = pathname === tab.href;
+          return (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              className={`px-4 py-2 border-b-2 text-base ${
+                isActive
+                  ? "border-black font-semibold text-black"
+                  : "border-transparent text-gray-500"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
