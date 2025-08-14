@@ -16,10 +16,12 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
       const user = userCredential.user;
       localStorage.setItem("user", JSON.stringify({ uid: user.uid, email: user.email }));
       router.push("/"); // redirect after login
-    } catch (err: any) {
-      setError(err.message || "Login failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Login failed:", err.message);
+      }
     }
-  };
+   }
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">

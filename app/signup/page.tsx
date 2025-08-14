@@ -18,10 +18,11 @@ export default function SignupPage() {
     try {
       await register(email, password);
       router.push("/login");
-    } catch (err: any) {
-      setError(err.message || "Signup failed");
-    }
-  };
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Login failed:", err.message);
+      }
+    }}
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
