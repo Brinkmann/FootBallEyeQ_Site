@@ -13,7 +13,7 @@ export default function AboutPage() {
           Built by football enthusiasts, our goal is to make coaching smarter — not harder. We empower coaches with tools to organize drills, plan seasons, and track progress all in one place.
         </p>
         <p className="text-gray-700">
-          Whether youre coaching grassroots, academy, or elite-level teams, Football EyeQ helps you deliver better sessions and grow your players effectively.
+          Whether you're coaching grassroots, academy, or elite-level teams, Football EyeQ helps you deliver better sessions and grow your players effectively.
         </p>
       </section>
 
