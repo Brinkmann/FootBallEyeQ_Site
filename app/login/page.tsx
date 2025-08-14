@@ -1,40 +1,25 @@
 'use client';
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-
-export default function LoginPage() {
+import { login } from "@/Firebase/auth";export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
+   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-
+    setError('');
     try {
-      const res = await fetch("http://localhost:8811/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        // Optional: store user in localStorage or use a global state like Zustand
-        localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/"); // Redirect to home
-      } else {
-        setError(data.message || "Login failed");
-      }
-    } catch (err) {
-      setError("Network error. Is the backend running?");
+      const userCredential = await login(email, password);
+      const user = userCredential.user;
+      localStorage.setItem("user", JSON.stringify({ uid: user.uid, email: user.email }));
+      router.push("/"); // redirect after login
+    } catch (err: any) {
+      setError(err.message || "Login failed");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">

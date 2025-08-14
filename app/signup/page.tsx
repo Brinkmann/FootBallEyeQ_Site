@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-
+import { register } from "@/Firebase/auth";
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -12,34 +12,16 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  async function handleSignup(e: React.FormEvent) {
+   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-
+    setError('');
     try {
-      const res = await fetch("http://localhost:8811/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          first_name: name,     // match backend expected keys
-          last_name: lastName,
-          email,
-          password,
-          organization,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        router.push("/login"); // redirect after successful signup
-      } else {
-        setError(data.message || "Something went wrong.");
-      }
-    } catch (err) {
-      setError("Failed to connect to server.");
+      await register(email, password);
+      router.push("/login");
+    } catch (err: any) {
+      setError(err.message || "Signup failed");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
