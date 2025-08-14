@@ -12,7 +12,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-   const handleSignup = async (e: FormEvent) => {
+   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     try {

@@ -8,7 +8,7 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-   const handleLogin = async (e: FormEvent) => {
+   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     try {
