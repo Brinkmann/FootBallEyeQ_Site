@@ -16,13 +16,23 @@ export default function SignupPage() {
     e.preventDefault();
     setError('');
     try {
-      await register(email, password);
-      router.push("/login");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("Login failed:", err.message);
-      }
-    }}
+    const userCredential = await register(email, password);
+
+    // Save the name locally
+    localStorage.setItem("user", JSON.stringify({
+      uid: userCredential.user.uid,
+      email,
+      name: `${name} ${lastName}`
+    }));
+
+    router.push("/"); // redirect after signup
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Signup failed:", err.message);
+      setError(err.message);
+    }
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">

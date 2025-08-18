@@ -12,6 +12,7 @@ export const login = async (email: string, password: string): Promise<UserCreden
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
+
 // Logout
 export const logout = async (): Promise<void> => {
   return await signOut(auth);

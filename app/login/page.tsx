@@ -9,19 +9,27 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
   const router = useRouter();
 
    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const userCredential = await login(email, password);
-      const user = userCredential.user;
-      localStorage.setItem("user", JSON.stringify({ uid: user.uid, email: user.email }));
-      router.push("/"); // redirect after login
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("Login failed:", err.message);
-      }
+  e.preventDefault();
+  setError("");
+  try {
+    const userCredential = await login(email, password);
+    const user = userCredential.user;
+    const storedName = localStorage.getItem("name") || "Coach"; 
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ uid: user.uid, email: user.email, name: storedName })
+    );
+
+    router.push("/"); // redirect after login
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Login failed:", err.message);
+      setError(err.message); // optional: show error in the UI
     }
-   }
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
