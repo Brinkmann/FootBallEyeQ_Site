@@ -7,7 +7,7 @@ const tabs = [
   { label: "Exercise Library", href: "/catalog" },
   { label: "Season Planning", href: "/planner" },
   { label: "Session Codes", href: "/placeholder" },
-  { label: "Admin", href: "/placeholder" },
+  { label: "Admin", href: "/admin" },
 ];
 
 export default function NavBar() {
