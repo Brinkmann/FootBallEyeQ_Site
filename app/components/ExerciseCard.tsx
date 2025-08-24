@@ -1,12 +1,4 @@
-type Exercise = {
-  id: number;
-  title: string;
-  ageGroup: string;
-  duration: string;
-  difficulty: string;
-  description: string;
-  tags: string[];
-};
+import { Exercise } from "../types/exercise";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   return (
