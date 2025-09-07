@@ -3,6 +3,9 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { register } from "@/Firebase/auth";
+import { db } from "../../Firebase/firebaseConfig"; 
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -12,27 +15,32 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+
     try {
-    const userCredential = await register(email, password);
+      // 1. Register user with Firebase Auth
+      const userCredential = await register(email, password);
 
-    // Save the name locally
-    localStorage.setItem("user", JSON.stringify({
-      uid: userCredential.user.uid,
-      email,
-      name: `${name} ${lastName}`
-    }));
+      // 2. Store extra info in Firestore under "signups" collection
+      await addDoc(collection(db, "signups"), {
+        uid: userCredential.user.uid,  // 🔹 link data to user
+        fname: name,
+        lname: lastName,
+        email: email,
+        organization: organization,
+        createdAt: serverTimestamp(),
+      });
 
-    router.push("/"); // redirect after signup
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("Signup failed:", err.message);
-      setError(err.message);
+      router.push("/login");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Signup failed:", err.message);
+        setError(err.message);
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
@@ -48,48 +56,48 @@ export default function SignupPage() {
         </div>
         <form onSubmit={handleSignup} className="flex flex-col gap-4">
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
             type="text"
             placeholder="First Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
             type="text"
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
+            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
             type="text"
             placeholder="Organization"
             value={organization}
             onChange={(e) => setOrganization(e.target.value)}
             required
+            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <button
-            className="mt-2 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg shadow transition"
             type="submit"
+            className="mt-2 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg shadow transition"
           >
             Sign Up
           </button>

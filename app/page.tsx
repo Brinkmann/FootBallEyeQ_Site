@@ -3,12 +3,22 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
-
+import { auth } from "@/Firebase/firebaseConfig";
+import { useState } from "react";
 
 export default function HomePage() {
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
-  }, []);
+    
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  },
+   []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans">
@@ -17,16 +27,36 @@ export default function HomePage() {
         <div className="flex items-center space-x-2 font-bold text-lg text-gray-900">
           ⚽Football EyeQ
         </div>
-        <div className="space-x-4">
-          <Link href="/signup">
-          <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
-            Sign Up
-          </button></Link>
-          <Link href="/login">
-          <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
-            Log In
-          </button></Link>
-        </div>
+        {!user && (
+          <div className="space-x-4">
+            <Link href="/signup">
+              <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+                Sign Up
+              </button>
+            </Link>
+            <Link href="/login">
+              <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+                Log In
+              </button>
+            </Link>
+          </div>
+        )}
+        {user && (
+          <div className="space-x-4 flex items-center">
+            <span className="text-gray-700">Welcome!</span>
+            <Link href="/profile">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+              🧑‍🏫
+              </div>
+            </Link>
+            <button
+              onClick={() => auth.signOut()}
+              className="px-4 py-2 rounded-md bg-red-600 text-white font-semibold hover:bg-red-500"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
