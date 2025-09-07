@@ -5,14 +5,15 @@ import "aos/dist/aos.css";
 import Link from "next/link";
 import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
+import { User } from "firebase/auth";
 
 export default function HomePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
     
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser: User | null) => {
       setUser(currentUser);
     });
 
