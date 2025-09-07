@@ -10,18 +10,28 @@ import {
   doc,
   setDoc,
   serverTimestamp,
+  Timestamp,
+  FieldValue 
 } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
+
+interface UserData {
+  fname: string;
+  lname: string;
+  organization: string;
+  email: string;
+  createdAt?: Timestamp | FieldValue;
+}
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [organization, setOrganization] = useState("");
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState<User & { docId?: string } | null>(null);
+  const [fname, setFname] = useState<string>("");
+  const [lname, setLname] = useState<string>("");
+  const [organization, setOrganization] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [createdAt, setCreatedAt] = useState<Date | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<string>("");
 
   // Listen for auth state
   useEffect(() => {
@@ -38,7 +48,7 @@ export default function ProfilePage() {
   }, []);
 
   // Fetch user data by email
-  const fetchUserDataByEmail = async (currentUser: any) => {
+  const fetchUserDataByEmail = async (currentUser: User) => {
     setLoading(true);
     try {
       const q = query(
@@ -48,25 +58,26 @@ export default function ProfilePage() {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // Use the first matching document
         const userDoc = querySnapshot.docs[0];
-        const data = userDoc.data();
+        const data = userDoc.data() as UserData;
 
         setFname(data.fname || "");
         setLname(data.lname || "");
         setOrganization(data.organization || "");
         setEmail(data.email || currentUser.email || "");
         setCreatedAt(
-          data.createdAt && data.createdAt.toDate ? data.createdAt.toDate() : new Date()
-        );
+  data.createdAt && "toDate" in data.createdAt
+    ? data.createdAt.toDate()
+    : new Date()
+);
 
-        // Optional: save docRef for updates
-        setUser((prev: any) => ({ ...prev, docId: userDoc.id }));
+        // Save Firestore doc ID for updates
+        setUser((prev) => (prev ? { ...prev, docId: userDoc.id } : null));
       } else {
         console.warn("No Firestore document found for this email!");
-        // Optionally, create a new document if you want
+        // Optional: create a new document if none exists
         const newUserRef = doc(collection(db, "signups"));
-        const newUserData = {
+        const newUserData: UserData = {
           fname: "",
           lname: "",
           organization: "",
@@ -81,7 +92,7 @@ export default function ProfilePage() {
         setEmail(newUserData.email);
         setCreatedAt(new Date());
 
-        setUser((prev: any) => ({ ...prev, docId: newUserRef.id }));
+        setUser((prev) => (prev ? { ...prev, docId: newUserRef.id } : null));
         console.log("Created new Firestore document for this user.");
       }
     } catch (err) {
@@ -99,7 +110,7 @@ export default function ProfilePage() {
     setMessage("Updating...");
     try {
       const userRef = doc(db, "signups", user.docId);
-      const updatedData: any = { fname, lname, organization };
+      const updatedData: Partial<UserData> = { fname, lname, organization };
 
       await setDoc(userRef, updatedData, { merge: true });
       setMessage("Profile updated successfully!");
