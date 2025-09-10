@@ -5,6 +5,7 @@ export interface Exercise {
   ageGroup: string;
   duration: string;
   difficulty: string;
-  description: string;
+  overview: string;
+  //description: string;
   tags: string[];
 }

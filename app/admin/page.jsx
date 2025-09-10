@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { db } from "../../Firebase/firebaseConfig";
 import { doc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
-import { type } from "os";
 
 // Normalising
 const normalizeTag = (tag) =>
@@ -18,7 +17,27 @@ export default function AdminPage() {
     const [duration, setDuration] = useState("");
     const [difficulty, setDifficulty] = useState("Beginner");
     const [purpose, setPurpose] = useState("Passing");
-    const [description, setDescription] = useState("");
+    const [overview, setOverview] = useState("");
+
+    const descriptionTemplate = `    Overview
+    -
+    -
+
+    Setup
+    -
+    -
+    
+    Description
+    -
+    -
+    
+    Coaching Points
+    -
+    -`;
+
+    const [description, setDescription] = useState(descriptionTemplate);
+    const [imageFile, setImageFile] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
 
     // Exercise list
     const [exercises, setExercises] = useState([]);
@@ -51,7 +70,10 @@ export default function AdminPage() {
         setDuration("");
         setDifficulty("Beginner");
         setPurpose("Passing");
-        setDescription("");
+        setOverview("");
+        setDescription(descriptionTemplate);
+        setImageFile(null);
+        setPreviewImage(null);
         setEditingId(null);
     };
 
@@ -68,17 +90,31 @@ export default function AdminPage() {
         const tagsArray = [ageGroup, difficulty, purpose].map(normalizeTag);
 
         try {
+            let imageBase64 = null;
+
+            if (imageFile && previewImage) {
+                imageBase64 = previewImage;
+            } else if (editingId && previewImage) {
+                imageBase64 = previewImage; // Keep existing image if editing and no new image selected
+            }
+
             const exerciseRef = doc(db, "exercises", exerciseId);
 
-            await setDoc(exerciseRef, {
-                title,
-                ageGroup,
-                duration,
-                difficulty,
-                purpose,
-                description,
-                tags: tagsArray,
-            });
+            await setDoc(
+                exerciseRef, 
+                {
+                    title,
+                    ageGroup,
+                    duration,
+                    difficulty,
+                    purpose,
+                    overview,
+                    description,
+                    tags: tagsArray,
+                    image: imageBase64,
+                },
+                { merge: true }
+            );
 
             alert(editingId ? "Exercise updated!" : "Exercise added!");
 
@@ -90,7 +126,9 @@ export default function AdminPage() {
     };
 
     const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this exercise?");
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this exercise?"
+        );
         if (!confirmDelete) return;
 
         try {
@@ -110,7 +148,10 @@ export default function AdminPage() {
         setDuration(exercise.duration);
         setDifficulty(exercise.difficulty);
         setPurpose(exercise.purpose);
+        setOverview(exercise.overview || "");
         setDescription(exercise.description);
+        setImageFile(null); // Do not pre-fill image
+        setPreviewImage(exercise.image || null);
     };
 
     return (
@@ -123,64 +164,181 @@ export default function AdminPage() {
 
                 {/* Exercise Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="Unique ID (e.g., 001)"
-                        value={customId}
-                        onChange={(e) => setCustomId(e.target.value)}
-                        required
-                        disabled={!!editingId}  // Disable ID field when editing
-                    />
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full border px-3 py-2"
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Duration (e.g., 10 mins)"
-                        value={duration}
-                        onChange={(e) => setDuration(e.target.value)}
-                        className="w-full border px-3 py-2"
-                        required
-                    />
-                    <textarea
-                        placeholder="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="w-full border px-3 py-2"
-                        required
-                    />
-                    <select
-                        value={ageGroup}
-                        onChange={(e) => setAgeGroup(e.target.value)}
-                        className="w-full border px-3 py-2"
-                    >
-                        <option value="U10">U10</option>
-                        <option value="U12">U12</option>
-                        <option value="U14">U14</option>
-                    </select>
-                    <select
-                        value={difficulty}
-                        onChange={(e) => setDifficulty(e.target.value)}
-                        className="w-full border px-3 py-2"
-                    >
-                        <option value="Beginner">Beginner</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                    </select>
-                    <select
-                        value={purpose}
-                        onChange={(e) => setPurpose(e.target.value)}
-                        className="w-full border px-3 py-2"
-                    >
-                        <option value="Passing">Passing</option>
-                        <option value="Dribbling">Dribbling</option>
-                        <option value="Shooting">Shooting</option>
-                    </select>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Unique ID
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="E.g., 001"
+                            value={customId}
+                            onChange={(e) => setCustomId(e.target.value)}
+                            className="w-full border px-3 py-2"
+                            required
+                            disabled={!!editingId}  // Disable ID field when editing
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Title
+                        </label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full border px-3 py-2"
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Duration
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="E.g., 10 mins"
+                            value={duration}
+                            onChange={(e) => setDuration(e.target.value)}
+                            className="w-full border px-3 py-2"
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Blurb
+                        </label>
+                        <textarea
+                            value={overview}
+                            onChange={(e) => setOverview(e.target.value)}
+                            className="w-full border px-3 py-2"
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Description
+                        </label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full border px-3 py-2"
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Age Group
+                        </label>
+                        <select
+                            value={ageGroup}
+                            onChange={(e) => setAgeGroup(e.target.value)}
+                            className="w-full border px-3 py-2"
+                        >
+                            <option value="U10">U10</option>
+                            <option value="U12">U12</option>
+                            <option value="U14">U14</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Difficulty
+                        </label>
+                        <select
+                            value={difficulty}
+                            onChange={(e) => setDifficulty(e.target.value)}
+                            className="w-full border px-3 py-2"
+                        >
+                            <option value="Beginner">Beginner</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Purpose
+                        </label>
+                        <select
+                            value={purpose}
+                            onChange={(e) => setPurpose(e.target.value)}
+                            className="w-full border px-3 py-2"
+                        >
+                            <option value="Passing">Passing</option>
+                            <option value="Dribbling">Dribbling</option>
+                            <option value="Shooting">Shooting</option>
+                        </select>
+                    </div>
+
+                    {/* Image Upload */}
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                        <div className="flex items-center space-x-4">
+                            <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 hover:bg-gray-100 transition">
+                                <svg
+                                    className="h-5 w-5 mr-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 12l4-4m0 0l4 4m-4-4v12"
+                                    />
+                                </svg>
+                                Upload Image
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            setImageFile(file);
+                                            
+                                            // Convert to base64 for preview
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setPreviewImage(reader.result);
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                    className="hidden"
+                                />
+                            </label>
+                            <span className="text-sm text-gray-600">
+                                {imageFile ? imageFile.name : "No file chosen"}
+                            </span>
+                        </div>
+
+                        {previewImage && (
+                            <div className="mt-4 relative inline-block">
+                                <img
+                                    src={previewImage}
+                                    alt="Preview"
+                                    className="max-w-xs rounded border border-gray-300 shadow"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setImageFile(null);
+                                        setPreviewImage(null);
+                                    }}
+                                    className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"
+                                >
+                                    Remove
+                                </button>    
+                            </div>
+                        )}
+                    </div>
+
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -213,7 +371,7 @@ export default function AdminPage() {
                                 >
                                     <div>
                                         <p className="font-semibold">{exercise.title}</p>
-                                        <p className="text-sm text-gray-600">{exercise.description}</p>
+                                        <p className="text-sm text-gray-600">{exercise.overview}</p>
                                         <div className="text-xs mt-1 text-gray-500">
                                             {exercise.ageGroup}, {exercise.difficulty}, {exercise.purpose}
                                         </div>
