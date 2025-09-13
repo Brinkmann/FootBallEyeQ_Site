@@ -14,9 +14,9 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           {exercise.ageGroup} • {exercise.duration} • {exercise.difficulty}
         </div>
 
-        {/* Description */}
+        {/* Overview */}
         <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
-          {exercise.description}
+          {exercise.overview}
         </p>
 
         {/* Tags */}

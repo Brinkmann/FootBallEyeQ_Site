@@ -5,16 +5,7 @@ import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
 import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
-
-interface Exercise {
-  id: string;
-  title: string;
-  ageGroup: string;
-  duration: string;
-  difficulty: string;
-  description: string;
-  tags: string[];
-}
+import { Exercise } from "../types/exercise";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -54,7 +45,7 @@ export default function CatalogPage() {
             ageGroup: data.ageGroup || "N/A",
             duration: data.duration || "Unknown",
             difficulty: data.difficulty || "Unknown",
-            description: data.description || "",
+            overview: data.overview || "",
             tags: data.tags || [],
           };
         });
