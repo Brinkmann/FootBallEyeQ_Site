@@ -2,7 +2,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { exercises  } from "../../data/exercises";
 
-
+type PageProps = {
+  params: { code: string };                 // /s/0102030405
+  searchParams?: { week?: string };         // ?week=4
+};
 
 const ID_BY_ID = exercises.reduce<Record<number, string>>((a, e) => {
   a[e.id] = e.title;       // use 'title', not 'name'
@@ -24,13 +27,7 @@ function decodeCode(raw: string): number[] | null {
   return ids;
 }
 
-export default function SessionLanding({
-  params,
-  searchParams,
-}: {
-  params: { code: string };
-  searchParams?: { week?: string };
-}) {
+export default function SessionLanding({ params, searchParams }: PageProps) {
   const [open, setOpen] = useState(true);
   const weekNum = searchParams?.week ? parseInt(searchParams.week, 10) : undefined;
 
