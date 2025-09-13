@@ -1,25 +1,28 @@
 "use client";
-import { useState } from "react";
 import NavBar from "../components/Navbar";
+import SessionCodeButton from "../components/SessionCodeButton";
+import { usePlanStore } from "../store/usePlanStore";
+
+// Use your local data file for the id map
+import { exercises as CATALOG } from "../data/exercises"; // :contentReference[oaicite:0]{index=0}
+
+const ID_BY_NAME: Record<string, number> = CATALOG.reduce((acc, e) => {
+  acc[e.title] = e.id;
+  return acc;
+}, {} as Record<string, number>);
 
 export default function SeasonPlanningPage() {
-  const weeks = 12;
-
-  const [plan, setPlan] = useState(
-    Array.from({ length: weeks }, (_, weekIndex) => ({
-      week: weekIndex + 1,
-      exercises: weekIndex === 0 ? ["Precision Passing"] : []
-    }))
-  );
-
-  const maxExercisesPerWeek = 5;
+  // 🔗 Read the same shared plan that ExerciseCard writes to
+  const weeks = usePlanStore((s) => s.weeks);
+  const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
+  const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
 
       <div className="p-6">
-        {/* Action Bar */}
+        {/* Action Bar (unchanged) */}
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">12-Week Season Plan</h3>
           <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
@@ -29,31 +32,63 @@ export default function SeasonPlanningPage() {
 
         {/* Weeks Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {plan.map((week, index) => (
-            <div key={index} className="bg-white rounded shadow p-4">
-              <h4 className="font-bold mb-2">Week {week.week}</h4>
-              <p className="text-sm text-gray-500 mb-3">
-                {week.exercises.length}/{maxExercisesPerWeek} exercises
-              </p>
+          {weeks.map((week) => {
+            const isFull = week.exercises.length === maxExercisesPerWeek;
 
-              <div className="space-y-2 mb-4">
-                {Array.from({ length: maxExercisesPerWeek }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`border p-2 text-sm rounded ${
-                      week.exercises[i]
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-gray-400 cursor-pointer hover:bg-gray-100"
-                    }`}
-                  >
-                    {week.exercises[i] || "Add Exercise"}
+            return (
+              <div key={week.week} className="bg-white rounded shadow p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold">Week {week.week}</h4>
+
+                  {/* Session Code: enables when exactly 5 exercises */}
+                  <SessionCodeButton
+                    exercises={week.exercises}          // array of titles from the store
+                    idByName={ID_BY_NAME}               // title -> numeric id (from data file)
+                    weekLabel={`Week ${week.week}`}
+                    weekNumber={week.week}
+                    buttonText="Generate Session Code"
+                  />
+                </div>
+
+                <p className="text-sm text-gray-500 mb-3">
+                  {week.exercises.length}/{maxExercisesPerWeek} exercises
+                </p>
+
+                {/* Five slots — show what's in the store; no auto-add on click */}
+                <div className="space-y-2 mb-4">
+                  {Array.from({ length: maxExercisesPerWeek }).map((_, i) => {
+                    const name = week.exercises[i];
+                    return (
+                      <div
+                        key={i}
+                        className={`border p-2 text-sm rounded flex items-center justify-between ${
+                          name ? "bg-blue-50 text-blue-700" : "text-gray-400"
+                        }`}
+                      >
+                        <span>{name || "Empty slot"}</span>
+                        {name && (
+                          <button
+                            className="text-xs text-red-600 hover:underline"
+                            onClick={() => removeFromWeek(week.week, i)}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <button className="text-blue-600 text-sm hover:underline">✏️ Edit</button>
+
+                {!isFull && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    Add {maxExercisesPerWeek - week.exercises.length} more to enable the Session Code.
                   </div>
-                ))}
+                )}
               </div>
-
-              <button className="text-blue-600 text-sm hover:underline">✏️ Edit</button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
