@@ -61,19 +61,27 @@ export default function SessionCodeButton({
     ? exercises.length >= REQUIRED_COUNT
     : exercises.length === REQUIRED_COUNT;
 
+    
   const code = useMemo(() => {
-    if (!canGenerate) return null;
-    try {
-      return makeCode(exercises, idByName);
-    } catch (e: any) {
-      // Helpful during testing
+  if (!canGenerate) return null;
+  try {
+    return makeCode(exercises, idByName);
+  } catch (e: unknown) {
+    if (typeof e === "object" && e !== null && "message" in e) {
+      setErr((e as { message: string }).message);
       if (typeof window !== "undefined") {
-        console.error("makeCode failed", { exercises, error: e?.message });
+        console.error("makeCode failed", { exercises, error: (e as { message: string }).message });
       }
-      setErr(e?.message ?? "Could not generate code");
-      return null;
+    } else {
+      setErr("Could not generate code");
+      if (typeof window !== "undefined") {
+        console.error("makeCode failed", { exercises, error: e });
+      }
     }
-  }, [exercises, idByName, canGenerate]);
+    return null;
+  }
+}, [exercises, idByName, canGenerate]);
+
 
   useEffect(() => {
     let active = true;
