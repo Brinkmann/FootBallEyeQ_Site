@@ -27,7 +27,7 @@ function decodeCode(raw: string): number[] | null {
   return ids;
 }
 
-export default function SessionLanding({ params, searchParams }: PageProps) {
+export default function SessionLanding({ params, searchParams }: any) {
   const [open, setOpen] = useState(true);
   const weekNum = searchParams?.week ? parseInt(searchParams.week, 10) : undefined;
 
