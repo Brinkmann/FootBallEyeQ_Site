@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { EXERCISES } from "../../components/exercises";
+import { exercises  } from "../../data/exercises";
 
 type PageProps = {
   params: { code: string };                 // /s/0102030405
   searchParams?: { week?: string };         // ?week=4
 };
 
-const ID_BY_ID = EXERCISES.reduce<Record<number, string>>((a, e) => {
-  a[e.id] = e.name;
+const ID_BY_ID = exercises.reduce<Record<number, string>>((a, e) => {
+  a[e.id] = e.title;       // use 'title', not 'name'
   return a;
 }, {});
 
