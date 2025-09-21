@@ -1,13 +1,78 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { usePlanStore } from "../store/usePlanStore";
 import { Exercise } from "../types/exercise";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showWeeks, setShowWeeks] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const addToWeek = usePlanStore((s) => s.addToWeek);
   const overview = exercise.overview ?? "";
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPDF = async () => {
+  const pdf = new jsPDF("p", "mm", "a4");
+  let y = 10;
+
+  pdf.setFontSize(18);
+  pdf.text(exercise.title, 10, y);
+  y += 10;
+
+  pdf.setFontSize(12);
+  pdf.text(`Age group: ${exercise.ageGroup}`, 10, y);
+  y += 7;
+  pdf.text(`Duration: ${exercise.duration}`, 10, y);
+  y += 7;
+  pdf.text(`Difficulty: ${exercise.difficulty}`, 10, y);
+  y += 10;
+
+  if (exercise.overview) {
+    pdf.setFontSize(14);
+    pdf.text("Overview:", 10, y);
+    y += 7;
+    pdf.setFontSize(12);
+    pdf.text(pdf.splitTextToSize(exercise.overview, 180), 10, y);
+    y += 15;
+  }
+
+  if (exercise.description) {
+    pdf.setFontSize(14);
+    pdf.text("Description:", 10, y);
+    y += 7;
+    pdf.setFontSize(12);
+    pdf.text(pdf.splitTextToSize(exercise.description, 180), 10, y);
+    y += 15;
+  }
+// 🖼 Add Image if exists
+  if (exercise.image) {
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = exercise.image;
+
+      await new Promise((resolve, reject) => {
+        img.onload = () => resolve(true);
+        img.onerror = reject;
+      });
+
+      // Add a new page for the image
+      pdf.addPage();
+
+      // Scale image to fit PDF width
+      const pdfWidth = 180;
+      const aspect = img.height / img.width;
+      const imgHeight = pdfWidth * aspect;
+
+      pdf.addImage(img, "JPEG", 10, 10, pdfWidth, imgHeight);
+    } catch (err) {
+      console.error("Image load failed:", err);
+    }
+  }
+  pdf.save(`${exercise.title}.pdf`);
+};
 
   const handlePick = (week: number) => {
     const res = addToWeek(week, exercise.title);
@@ -134,7 +199,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           <div className="relative z-10 w-full max-w-5x1 max-w-[calc(100%-3rem)] rounded-2xl bg-white dark:bg-gray-900 shadow-lg p-6">
 
             {/* Scrollable content */}
-            <div className="max-h-[90vh] overflow-y-auto">
+            <div ref={previewRef} className="max-h-[90vh] overflow-y-auto">
               {/* Image on left, text on right */}
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Image */}
@@ -198,10 +263,19 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
                     </>
                   )}
                 </div>
-              </div>
+              </div><div className="mt-4 flex justify-end">
+              <button
+                onClick={handleDownloadPDF}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              >
+                Download PDF
+              </button>
+            </div>
             </div>
           </div>
+          
         </div>
+        
       )}
     </div>
   );
