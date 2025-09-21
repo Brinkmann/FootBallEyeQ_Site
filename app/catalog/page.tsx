@@ -46,7 +46,9 @@ export default function CatalogPage() {
             duration: data.duration || "Unknown",
             difficulty: data.difficulty || "Unknown",
             overview: data.overview || "",
+            description: data.description || "",
             tags: data.tags || [],
+            image: data.image || null,
           };
         });
 
