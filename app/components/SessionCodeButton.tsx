@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import QRCode from "qrcode";
+import { useEffect, useState } from "react";
+import { QRCodeCanvas } from "qrcode.react"; // ✅ React QR generator
+import Image from "next/image";
 
 type Props = {
   exercises: string[];
@@ -14,36 +15,21 @@ type Props = {
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 function makeCode(names: string[], idByName: Record<string, number>): string {
-  console.log("🏗️ makeCode called with:");
-  console.log("  names:", names);
-  console.log("  idByName:", idByName);
-
   if (!Array.isArray(names) || names.length === 0) {
     throw new Error("Select at least 1 exercise");
   }
 
-  const ids = names.map((name, index) => {
-    console.log(`  Processing ${index + 1}. "${name}"`);
+  const ids = names.map((name) => {
     const id = idByName[name];
-    console.log(`    Found ID: ${id}`);
-    
-    if (!id || id < 1) {
-      throw new Error(`Unknown exercise: "${name}"`);
-    }
+    if (!id || id < 1) throw new Error(`Unknown exercise: "${name}"`);
     return id;
   });
 
-  console.log("  All IDs:", ids);
-
-  // Check for duplicates
   if (new Set(ids).size !== ids.length) {
     throw new Error("Exercises must be distinct");
   }
 
-  const result = ids.map(pad2).join("");
-  console.log("  Final concatenated string:", result);
-  
-  return result;
+  return ids.map(pad2).join("");
 }
 
 export default function SessionCodeButton({
@@ -56,69 +42,24 @@ export default function SessionCodeButton({
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   const canGenerate = exercises.length >= 1;
 
   useEffect(() => {
     setErr(null);
-
     if (!canGenerate) {
       setCode(null);
       return;
     }
-
     try {
-      console.log("🔍 DEBUG - Starting code generation:");
-      console.log("Exercises:", exercises);
-      console.log("ID mapping:", idByName);
-      
       const built = makeCode(exercises, idByName);
-      console.log("Generated code:", built);
       setCode(built);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Could not generate code";
-      console.error("❌ Code generation failed:", e);
       setErr(msg);
       setCode(null);
     }
   }, [exercises, idByName, canGenerate]);
-
-  // Generate QR code
-  useEffect(() => {
-    let active = true;
-
-    (async () => {
-      if (!code) {
-        setQrDataUrl(null);
-        return;
-      }
-
-      console.log("📱 Generating QR for code:", code);
-
-      try {
-        const url = await QRCode.toDataURL(code, { 
-          width: 220, 
-          margin: 1,
-          color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-          }
-        });
-        if (active) {
-          console.log("✅ QR code generated successfully");
-          setQrDataUrl(url);
-        }
-      } catch (error) {
-        console.error("❌ QR generation failed:", error);
-        if (active) setQrDataUrl(null);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [code]);
 
   const handleOpen = () => {
     setErr(null);
@@ -144,7 +85,9 @@ export default function SessionCodeButton({
         onClick={handleOpen}
         disabled={!canGenerate}
         className={`px-3 py-1.5 rounded text-white text-sm ${
-          canGenerate ? "bg-green-600 hover:bg-green-500" : "bg-gray-300 cursor-not-allowed"
+          canGenerate
+            ? "bg-green-600 hover:bg-green-500"
+            : "bg-gray-300 cursor-not-allowed"
         } ${className}`}
         title={canGenerate ? "Show session code" : "Select at least 1 exercise"}
       >
@@ -182,7 +125,9 @@ export default function SessionCodeButton({
               <div>
                 <div className="text-gray-600 text-sm">Exercises (order):</div>
                 <div className="text-sm">
-                  {exercises.length ? exercises.join("  ·  ") : "No exercises selected"}
+                  {exercises.length
+                    ? exercises.join("  ·  ")
+                    : "No exercises selected"}
                 </div>
               </div>
 
@@ -197,13 +142,12 @@ export default function SessionCodeButton({
                     </div>
                   </div>
 
-                  {qrDataUrl && (
-                    <div className="mt-4 flex justify-center">
-                      <div className="bg-white p-4 rounded-lg border">
-                        <img src={qrDataUrl} alt="Session code QR" className="h-48 w-48" />
-                      </div>
+                  {/* ✅ Use QRCodeCanvas instead of <img> */}
+                  <div className="mt-4 flex justify-center">
+                    <div className="bg-white p-4 rounded-lg border">
+                      <QRCodeCanvas value={code} size={192} includeMargin />
                     </div>
-                  )}
+                  </div>
 
                   <div className="flex gap-2 pt-2">
                     <button
