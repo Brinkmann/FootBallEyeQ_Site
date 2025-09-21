@@ -1,11 +1,12 @@
 // types/exercise.ts
 export interface Exercise {
-  id: string;         // I'd recommend keeping id as string to match Firestore
+  id: string;
   title: string;
   ageGroup: string;
   duration: string;
   difficulty: string;
   overview: string;
-  //description: string;
+  description: string;
   tags: string[];
+  image: string;
 }
