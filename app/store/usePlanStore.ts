@@ -14,7 +14,7 @@ type PlanState = {
 export const usePlanStore = create<PlanState>((set, get) => ({
   weeks: Array.from({ length: 12 }, (_, i) => ({
     week: i + 1,
-    exercises: i === 0 ? ["Precision Passing"] : [], // preserve your seed
+    exercises: [], // Removed the seeded "Precision Passing" exercise
   })),
   maxPerWeek: 5,
 

@@ -1,5 +1,6 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 
 type Props = {
@@ -8,40 +9,41 @@ type Props = {
   weekLabel?: string;
   buttonText?: string;
   className?: string;
-  weekNumber?: number;
 };
-
-// ------------------- TEMP TEST MODE -------------------
-const ALLOW_SHORT_SESSIONS = true;           // ← set to false to restore EXACTLY 5
-const REQUIRED_COUNT = ALLOW_SHORT_SESSIONS ? 1 : 5;
-// -----------------------------------------------------
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 function makeCode(names: string[], idByName: Record<string, number>): string {
-  if (!Array.isArray(names) || names.length < REQUIRED_COUNT) {
-    throw new Error(
-      REQUIRED_COUNT === 5
-        ? "Select exactly 5 exercises"
-        : `Select at least ${REQUIRED_COUNT} exercise${REQUIRED_COUNT > 1 ? "s" : ""}`
-    );
+  console.log("🏗️ makeCode called with:");
+  console.log("  names:", names);
+  console.log("  idByName:", idByName);
+
+  if (!Array.isArray(names) || names.length === 0) {
+    throw new Error("Select at least 1 exercise");
   }
 
-  const ids = names.map((n) => {
-    const id = idByName[n];
-    if (!Number.isInteger(id) || id < 1 || id > 20) {
-      throw new Error(`Unknown exercise: "${n}" (no ID mapping)`);
+  const ids = names.map((name, index) => {
+    console.log(`  Processing ${index + 1}. "${name}"`);
+    const id = idByName[name];
+    console.log(`    Found ID: ${id}`);
+    
+    if (!id || id < 1) {
+      throw new Error(`Unknown exercise: "${name}"`);
     }
     return id;
   });
 
-  // Distinctness: in test mode require all selected to be distinct; in normal mode still enforces 5 distinct
+  console.log("  All IDs:", ids);
+
+  // Check for duplicates
   if (new Set(ids).size !== ids.length) {
     throw new Error("Exercises must be distinct");
   }
 
-  // For testing this works with any length (2 digits per exercise)
-  return ids.map(pad2).join("");
+  const result = ids.map(pad2).join("");
+  console.log("  Final concatenated string:", result);
+  
+  return result;
 }
 
 export default function SessionCodeButton({
@@ -50,77 +52,78 @@ export default function SessionCodeButton({
   weekLabel,
   buttonText = "Session Code",
   className = "",
-  weekNumber,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
-  // In test mode allow >= 1; normal mode requires exactly 5
-  const canGenerate = ALLOW_SHORT_SESSIONS
-    ? exercises.length >= REQUIRED_COUNT
-    : exercises.length === REQUIRED_COUNT;
-
-    
-  const code = useMemo(() => {
-  if (!canGenerate) return null;
-  try {
-    return makeCode(exercises, idByName);
-  } catch (e: unknown) {
-    if (typeof e === "object" && e !== null && "message" in e) {
-      setErr((e as { message: string }).message);
-      if (typeof window !== "undefined") {
-        console.error("makeCode failed", { exercises, error: (e as { message: string }).message });
-      }
-    } else {
-      setErr("Could not generate code");
-      if (typeof window !== "undefined") {
-        console.error("makeCode failed", { exercises, error: e });
-      }
-    }
-    return null;
-  }
-}, [exercises, idByName, canGenerate]);
-
+  const canGenerate = exercises.length >= 1;
 
   useEffect(() => {
+    setErr(null);
+
+    if (!canGenerate) {
+      setCode(null);
+      return;
+    }
+
+    try {
+      console.log("🔍 DEBUG - Starting code generation:");
+      console.log("Exercises:", exercises);
+      console.log("ID mapping:", idByName);
+      
+      const built = makeCode(exercises, idByName);
+      console.log("Generated code:", built);
+      setCode(built);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Could not generate code";
+      console.error("❌ Code generation failed:", e);
+      setErr(msg);
+      setCode(null);
+    }
+  }, [exercises, idByName, canGenerate]);
+
+  // Generate QR code
+  useEffect(() => {
     let active = true;
+
     (async () => {
       if (!code) {
         setQrDataUrl(null);
         return;
       }
 
-      const origin =
-        typeof window !== "undefined" ? window.location.origin : "http://192.168.1.1";
-
-      const wk =
-        typeof weekNumber === "number"
-          ? weekNumber
-          : (weekLabel && Number.parseInt(weekLabel.replace(/\D/g, ""), 10)) || undefined;
-
-      const urlForScan = `${origin}/s/${code}` + (wk ? `?week=${wk}` : "");
+      console.log("📱 Generating QR for code:", code);
 
       try {
-        const url = await QRCode.toDataURL(urlForScan, { width: 220, margin: 1 });
-        if (active) setQrDataUrl(url);
-      } catch {
+        const url = await QRCode.toDataURL(code, { 
+          width: 220, 
+          margin: 1,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        });
+        if (active) {
+          console.log("✅ QR code generated successfully");
+          setQrDataUrl(url);
+        }
+      } catch (error) {
+        console.error("❌ QR generation failed:", error);
         if (active) setQrDataUrl(null);
       }
     })();
+
     return () => {
       active = false;
     };
-  }, [code, weekNumber, weekLabel]);
+  }, [code]);
 
   const handleOpen = () => {
     setErr(null);
     if (!canGenerate) {
-      setErr(
-        REQUIRED_COUNT === 5
-          ? "Select exactly 5 exercises for this week."
-          : `Select at least ${REQUIRED_COUNT} exercise${REQUIRED_COUNT > 1 ? "s" : ""} for this week.`
-      );
+      setErr("Select at least 1 exercise for this week.");
       return;
     }
     setOpen(true);
@@ -130,13 +133,10 @@ export default function SessionCodeButton({
     if (!code) return;
     try {
       await navigator.clipboard.writeText(code);
-    } catch {}
+    } catch {
+      // ignore
+    }
   };
-
-  const helperTitle =
-    REQUIRED_COUNT === 5
-      ? "Select exactly 5 exercises"
-      : `Select at least ${REQUIRED_COUNT} exercise${REQUIRED_COUNT > 1 ? "s" : ""}`;
 
   return (
     <>
@@ -146,7 +146,7 @@ export default function SessionCodeButton({
         className={`px-3 py-1.5 rounded text-white text-sm ${
           canGenerate ? "bg-green-600 hover:bg-green-500" : "bg-gray-300 cursor-not-allowed"
         } ${className}`}
-        title={canGenerate ? "Show session code" : helperTitle}
+        title={canGenerate ? "Show session code" : "Select at least 1 exercise"}
       >
         {buttonText}
       </button>
@@ -189,13 +189,19 @@ export default function SessionCodeButton({
               {code && (
                 <>
                   <div>
-                    <div className="text-gray-600 text-sm">Session Code ({code.length}-digit):</div>
-                    <div className="font-mono text-2xl break-all">{code}</div>
+                    <div className="text-gray-600 text-sm">
+                      Session Code ({code.length}-digit):
+                    </div>
+                    <div className="font-mono text-2xl break-all bg-gray-100 p-3 rounded border">
+                      {code}
+                    </div>
                   </div>
 
                   {qrDataUrl && (
-                    <div className="mt-2 flex justify-center">
-                      <img src={qrDataUrl} alt="Session code QR" className="h-40 w-40" />
+                    <div className="mt-4 flex justify-center">
+                      <div className="bg-white p-4 rounded-lg border">
+                        <img src={qrDataUrl} alt="Session code QR" className="h-48 w-48" />
+                      </div>
                     </div>
                   )}
 
@@ -204,7 +210,7 @@ export default function SessionCodeButton({
                       onClick={copy}
                       className="px-3 py-1.5 rounded bg-blue-600 text-white text-sm hover:bg-blue-500"
                     >
-                      Copy
+                      Copy Code
                     </button>
                     <button
                       onClick={() => setOpen(false)}
