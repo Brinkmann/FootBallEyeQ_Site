@@ -161,202 +161,207 @@ export default function AdminPage() {
                 <h1 className="text-2xl font-bold mb-4">
                     {editingId ? "Edit Exercise" : "Add New Exercise"}
                 </h1>
-
-                {/* Exercise Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Unique ID
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="E.g., 001"
-                            value={customId}
-                            onChange={(e) => setCustomId(e.target.value)}
-                            className="w-full border px-3 py-2"
-                            required
-                            disabled={!!editingId}  // Disable ID field when editing
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Title
-                        </label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full border px-3 py-2"
-                            required
-                        />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Duration
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="E.g., 10 mins"
-                            value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
-                            className="w-full border px-3 py-2"
-                            required
-                        />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Blurb
-                        </label>
-                        <textarea
-                            value={overview}
-                            onChange={(e) => setOverview(e.target.value)}
-                            className="w-full border px-3 py-2"
-                            required
-                        />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Description
-                        </label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full border px-3 py-2"
-                            required
-                        />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Age Group
-                        </label>
-                        <select
-                            value={ageGroup}
-                            onChange={(e) => setAgeGroup(e.target.value)}
-                            className="w-full border px-3 py-2"
-                        >
-                            <option value="U10">U10</option>
-                            <option value="U12">U12</option>
-                            <option value="U14">U14</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Difficulty
-                        </label>
-                        <select
-                            value={difficulty}
-                            onChange={(e) => setDifficulty(e.target.value)}
-                            className="w-full border px-3 py-2"
-                        >
-                            <option value="Beginner">Beginner</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Purpose
-                        </label>
-                        <select
-                            value={purpose}
-                            onChange={(e) => setPurpose(e.target.value)}
-                            className="w-full border px-3 py-2"
-                        >
-                            <option value="Passing">Passing</option>
-                            <option value="Dribbling">Dribbling</option>
-                            <option value="Shooting">Shooting</option>
-                        </select>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
-                        <div className="flex items-center space-x-4">
-                            <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 hover:bg-gray-100 transition">
-                                <svg
-                                    className="h-5 w-5 mr-2"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 12l4-4m0 0l4 4m-4-4v12"
-                                    />
-                                </svg>
-                                Upload Image
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        if (file) {
-                                            setImageFile(file);
-                                            
-                                            // Convert to base64 for preview
-                                            const reader = new FileReader();
-                                            reader.onloadend = () => {
-                                                setPreviewImage(reader.result);
-                                            };
-                                            reader.readAsDataURL(file);
-                                        }
-                                    }}
-                                    className="hidden"
-                                />
+                <div className="bg-white rounded shadow p-4">
+                    {/* Exercise Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div >
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Unique ID
                             </label>
-                            <span className="text-sm text-gray-600">
-                                {imageFile ? imageFile.name : "No file chosen"}
-                            </span>
+                            <input
+                                type="text"
+                                placeholder="E.g., 001"
+                                value={customId}
+                                onChange={(e) => setCustomId(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                required
+                                disabled={!!editingId}  // Disable ID field when editing
+                            />
                         </div>
 
-                        {previewImage && (
-                            <div className="mt-4 relative inline-block">
-                                <img
-                                    src={previewImage}
-                                    alt="Preview"
-                                    className="max-w-xs rounded border border-gray-300 shadow"
-                                />
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Title
+                            </label>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                placeholder="Enter exercise title"
+                                required
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Duration
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="E.g., 10 mins"
+                                value={duration}
+                                onChange={(e) => setDuration(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                required
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Blurb
+                            </label>
+                            <textarea
+                                placeholder="A short summary of the exercise"
+                                value={overview}
+                                onChange={(e) => setOverview(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                required
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                            </label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                required
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Age Group
+                            </label>
+                            <select
+                                value={ageGroup}
+                                onChange={(e) => setAgeGroup(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                <option value="U10">U10</option>
+                                <option value="U12">U12</option>
+                                <option value="U14">U14</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Difficulty
+                            </label>
+                            <select
+                                value={difficulty}
+                                onChange={(e) => setDifficulty(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                <option value="Beginner">Beginner</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Purpose
+                            </label>
+                            <select
+                                value={purpose}
+                                onChange={(e) => setPurpose(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                <option value="Passing">Passing</option>
+                                <option value="Dribbling">Dribbling</option>
+                                <option value="Shooting">Shooting</option>
+                            </select>
+                        </div>
+
+                        {/* Image Upload */}
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                            <div className="flex items-center space-x-4">
+                                <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 hover:bg-gray-100 transition">
+                                    <svg
+                                        className="h-5 w-5 mr-2"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 12l4-4m0 0l4 4m-4-4v12"
+                                        />
+                                    </svg>
+                                    Upload Image
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setImageFile(file);
+                                                
+                                                // Convert to base64 for preview
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    setPreviewImage(reader.result);
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        className="hidden"
+                                    />
+                                </label>
+                                <span className="text-sm text-gray-600">
+                                    {imageFile ? imageFile.name : "No file chosen"}
+                                </span>
+                            </div>
+
+                            {previewImage && (
+                                <div className="mt-4 relative inline-block">
+                                    <img
+                                        src={previewImage}
+                                        alt="Preview"
+                                        className="max-w-xs rounded border border-gray-300 shadow"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setImageFile(null);
+                                            setPreviewImage(null);
+                                        }}
+                                        className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"
+                                    >
+                                        Remove
+                                    </button>    
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                type="submit"
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                            >
+                                {editingId ? "Update Exercise" : "Add Exercise"}
+                            </button>
+
+                            {editingId && (
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        setImageFile(null);
-                                        setPreviewImage(null);
-                                    }}
-                                    className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"
+                                    onClick={resetForm}
+                                    className="bg-gray-400 text-white px-4 py-2 rounded"
                                 >
-                                    Remove
-                                </button>    
-                            </div>
-                        )}
-                    </div>
+                                    Cancel Edit
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
 
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                        {editingId ? "Update Exercise" : "Add Exercise"}
-                    </button>
-
-                    {editingId && (
-                        <button
-                            type="button"
-                            onClick={resetForm}
-                            className="bg-gray-400 text-white px-4 py-2 rounded"
-                        >
-                            Cancel Edit
-                        </button>
-                    )}
-                </form>
-
+                
                 {/* Exercise List */}
                 <div className="mt-10">
                     <h2 className="text-xl font-bold mb-2">Existing Exercises</h2>

@@ -46,12 +46,12 @@ export default function SignupPage() {
     <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-blue-100">
         <div className="flex flex-col items-center gap-3">
-          <img src="/logo.svg" alt="Logo" className="h-14 mb-2 drop-shadow" />
+          <img src="../images/logo.png" alt="Logo" className="h-14 mb-2 drop-shadow" />
           <h1 className="text-3xl font-extrabold text-blue-400 mb-2 tracking-tight text-center">
             Sign Up
           </h1>
           <p className="text-1xl font-extrabold text-blue-300 mb-2 tracking-tight text-center">
-            Create your EyeQVision account.
+            Create your FootballEyeQ account.
           </p>
         </div>
         <form onSubmit={handleSignup} className="flex flex-col gap-4">

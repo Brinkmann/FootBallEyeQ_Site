@@ -69,7 +69,7 @@ export default function SeasonPlanningPage() {
                 })}
               </div>
 
-              <button className="text-blue-600 text-sm hover:underline">✏️ Edit</button>
+              
             </div>
           ))}
         </div>
