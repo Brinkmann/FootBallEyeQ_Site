@@ -96,9 +96,9 @@ export default function HomePage() {
             link: "/planner"
           },
           {
-            title: "Control Smart Cones",
-            desc: "Trigger LED patterns directly from your device in real time.",
-            link: null
+            title: "Explanation Guide",
+            desc: "Learn about Football EyeQ with clear codes, labels, and examples.",
+            link: "/explanation"
           }
         ].map((feature, i) => {
     const content = (
