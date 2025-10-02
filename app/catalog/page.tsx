@@ -4,45 +4,81 @@ import { useEffect, useState } from "react";
 import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
 import { db } from "../../Firebase/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { Exercise } from "../types/exercise";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
+
+  // Filters
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("All");
+  const [selectedDecisionTheme, setSelectedDecisionTheme] = useState("All");
+  const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState("All");
+  const [selectedGameMoment, setSelectedGameMoment] = useState("All");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
-  const [selectedPurpose, setSelectedPurpose] = useState("All");
+
+  const ageGroups = [
+    "All Age Groups",
+    "General / Unspecified",
+    "Foundation Phase (U7–U10)",
+    "Youth Development Phase (U11–U14)",
+    "Game Training Phase (U15–U18)",
+    "Performance Phase (U19-Senior)"
+  ];
+
+  const decisionThemes = [
+    "All Decision Themes",
+    "General / Unspecified",
+    "Pass or Dribble",
+    "Attack or Hold",
+    "Shoot or Pass"
+  ];
+
+  const playerInvolvements = [
+    "All Player Involvements",
+    "General / Unspecified",
+    "Individual",
+    "1v1 / 2v2",
+    "Small Group (3–4 players)",
+    "Team Unit (5+ players)"
+  ];
+
+  const gameMoments = [
+    "All Game Moments",
+    "General / Unspecified",
+    "Build-Up",
+    "Final Third Decision",
+    "Defensive Shape",
+    "Counter Attack",
+    "Transition (Attack to Defend)",
+    "Switch of Play"
+  ];
+
+  const difficulties = [
+    "All Difficulty Levels",
+    "General / Unspecified",
+    "Basic",
+    "Moderate",
+    "Advanced",
+    "Elite"
+  ];
 
   useEffect(() => {
-    async function fetchFilteredExercises() {
+    async function fetchExercises() {
       try {
         const exercisesCol = collection(db, "exercises");
+        const snapshot = await getDocs(exercisesCol);
 
-        const activeTags = [];
-
-        if (selectedAgeGroup !== "All") activeTags.push(selectedAgeGroup);
-        if (selectedDifficulty !== "All") activeTags.push(selectedDifficulty);
-        if (selectedPurpose !== "All") activeTags.push(selectedPurpose);
-
-        let q;
-
-        if (activeTags.length > 0) {
-          q = query(
-            exercisesCol,
-            where("tags", "array-contains-any", activeTags)
-          );
-        } else {
-          q = query(exercisesCol);
-        }
-
-        const snapshot = await getDocs(q);
-
-        const exercisesList = snapshot.docs.map((doc) => {
+        const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
             title: data.title || "No title",
             ageGroup: data.ageGroup || "N/A",
+            decisionTheme: data.decisionTheme || "N/A",
+            playerInvolvement: data.playerInvolvement || "N/A",
+            gameMoment: data.gameMoment || "N/A",
             duration: data.duration || "Unknown",
             difficulty: data.difficulty || "Unknown",
             overview: data.overview || "",
@@ -52,22 +88,44 @@ export default function CatalogPage() {
           };
         });
 
-        const strictlyFiltered = exercisesList.filter((exercise) => {
-          return (
-            (selectedAgeGroup === "All" || exercise.tags.includes(selectedAgeGroup)) &&
-            (selectedDifficulty === "All" || exercise.tags.includes(selectedDifficulty)) &&
-            (selectedPurpose === "All" || exercise.tags.includes(selectedPurpose))
-          );
-        });
-        
-        setExercises(strictlyFiltered);
+        setExercises(exercisesList);
+        setFilteredExercises(exercisesList);
       } catch (error) {
-        console.error("Error fetching filtered exercises:", error);
+        console.error("Error fetching exercises:", error);
       }
     }
 
-    fetchFilteredExercises();
-  }, [selectedAgeGroup, selectedDifficulty, selectedPurpose]);
+    fetchExercises();
+  }, []);
+
+  useEffect(() => {
+    let filtered = [...exercises];
+
+    if (selectedAgeGroup !== "All") {
+      filtered = filtered.filter((ex) => ex.ageGroup === selectedAgeGroup);
+    }
+    if (selectedDecisionTheme !== "All") {
+      filtered = filtered.filter((ex) => ex.decisionTheme === selectedDecisionTheme);
+    }
+    if (selectedPlayerInvolvement !== "All") {
+      filtered = filtered.filter((ex) => ex.playerInvolvement === selectedPlayerInvolvement);
+    }
+    if (selectedGameMoment !== "All") {
+      filtered = filtered.filter((ex) => ex.gameMoment === selectedGameMoment);
+    }
+    if (selectedDifficulty !== "All") {
+      filtered = filtered.filter((ex) => ex.difficulty === selectedDifficulty);
+    }
+
+    setFilteredExercises(filtered);
+  }, [
+    selectedAgeGroup,
+    selectedDecisionTheme,
+    selectedPlayerInvolvement,
+    selectedGameMoment,
+    selectedDifficulty,
+    exercises,
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,38 +133,55 @@ export default function CatalogPage() {
 
       <div className="px-6 py-8">
         {/* Filters */}
-        <div className="flex space-x-4 mb-8">
+        <div className="flex flex-wrap gap-4 mb-8">
           <select 
             value={selectedAgeGroup}
             onChange={(e) => setSelectedAgeGroup(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
           >
-            <option value="All">All Age Groups</option>
-            <option value="U10">U10</option>
-            <option value="U12">U12</option>
-            <option value="U14">U14</option>
+            {ageGroups.map((g) => (
+              <option key={`age-${g}`} value={g}>{g}</option>
+            ))}
+          </select>
+
+          <select 
+            value={selectedDecisionTheme}
+            onChange={(e) => setSelectedDecisionTheme(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+          >
+            {decisionThemes.map((d) => (
+              <option key={`decision-${d}`} value={d}>{d}</option>
+            ))}
+          </select>
+
+          <select 
+            value={selectedPlayerInvolvement}
+            onChange={(e) => setSelectedPlayerInvolvement(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+          >
+            {playerInvolvements.map((p) => (
+              <option key={`player-${p}`} value={p}>{p}</option>
+            ))}
+          </select>
+
+          <select 
+            value={selectedGameMoment}
+            onChange={(e) => setSelectedGameMoment(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+          >
+            {gameMoments.map((gm) => (
+              <option key={`moment-${gm}`} value={gm}>{gm}</option>
+            ))}
           </select>
 
           <select 
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
           >
-            <option value="All">All Difficulties</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
-
-          <select 
-            value={selectedPurpose}
-            onChange={(e) => setSelectedPurpose(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
-          >
-            <option value="All">All Purposes</option>
-            <option value="Passing">Passing</option>
-            <option value="Dribbling">Dribbling</option>
-            <option value="Shooting">Shooting</option>
+            {difficulties.map((d) => (
+              <option key={`difficulty-${d}`} value={d}>{d}</option>
+            ))}
           </select>
         </div>
 
@@ -115,7 +190,7 @@ export default function CatalogPage() {
           {exercises.length === 0 ? (
             <p>No exercises found.</p>
           ) : (
-            exercises.map((exercise) => (
+            filteredExercises.map((exercise) => (
               <ExerciseCard key={exercise.id} exercise={exercise} />
             ))
           )}

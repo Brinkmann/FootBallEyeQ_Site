@@ -6,17 +6,22 @@ import { db } from "../../Firebase/firebaseConfig";
 import { doc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 
 // Normalising
-const normalizeTag = (tag) =>
-    tag.trim().toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
+const normalizeTag = (tag) => {
+    if (!tag || typeof tag !== "string") return "General / Unspecified";
+    if (tag === "General / Unspecified") return tag;
+    return tag.trim().toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
+}
 
 export default function AdminPage() {
     // Form fields
     const [customId, setCustomId] = useState(""); // for Firestore doc ID
     const [title, setTitle] = useState("");
-    const [ageGroup, setAgeGroup] = useState("U10");
+    const [ageGroup, setAgeGroup] = useState("General / Unspecified");
+    const [decisionTheme, setDecisionTheme] = useState("General / Unspecified");
+    const [playerInvolvement, setPlayerInvolvement] = useState("General / Unspecified");
+    const [gameMoment, setGameMoment] = useState("General / Unspecified");
     const [duration, setDuration] = useState("");
-    const [difficulty, setDifficulty] = useState("Beginner");
-    const [purpose, setPurpose] = useState("Passing");
+    const [difficulty, setDifficulty] = useState("General / Unspecified");
     const [overview, setOverview] = useState("");
 
     const descriptionTemplate = `    Overview
@@ -66,10 +71,12 @@ export default function AdminPage() {
     const resetForm = () => {
         setCustomId("");
         setTitle("");
-        setAgeGroup("U10");
+        setAgeGroup("General / Unspecified");
+        setDecisionTheme("General / Unspecified");
+        setPlayerInvolvement("General / Unspecified");
+        setGameMoment("General / Unspecified");
         setDuration("");
-        setDifficulty("Beginner");
-        setPurpose("Passing");
+        setDifficulty("General / Unspecified");
         setOverview("");
         setDescription(descriptionTemplate);
         setImageFile(null);
@@ -87,7 +94,15 @@ export default function AdminPage() {
             return;
         }
 
-        const tagsArray = [ageGroup, difficulty, purpose].map(normalizeTag);
+        const tagsArray = [
+            ageGroup, 
+            decisionTheme,
+            playerInvolvement,
+            gameMoment,
+            difficulty
+        ]
+            .filter(Boolean) // Remove empty or null tags
+            .map(normalizeTag);
 
         try {
             let imageBase64 = null;
@@ -105,9 +120,11 @@ export default function AdminPage() {
                 {
                     title,
                     ageGroup,
+                    decisionTheme,
+                    playerInvolvement,
+                    gameMoment,
                     duration,
                     difficulty,
-                    purpose,
                     overview,
                     description,
                     tags: tagsArray,
@@ -144,15 +161,58 @@ export default function AdminPage() {
         setEditingId(exercise.id);
         setCustomId(exercise.id);
         setTitle(exercise.title);
-        setAgeGroup(exercise.ageGroup);
+        setAgeGroup(exercise.ageGroup || "General / Unspecified");
+        setDecisionTheme(exercise.decisionTheme || "General / Unspecified");
+        setPlayerInvolvement(exercise.playerInvolvement || "General / Unspecified");
+        setGameMoment(exercise.gameMoment || "General / Unspecified");
         setDuration(exercise.duration);
-        setDifficulty(exercise.difficulty);
-        setPurpose(exercise.purpose);
+        setDifficulty(exercise.difficulty || "General / Unspecified");
         setOverview(exercise.overview || "");
         setDescription(exercise.description);
         setImageFile(null); // Do not pre-fill image
         setPreviewImage(exercise.image || null);
     };
+
+    const ageGroups = [
+        "General / Unspecified",
+        "Foundation Phase (U7–U10)",
+        "Youth Development Phase (U11–U14)",
+        "Game Training Phase (U15–U18)",
+        "Performance Phase (U19-Senior)"
+    ];
+
+    const decisionThemes = [
+        "General / Unspecified",
+        "Pass or Dribble",
+        "Attack or Hold",
+        "Shoot or Pass"
+    ];
+
+    const playerInvolvements = [
+        "General / Unspecified",
+        "Individual",
+        "1v1 / 2v2",
+        "Small Group (3–4 players)",
+        "Team Unit (5+ players)"
+    ];
+
+    const gameMoments = [
+        "General / Unspecified",
+        "Build-Up",
+        "Final Third Decision",
+        "Defensive Shape",
+        "Counter Attack",
+        "Transition (Attack to Defend)",
+        "Switch of Play"
+    ];
+
+    const difficulties = [
+        "General / Unspecified",
+        "Basic",
+        "Moderate",
+        "Advanced",
+        "Elite"
+    ];
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -241,39 +301,69 @@ export default function AdminPage() {
                                 onChange={(e) => setAgeGroup(e.target.value)}
                                 className="w-full border px-3 py-2"
                             >
-                                <option value="U10">U10</option>
-                                <option value="U12">U12</option>
-                                <option value="U14">U14</option>
+                                {ageGroups.map((g) => (
+                                    <option key={`age-${g}`} value={g}>{g}</option>
+                                ))}
                             </select>
                         </div>
-                        
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Difficulty
+                                Decision Theme
+                            </label>
+                            <select
+                                value={decisionTheme}
+                                onChange={(e) => setDecisionTheme(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                {decisionThemes.map((d) => (
+                                    <option key={`decision-${d}`} value={d}>{d}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Player Involvement
+                            </label>
+                            <select
+                                value={playerInvolvement}
+                                onChange={(e) => setPlayerInvolvement(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                {playerInvolvements.map((p) => (
+                                    <option key={`player-${p}`} value={p}>{p}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Game Moment Simulated
+                            </label>
+                            <select
+                                value={gameMoment}
+                                onChange={(e) => setGameMoment(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                {gameMoments.map((gm) => (
+                                    <option key={`moment-${gm}`} value={gm}>{gm}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Difficulty Level
                             </label>
                             <select
                                 value={difficulty}
                                 onChange={(e) => setDifficulty(e.target.value)}
                                 className="w-full border px-3 py-2"
                             >
-                                <option value="Beginner">Beginner</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Hard">Hard</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Purpose
-                            </label>
-                            <select
-                                value={purpose}
-                                onChange={(e) => setPurpose(e.target.value)}
-                                className="w-full border px-3 py-2"
-                            >
-                                <option value="Passing">Passing</option>
-                                <option value="Dribbling">Dribbling</option>
-                                <option value="Shooting">Shooting</option>
+                                {difficulties.map((d) => (
+                                    <option key={`difficulty-${d}`} value={d}>{d}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -378,7 +468,7 @@ export default function AdminPage() {
                                         <p className="font-semibold">{exercise.title}</p>
                                         <p className="text-sm text-gray-600">{exercise.overview}</p>
                                         <div className="text-xs mt-1 text-gray-500">
-                                            {exercise.ageGroup}, {exercise.difficulty}, {exercise.purpose}
+                                            {exercise.ageGroup}, {exercise.decisionTheme}, {exercise.playerInvolvement}, {exercise.gameMoment}, {exercise.difficulty}
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2">

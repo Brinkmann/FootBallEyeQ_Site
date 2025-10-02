@@ -3,8 +3,6 @@ import { useRef, useState } from "react";
 import { usePlanStore } from "../store/usePlanStore";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import { toPng } from "html-to-image";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showWeeks, setShowWeeks] = useState(false);
@@ -46,7 +44,8 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
     pdf.text(pdf.splitTextToSize(exercise.description, 180), 10, y);
     y += 15;
   }
-// 🖼 Add Image if exists
+
+// Add Image if exists
   if (exercise.image) {
     try {
       const img = new Image();
@@ -112,9 +111,9 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
         {/* Tags */}
         {!!exercise.tags?.length && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {exercise.tags.map((tag) => (
+            {exercise.tags.map((tag, i) => (
               <span
-                key={tag}
+                key={`${exercise.id}-tag-${i}`}
                 className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium"
               >
                 {tag}
@@ -172,7 +171,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
             <div className="p-4 grid grid-cols-3 gap-2">
               {Array.from({ length: 12 }, (_, i) => i + 1).map((w) => (
                 <button
-                  key={w}
+                  key={`week-${w}`}
                   onClick={() => handlePick(w)}
                   className="px-3 py-2 rounded border text-sm hover:bg-gray-50 dark:hover:bg-gray-800"
                 >
@@ -230,13 +229,11 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
                   {/* Details section */}
                   <div className="space-y-2 mb-6 text-sm text-gray-700 dark:text-gray-300">
                     <p><span className="font-semibold">Age group:</span> {exercise.ageGroup}</p>
-                    <p><span className="font-semibold">Duration:</span> {exercise.duration}</p>
+                    <p><span className="font-semibold">Decision theme:</span> {exercise.decisionTheme}</p>
+                    <p><span className="font-semibold">Player involvement:</span> {exercise.playerInvolvement}</p>
+                    <p><span className="font-semibold">Game moment simulated:</span> {exercise.gameMoment}</p>
                     <p><span className="font-semibold">Difficulty level:</span> {exercise.difficulty}</p>
-                    {exercise.tags?.length > 0 && (
-                      <p>
-                        <span className="font-semibold">Skill:</span> {exercise.tags[exercise.tags.length - 1]}
-                      </p>
-                    )}
+                    <p><span className="font-semibold">Duration:</span> {exercise.duration}</p>
                   </div>
 
                   <hr className="border-gray-300 dark:border-gray-700 mb-4" />
