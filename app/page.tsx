@@ -96,7 +96,7 @@ export default function HomePage() {
             link: "/planner"
           },
           {
-            title: "Explanation Guide",
+            title: "Tag Explanation Guide",
             desc: "Learn about Football EyeQ with clear codes, labels, and examples.",
             link: "/explanation"
           }

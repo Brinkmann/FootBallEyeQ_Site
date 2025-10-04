@@ -12,11 +12,11 @@ export default function CatalogPage() {
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
 
   // Filters
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState("All");
-  const [selectedDecisionTheme, setSelectedDecisionTheme] = useState("All");
-  const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState("All");
-  const [selectedGameMoment, setSelectedGameMoment] = useState("All");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("All Age Groups");
+  const [selectedDecisionTheme, setSelectedDecisionTheme] = useState("All Decision Themes");
+  const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState("All Player Involvements");
+  const [selectedGameMoment, setSelectedGameMoment] = useState("All Game Moments");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("All Difficulty Levels");
 
   const ageGroups = [
     "All Age Groups",
@@ -101,19 +101,19 @@ export default function CatalogPage() {
   useEffect(() => {
     let filtered = [...exercises];
 
-    if (selectedAgeGroup !== "All") {
+    if (selectedAgeGroup !== "All Age Groups") {
       filtered = filtered.filter((ex) => ex.ageGroup === selectedAgeGroup);
     }
-    if (selectedDecisionTheme !== "All") {
+    if (selectedDecisionTheme !== "All Decision Themes") {
       filtered = filtered.filter((ex) => ex.decisionTheme === selectedDecisionTheme);
     }
-    if (selectedPlayerInvolvement !== "All") {
+    if (selectedPlayerInvolvement !== "All Player Involvements") {
       filtered = filtered.filter((ex) => ex.playerInvolvement === selectedPlayerInvolvement);
     }
-    if (selectedGameMoment !== "All") {
+    if (selectedGameMoment !== "All Game Moments") {
       filtered = filtered.filter((ex) => ex.gameMoment === selectedGameMoment);
     }
-    if (selectedDifficulty !== "All") {
+    if (selectedDifficulty !== "All Difficulty Levels") {
       filtered = filtered.filter((ex) => ex.difficulty === selectedDifficulty);
     }
 
@@ -187,7 +187,7 @@ export default function CatalogPage() {
 
         {/* Exercise Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exercises.length === 0 ? (
+          {filteredExercises.length === 0 ? (
             <p>No exercises found.</p>
           ) : (
             filteredExercises.map((exercise) => (
