@@ -3,6 +3,10 @@ import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import { usePlanStore } from "../store/usePlanStore";
 import { exercises as CATALOG } from "../data/exercises";
+import { auth, db } from "../../Firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useEffect } from "react";
 
 // Create ID mapping from your exercises data
 const ID_BY_NAME: Record<string, number> = CATALOG.reduce((acc, exercise) => {
@@ -14,6 +18,46 @@ export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
+  const setAll = usePlanStore((s) => s.setAll);
+
+  // 1) Load user's plan once after login (or create a blank one)
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      const ref = doc(db, "planners", user.uid);
+      const snap = await getDoc(ref);
+
+      const empty = Array.from({ length: 12 }, (_, i) => ({
+        week: i + 1,
+        exercises: [],
+      }));
+
+      if (snap.exists()) {
+        const data = snap.data() as {
+          weeks?: { week: number; exercises: string[] }[];
+          maxPerWeek?: number;
+        };
+        setAll({
+          weeks: Array.isArray(data.weeks) ? data.weeks : empty,
+          maxPerWeek: typeof data.maxPerWeek === "number" ? data.maxPerWeek : 5,
+        });
+      } else {
+        await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
+        setAll({ weeks: empty, maxPerWeek: 5 });
+      }
+    });
+    return () => unsub();
+  }, [setAll]);
+
+  // 2) Save whenever weeks/max change (simple + reliable)
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) return;
+    const ref = doc(db, "planners", user.uid);
+    setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true });
+  }, [weeks, maxExercisesPerWeek]);
+
 
   return (
     <div className="min-h-screen bg-gray-50">

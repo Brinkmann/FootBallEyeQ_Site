@@ -2,6 +2,7 @@
 import { create } from "zustand";
 
 type WeekPlan = { week: number; exercises: string[] };
+type SetAllPayload = { weeks: WeekPlan[]; maxPerWeek: number };
 
 type PlanState = {
   weeks: WeekPlan[];
@@ -9,6 +10,7 @@ type PlanState = {
   addToWeek: (week: number, name: string) => { ok: boolean; reason?: string };
   removeFromWeek: (week: number, index: number) => void;
   reset: () => void;
+  setAll: (payload: { weeks: WeekPlan[]; maxPerWeek: number }) => void;
 };
 
 export const usePlanStore = create<PlanState>((set, get) => ({
@@ -47,4 +49,11 @@ export const usePlanStore = create<PlanState>((set, get) => ({
     set({
       weeks: Array.from({ length: 12 }, (_, i) => ({ week: i + 1, exercises: [] })),
     }),
+  
+  setAll: ({ weeks, maxPerWeek }: SetAllPayload) =>
+    set({
+      weeks: weeks.map((w: WeekPlan) => ({ week: w.week, exercises: [...w.exercises] })),
+      maxPerWeek,
+  }),
+
 }));
