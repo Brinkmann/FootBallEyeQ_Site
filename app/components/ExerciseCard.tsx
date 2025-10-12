@@ -1,15 +1,81 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePlanStore } from "../store/usePlanStore";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
+import { db } from "@/Firebase/firebaseConfig"; // 👈 import your firebase config
+import { collection, addDoc,  onSnapshot, query, where } from "firebase/firestore";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showWeeks, setShowWeeks] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
   const addToWeek = usePlanStore((s) => s.addToWeek);
   const overview = exercise.overview ?? "";
   const previewRef = useRef<HTMLDivElement>(null);
+
+  const [name, setName] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [numStar, setNumStar] = useState(0);
+  
+  // Update reviews 
+   const [avgStars, setAvgStars] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+
+  /**
+   * Subscribe to reviews collection for this exercise to get real-time updates
+   */
+  useEffect(() => {
+    const q = query(
+      collection(db, "reviews"),
+      where("exerciseN", "==", exercise.title)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        setAvgStars(0);
+        setReviewCount(0);
+        return;
+      }
+
+      const reviews = snapshot.docs.map((doc) => doc.data());
+      const totalStars = reviews.reduce((sum, r) => sum + (r.numStar || 0), 0);
+      const avg = totalStars / reviews.length;
+
+      setAvgStars(Number(avg.toFixed(1)));
+      setReviewCount(reviews.length);
+    });
+
+    return () => unsubscribe();
+  }, [exercise.title]);
+  
+  /**
+   * Handle review submission
+   */
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    //  if any field is empty, alert and return
+    if ( !feedback || numStar <= 0) {
+      alert("Please fill all fields and select a star rating.");
+      return;
+    }
+    // Add review to Firestore
+    try {
+      await addDoc(collection(db, "reviews"), {
+        exerciseN: exercise.title,
+        numStar,
+        feedback,
+      });
+      alert("Thank you for your review!");
+      setFeedback("");
+      setNumStar(0);
+      setShowReviewForm(false);
+    } catch (err) {
+      console.error("Error adding review:", err);
+      alert("Failed to add review. Try again.");
+    }
+  };
 
   const handleDownloadPDF = async () => {
   const pdf = new jsPDF("p", "mm", "a4");
@@ -126,7 +192,8 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
       {/* Footer: rating + actions (kept) */}
       <div className="flex justify-between items-center mt-auto">
         <div className="text-xs text-gray-500 italic dark:text-gray-400">
-          ⭐ 0.0 (0 reviews)
+          ⭐ {avgStars.toFixed(1)} ({reviewCount} review
+          {reviewCount !== 1 ? "s" : ""})
         </div>
         <div className="flex space-x-2">
 
@@ -145,8 +212,77 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           >
             Add to Plan
           </button>
+
+          {/* Review button */}
+          <button
+            className="text-sm px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            onClick={() => setShowReviewForm(true)}
+          >
+            Review
+          </button>
         </div>
       </div>
+
+      {/* Review form overlay - user can enter feedback and star rating for any exercise they want */}
+      {showReviewForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg w-full max-w-md relative">
+            <button
+              onClick={() => setShowReviewForm(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+            
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Review: {exercise.title}
+            </h3>
+
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Star Rating
+                </label>
+                <div className="flex space-x-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNumStar(star)}
+                      className={`text-2xl ${
+                        star <= numStar
+                          ? "text-yellow-400"
+                          : "text-gray-400 hover:text-yellow-300"
+                      }`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Feedback
+                </label>
+                <textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  rows={3}
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition"
+              >
+                Submit Review
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Week picker overlay */}
       {showWeeks && (
