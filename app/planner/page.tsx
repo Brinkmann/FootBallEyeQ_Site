@@ -22,9 +22,6 @@ export default function SeasonPlanningPage() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">12-Week Season Plan</h3>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
-            + New Season Plan
-          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
