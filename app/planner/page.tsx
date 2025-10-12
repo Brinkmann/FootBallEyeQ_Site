@@ -2,17 +2,17 @@
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import { usePlanStore } from "../store/usePlanStore";
-import { exercises as CATALOG } from "../data/exercises";
+//import { exercises as CATALOG } from "../data/exercises";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { useEffect } from "react";
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
+import { useEffect, useMemo, useState } from "react";
 
 // Create ID mapping from your exercises data
-const ID_BY_NAME: Record<string, number> = CATALOG.reduce((acc, exercise) => {
-  acc[exercise.title] = exercise.id;
-  return acc;
-}, {} as Record<string, number>);
+//const ID_BY_NAME: Record<string, number> = CATALOG.reduce((acc, exercise) => {
+//  acc[exercise.title] = exercise.id;
+//  return acc;
+//}, {} as Record<string, number>);
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
@@ -20,6 +20,39 @@ export default function SeasonPlanningPage() {
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const setAll = usePlanStore((s) => s.setAll);
 
+  // ------- Fetch exercises catalog from Firestore -------
+  const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const snap = await getDocs(collection(db, "exercises"));
+      const list = snap.docs.map((d) => {
+        const data = d.data() as { id?: number; title?: string };
+        // Use numeric field if present, otherwise try to coerce doc id → number
+        const id =
+          typeof data.id === "number"
+            ? data.id
+            : Number.isNaN(Number(d.id))
+            ? 0
+            : Number(d.id);
+        const title = data.title ?? d.id;
+        return { id, title };
+      });
+      setCatalog(list);
+    })();
+  }, []);
+
+  // Build name → id map for SessionCodeButton
+  const ID_BY_NAME = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const ex of catalog) {
+      if (typeof ex.id === "number" && !Number.isNaN(ex.id)) {
+        m[ex.title] = ex.id;
+      }
+    }
+    return m;
+  }, [catalog]);
+  
   // 1) Load user's plan once after login (or create a blank one)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
