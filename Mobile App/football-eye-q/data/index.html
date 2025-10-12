@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FEQ-HUB</title>
+    <link rel="stylesheet" href="styles/app_styles.css" />
+    <link rel="icon" type="image/x-icon" href="assets/app_icon.ico" />
+  </head>
+  <body>
+    <!-- Top navigation bar -->
+    <nav class="top-nav">
+      <h1>FootBall Eye Q</h1>
+      <div class="battery-icon">
+        <div class="battery-fill"></div>
+      </div>
+      <div class="connected-nodes">
+        Connected Nodes: <span id="node-count">0</span>
+      </div>
+    </nav>
+
+    <!-- Settings Page -->
+    <div id="settings-page">
+      <div class="menu-settings-container">
+        <div class="tab-menu">
+          <div class="tab" id="device-tab">Device Information</div>
+          <div class="tab" id="patterns-tab">Patterns Settings</div>
+          <div class="tab" id="provisioning-tab">Provisioning</div>
+        </div>
+        <div class="content">
+          <!-- Device Info -->
+          <div id="device-content" class="tab-content">
+            <ul>
+              <li id="fw-version">FW version: <span>1.0</span></li>
+              <li id="hw-version">HW version: <span>1.2</span></li>
+              <li id="serial-number">Serial number: <span>123456</span></li>
+              <li id="software-version">Software version: <span>2.3</span></li>
+            </ul>
+          </div>
+
+          <!-- Patterns Tab -->
+          <div id="patterns-content" class="tab-content">
+            <p>Patterns description, metadata etc.</p>
+            <p>Add, remove, edit, or save Patterns.</p>
+          </div>
+
+          <!-- Provisioning Tab -->
+          <div id="provisioning-content" class="tab-content">
+            <p>
+              By performing a reprovisioning procedure on your device, it will
+              return to WiFi Manager mode.
+            </p>
+            <button id="reprovision-button">Reprovision Device</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patterns Page -->
+    <div id="patterns-page">
+      <!-- ✅ New session input section -->
+      <div class="session-input-container">
+        <label for="session-code">Enter Session Code:</label>
+        <input
+          type="text"
+          id="session-code"
+          placeholder="e.g. 04050304"
+          maxlength="32"
+        />
+        <button id="load-session-btn">Load Session</button>
+      </div>
+
+      <!-- Table container where patterns will be listed -->
+      <div id="table-container"></div>
+    </div>
+
+    <!-- Reprovision banner -->
+    <nav id="reprov-banner" class="bottom-nav-reprov">
+      Your device will be restarted in WiFi Manager mode for reprovisioning.
+    </nav>
+
+    <!-- Bottom navigation bar -->
+    <nav class="bottom-nav">
+      <button id="patterns-btn" class="nav-button">Patterns</button>
+      <button id="settings-btn" class="nav-button">Settings</button>
+    </nav>
+
+    <!-- Link JS logic -->
+    <script src="/logic/actions.js"></script>
+  </body>
+</html>
