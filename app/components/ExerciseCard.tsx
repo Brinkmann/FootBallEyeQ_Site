@@ -20,7 +20,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [numStar, setNumStar] = useState(0);
   
   // Update reviews 
-   const [avgStars, setAvgStars] = useState(0);
+  const [avgStars, setAvgStars] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
 
   /**
@@ -31,14 +31,14 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
       collection(db, "reviews"),
       where("exerciseN", "==", exercise.title)
     );
-
+    // Wait for real-time updates
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
         setAvgStars(0);
         setReviewCount(0);
         return;
       }
-
+      // Calculate average stars
       const reviews = snapshot.docs.map((doc) => doc.data());
       const totalStars = reviews.reduce((sum, r) => sum + (r.numStar || 0), 0);
       const avg = totalStars / reviews.length;
@@ -76,15 +76,15 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
       alert("Failed to add review. Try again.");
     }
   };
-
+  // Function to generate and download PDF
   const handleDownloadPDF = async () => {
   const pdf = new jsPDF("p", "mm", "a4");
   let y = 10;
-
+  // Title
   pdf.setFontSize(18);
   pdf.text(exercise.title, 10, y);
   y += 10;
-
+  // Meta information
   pdf.setFontSize(12);
   pdf.text(`Age group: ${exercise.ageGroup}`, 10, y);
   y += 7;
@@ -92,7 +92,8 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   y += 7;
   pdf.text(`Difficulty: ${exercise.difficulty}`, 10, y);
   y += 10;
-
+  
+  // Overview
   if (exercise.overview) {
     pdf.setFontSize(14);
     pdf.text("Overview:", 10, y);
@@ -101,7 +102,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
     pdf.text(pdf.splitTextToSize(exercise.overview, 180), 10, y);
     y += 15;
   }
-
+  // Description
   if (exercise.description) {
     pdf.setFontSize(14);
     pdf.text("Description:", 10, y);
@@ -111,13 +112,14 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
     y += 15;
   }
 
-// Add Image if exists
+  // Add Image if exists
   if (exercise.image) {
+    // Load image
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.src = exercise.image;
-
+      // Wait for image to load
       await new Promise((resolve, reject) => {
         img.onload = () => resolve(true);
         img.onerror = reject;
@@ -138,7 +140,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   }
   pdf.save(`${exercise.title}.pdf`);
 };
-
+  // Handle adding exercise to a selected week
   const handlePick = (week: number) => {
     const res = addToWeek(week, exercise.title);
     if (!res.ok) {

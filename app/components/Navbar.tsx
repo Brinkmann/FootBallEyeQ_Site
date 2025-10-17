@@ -5,17 +5,27 @@ import { useState, useEffect } from "react";
 import { auth, db } from "@/Firebase/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-const tabs = [
+/**
+ * Navigation bar component with dynamic tabs based on user admin status.
+ */
+const baseTabs = [
   { label: "Tag Explanation Guide", href: "/explanation" },
   { label: "Exercise Library", href: "/catalog" },
   { label: "Season Planning", href: "/planner" },
-  { label: "Admin", href: "/admin" },
 ];
 
+/**
+ * NavBar component that displays navigation tabs and user info.
+ * @returns 
+ */
 export default function NavBar() {
   const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  /**
+   * Fetch user info from Firestore on auth state change
+   */
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -23,24 +33,35 @@ export default function NavBar() {
           // Query Firestore for a document with matching uid
           const q = query(collection(db, "signups"), where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
-
+          // If user document found, set userName
           if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
             setUserName(`${data.fname} ${data.lname}`);
+            // check admin status
+            setIsAdmin(data.admin === true);
           } else {
             setUserName(user.email ?? "User");
+            setIsAdmin(false);
           }
         } catch (error) {
+          // Handle errors and admin status
           console.error("Error fetching user:", error);
           setUserName(user.email ?? "User");
+          setIsAdmin(false);
         }
       } else {
         setUserName(null);
+        setIsAdmin(false);
       }
     });
 
     return () => unsubscribe();
   }, []);
+
+  // Determine tabs to show based on admin status
+  const tabs = isAdmin
+    ? [...baseTabs, { label: "Admin", href: "/admin" }]
+    : baseTabs;
 
   return (
     <div className="bg-gray-50 px-6 pt-6">
