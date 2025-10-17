@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { QRCodeCanvas } from "qrcode.react"; // ✅ React QR generator
+import { QRCodeCanvas } from "qrcode.react"; // React QR generator
 import Image from "next/image";
 
 type Props = {
