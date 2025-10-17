@@ -20,7 +20,7 @@ export default function SeasonPlanningPage() {
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const setAll = usePlanStore((s) => s.setAll);
 
-  // ------- Fetch exercises catalog from Firestore -------
+  // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function SeasonPlanningPage() {
     return m;
   }, [catalog]);
   
-  // 1) Load user's plan once after login (or create a blank one)
+  // Load user's plan once after login (or create a blank one)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) return;
@@ -83,7 +83,7 @@ export default function SeasonPlanningPage() {
     return () => unsub();
   }, [setAll]);
 
-  // 2) Save whenever weeks/max change (simple + reliable)
+  // Save whenever weeks/max change (simple + reliable)
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
