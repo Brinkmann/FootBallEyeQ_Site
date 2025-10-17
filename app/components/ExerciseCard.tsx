@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePlanStore } from "../store/usePlanStore";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
-import { db } from "@/Firebase/firebaseConfig"; // 👈 import your firebase config
+import { db } from "@/Firebase/firebaseConfig"; //  import your firebase config
 import { collection, addDoc,  onSnapshot, query, where } from "firebase/firestore";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
