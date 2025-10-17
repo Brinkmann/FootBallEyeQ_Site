@@ -20,7 +20,7 @@ export default function NavBar() {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         try {
-          // 🔹 Query Firestore for a document with matching uid
+          // Query Firestore for a document with matching uid
           const q = query(collection(db, "signups"), where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
 

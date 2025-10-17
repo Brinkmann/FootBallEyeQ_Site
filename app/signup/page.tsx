@@ -29,6 +29,7 @@ export default function SignupPage() {
         fname: name,
         lname: lastName,
         email: email,
+        admin: false,
         organization: organization,
         createdAt: serverTimestamp(),
       });
