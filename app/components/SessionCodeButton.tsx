@@ -142,7 +142,7 @@ export default function SessionCodeButton({
                     </div>
                   </div>
 
-                  {/* ✅ Use QRCodeCanvas instead of <img> */}
+                  {/* Use QRCodeCanvas instead of <img> */}
                   <div className="mt-4 flex justify-center">
                     <div className="bg-white p-4 rounded-lg border">
                       <QRCodeCanvas value={code} size={192} includeMargin />
