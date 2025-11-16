@@ -1,18 +1,19 @@
-// /firebase/firebaseConfig.js
+// /firebase/firebaseConfig.ts
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
+// Read from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyDy164WRqX29NFm_N96bQa0gk_tIIGe_EY",
-  authDomain: "footballeyeq-39b68.firebaseapp.com",
-  projectId: "footballeyeq-39b68",
-  storageBucket: "footballeyeq-39b68.firebasestorage.app",
-  messagingSenderId: "1021562185489",
-  appId: "1:1021562185489:web:d30418fdcc0b9743f6ceb0",
-  measurementId: "G-PVS1TC39G6"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
