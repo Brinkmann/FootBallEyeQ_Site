@@ -64,21 +64,21 @@ export default function NavBar() {
     : baseTabs;
 
   return (
-    <div className="bg-gray-50 px-6 pt-6">
+    <div className="bg-background px-6 pt-6">
       {/* Header */}
       <header className="flex justify-between items-center mb-6">
-        <Link href="/" className="text-2xl font-bold hover:underline">⚽ Football EyeQ </Link>
+        <Link href="/" className="text-2xl font-bold hover:underline text-foreground">⚽ Football EyeQ </Link>
         {userName ? (
           <div className="flex items-center space-x-4">
-            <span className="text-gray-700">{userName}</span>
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+            <span className="text-foreground">{userName}</span>
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
               🧑‍🏫
             </div>
           </div>
         ) : (
           <Link
             href="/login"
-            className="text-blue-500 font-semibold hover:underline"
+            className="text-primary font-semibold hover:underline"
           >
             Login
           </Link>
@@ -89,14 +89,14 @@ export default function NavBar() {
         <>
           {/* Welcome Message */}
           <div className="mb-6">
-            <h2 className="text-xl font-semibold">Welcome back, {userName}</h2>
+            <h2 className="text-xl font-semibold text-foreground">Welcome back, {userName}</h2>
             <p className="text-gray-600">
               Plan your training sessions and manage your exercise library
             </p>
           </div>
 
           {/* Navigation Tabs */}
-          <nav className="flex space-x-4 border-b border-gray-200 mb-6">
+          <nav className="flex space-x-4 border-b border-divider mb-6">
             {tabs.map((tab) => {
               const isActive = pathname === tab.href;
               return (
@@ -105,7 +105,7 @@ export default function NavBar() {
                   href={tab.href}
                   className={`px-4 py-2 border-b-2 text-base ${
                     isActive
-                      ? "border-black font-semibold text-black"
+                      ? "border-primary font-semibold text-primary"
                       : "border-transparent text-gray-500"
                   }`}
                 >

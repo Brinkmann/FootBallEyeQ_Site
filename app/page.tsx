@@ -22,21 +22,21 @@ export default function HomePage() {
    []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans">
+    <div className="min-h-screen bg-background font-sans">
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
-        <div className="flex items-center space-x-2 font-bold text-lg text-gray-900">
+        <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
           ⚽Football EyeQ
         </div>
         {!user && (
           <div className="space-x-4">
             <Link href="/signup">
-              <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+              <button className="px-4 py-2 rounded-md bg-primary text-button font-semibold bg-primary-hover transition">
                 Sign Up
               </button>
             </Link>
             <Link href="/login">
-              <button className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-500">
+              <button className="px-4 py-2 rounded-md bg-primary text-button font-semibold bg-primary-hover transition">
                 Log In
               </button>
             </Link>
@@ -46,13 +46,13 @@ export default function HomePage() {
           <div className="space-x-4 flex items-center">
             <span className="text-gray-700">Welcome!</span>
             <Link href="/profile">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
               🧑‍🏫
               </div>
             </Link>
             <button
               onClick={() => auth.signOut()}
-              className="px-4 py-2 rounded-md bg-red-600 text-white font-semibold hover:bg-red-500"
+              className="px-4 py-2 rounded-md bg-gray-600 text-white font-semibold hover:bg-gray-500"
             >
               Sign Out
             </button>
@@ -62,9 +62,9 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="text-center mt-24 px-6">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight">
           Smart Training <br />
-          <span className="text-blue-600">Made Simple</span>
+          <span className="text-primary">Made Simple</span>
         </h1>
         <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
           Plan, organize, and execute professional football training sessions
@@ -75,7 +75,7 @@ export default function HomePage() {
         <div className="mt-8 flex justify-center space-x-4">
           <Link
             href="/about"
-            className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-md hover:bg-blue-50"
+            className="px-6 py-3 border border-primary text-primary font-semibold rounded-md hover:bg-primary-light transition"
           >
             About Us
           </Link>
@@ -105,10 +105,10 @@ export default function HomePage() {
       <div
         data-aos="fade-up"
         data-aos-delay={i * 150}
-        className="p-8 bg-white rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer"
+        className="p-8 bg-card rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer border border-divider"
       >
         <div className="text-4xl mb-4">⚽</div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+        <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
         <p className="text-gray-600">{feature.desc}</p>
       </div>
     );
@@ -165,7 +165,7 @@ export default function HomePage() {
               data-aos={section.reverse ? "fade-right" : "fade-left"}
               className="flex-1 text-center md:text-left"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
                 {section.title}
               </h2>
               <p className="text-gray-600 text-lg">{section.desc}</p>
@@ -175,7 +175,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="mt-40 py-10 text-center text-gray-500 text-sm border-t border-gray-200">
+      <footer className="mt-40 py-10 text-center text-gray-500 text-sm border-t border-divider">
         &copy; {new Date().getFullYear()} Football EyeQ. All rights reserved.
       </footer>
     </div>

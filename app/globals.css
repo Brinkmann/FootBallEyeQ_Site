@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* 1. Define Brand "Absolute" Colors
+    These are from your branding guide and palette.
+  */
+  --brand-berry: #a10115;
+  --brand-cherry: #d72c16;
+  --brand-chiffon: #f0efea;
+  --brand-smoke: #c0b2b5;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* 2. Define Semantic Colors (Light Mode - Default)
+    We map our brand colors to their purpose (background, text, etc.)
+  */
+  --background: var(--brand-chiffon);
+  --foreground: #1a1a1a;
+  --card-bg: #ffffff;
+  --primary: var(--brand-berry);
+  --primary-hover: var(--brand-cherry);
+  --primary-light-bg: rgba(161, 1, 21, 0.1); /* berry at 10% */
+  --primary-dark-text: var(--brand-berry);
+  --border: var(--brand-smoke);
+  --button-text: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* 3. Define Semantic Colors (Dark Mode)
+      We re-map the colors for a dark theme.
+    */
+    --background: #1a1a1a;
+    --foreground: var(--brand-chiffon);
+    --card-bg: #2b2b2b;
+    --primary: var(--brand-cherry); /* Use brighter red for better contrast */
+    --primary-hover: var(--brand-berry);
+    --primary-light-bg: rgba(215, 44, 22, 0.1); /* cherry at 10% */
+    --primary-dark-text: var(--brand-cherry);
+    --border: #444444;
+    --button-text: #ffffff;
   }
 }
 
+/* Apply base styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 4. Helper classes to apply colors
+  This makes it easy to apply our new theme in Tailwind.
+  This is much better than @theme inline for dynamic light/dark mode.
+*/
+.bg-background {
+  background-color: var(--background);
+}
+.bg-card {
+  background-color: var(--card-bg);
+}
+.text-foreground {
+  color: var(--foreground);
+}
+.text-primary {
+  color: var(--primary);
+}
+.bg-primary {
+  background-color: var(--primary);
+}
+.bg-primary-hover:hover {
+  background-color: var(--primary-hover);
+}
+.text-button {
+  color: var(--button-text);
+}
+.border-divider {
+  border-color: var(--border);
+}
+.bg-primary-light {
+  background-color: var(--primary-light-bg);
+}
+.text-primary-dark {
+  color: var(--primary-dark-text);
+}
+.border-primary {
+  border-color: var(--primary);
+}
+.hover\:bg-primary-light:hover {
+  background-color: var(--primary-light-bg);
 }

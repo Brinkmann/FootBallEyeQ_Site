@@ -128,7 +128,7 @@ export default function CatalogPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <NavBar />
 
       <div className="px-6 py-8">
@@ -137,7 +137,7 @@ export default function CatalogPage() {
           <select 
             value={selectedAgeGroup}
             onChange={(e) => setSelectedAgeGroup(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {ageGroups.map((g) => (
               <option key={`age-${g}`} value={g}>{g}</option>
@@ -147,7 +147,7 @@ export default function CatalogPage() {
           <select 
             value={selectedDecisionTheme}
             onChange={(e) => setSelectedDecisionTheme(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {decisionThemes.map((d) => (
               <option key={`decision-${d}`} value={d}>{d}</option>
@@ -157,7 +157,7 @@ export default function CatalogPage() {
           <select 
             value={selectedPlayerInvolvement}
             onChange={(e) => setSelectedPlayerInvolvement(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {playerInvolvements.map((p) => (
               <option key={`player-${p}`} value={p}>{p}</option>
@@ -167,7 +167,7 @@ export default function CatalogPage() {
           <select 
             value={selectedGameMoment}
             onChange={(e) => setSelectedGameMoment(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {gameMoments.map((gm) => (
               <option key={`moment-${gm}`} value={gm}>{gm}</option>
@@ -177,7 +177,7 @@ export default function CatalogPage() {
           <select 
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {difficulties.map((d) => (
               <option key={`difficulty-${d}`} value={d}>{d}</option>

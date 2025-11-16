@@ -122,7 +122,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         Loading...
       </div>
     );
@@ -130,64 +130,64 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         Please log in to view your profile.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center py-10 bg-gradient-to-b from-blue-50 to-white">
-      <h1 className="text-3xl text-blue-500 font-bold mb-6">My Profile</h1>
+    <div className="min-h-screen flex flex-col items-center py-10 bg-background">
+      <h1 className="text-3xl text-primary font-bold mb-6">My Profile</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4"
+        className="bg-card p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4 border border-divider"
       >
         <input
           type="text"
           placeholder="First Name"
           value={fname}
           readOnly
-          className="p-3 rounded-lg border border-gray-300 bg-gray-100 text-blue-500"
+          className="p-3 rounded-lg border border-divider bg-background text-primary"
         />
         <input
           type="text"
           placeholder="Last Name"
           value={lname}
           readOnly
-          className="p-3 rounded-lg border border-gray-300 bg-gray-100 text-blue-500"
+          className="p-3 rounded-lg border border-divider bg-background text-primary"
         />
         <input
           type="text"
           placeholder="Organization"
           value={organization}
           readOnly
-          className="p-3 rounded-lg border border-gray-300 bg-gray-100 text-blue-500"
+          className="p-3 rounded-lg border border-divider bg-background text-primary"
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           readOnly
-          className="p-3 rounded-lg border border-gray-200 bg-gray-100 text-gray-600"
+          className="p-3 rounded-lg border border-divider bg-background text-gray-500"
         />
         <input
           type="text"
           placeholder="Account Created"
           value={createdAt ? createdAt.toLocaleString() : ""}
           readOnly
-          className="p-3 rounded-lg border border-gray-200 bg-gray-100 text-gray-600"
+          className="p-3 rounded-lg border border-divider bg-background text-gray-500"
         />
 
         <button
           type="submit"
-          className="mt-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition"
+          className="mt-2 bg-primary hover:bg-primary-hover text-button font-semibold py-2 rounded-lg transition"
         >
           Save Changes
         </button>
 
-        {message && <p className="text-center text-gray-700">{message}</p>}
+        {message && <p className="text-center text-foreground">{message}</p>}
       </form>
     </div>
   );

@@ -2,17 +2,10 @@
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import { usePlanStore } from "../store/usePlanStore";
-//import { exercises as CATALOG } from "../data/exercises";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
-
-// Create ID mapping from your exercises data
-//const ID_BY_NAME: Record<string, number> = CATALOG.reduce((acc, exercise) => {
-//  acc[exercise.title] = exercise.id;
-//  return acc;
-//}, {} as Record<string, number>);
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
@@ -93,19 +86,19 @@ export default function SeasonPlanningPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <NavBar />
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">12-Week Season Plan</h3>
+          <h3 className="text-lg font-semibold text-foreground">12-Week Season Plan</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {weeks.map((week) => (
-            <div key={week.week} className="bg-white rounded shadow p-4">
+            <div key={week.week} className="bg-card rounded shadow p-4 border border-divider">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-bold">Week {week.week}</h4>
+                <h4 className="font-bold text-foreground">Week {week.week}</h4>
 
                 <SessionCodeButton
                   exercises={week.exercises}
@@ -126,13 +119,13 @@ export default function SeasonPlanningPage() {
                     <div
                       key={i}
                       className={`border p-2 text-sm rounded flex items-center justify-between ${
-                        name ? "bg-blue-50 text-blue-700" : "text-gray-400"
+                        name ? "bg-primary-light text-primary-dark border-divider" : "text-gray-400 border-divider"
                       }`}
                     >
                       <span>{name || "Empty slot"}</span>
                       {name && (
                         <button
-                          className="text-xs text-red-600 hover:underline"
+                          className="text-xs text-primary hover:underline"
                           onClick={() => removeFromWeek(week.week, i)}
                         >
                           Remove

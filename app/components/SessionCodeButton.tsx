@@ -84,10 +84,10 @@ export default function SessionCodeButton({
       <button
         onClick={handleOpen}
         disabled={!canGenerate}
-        className={`px-3 py-1.5 rounded text-white text-sm ${
+        className={`px-3 py-1.5 rounded text-sm ${
           canGenerate
-            ? "bg-green-600 hover:bg-green-500"
-            : "bg-gray-300 cursor-not-allowed"
+            ? "bg-primary text-button bg-primary-hover"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
         } ${className}`}
         title={canGenerate ? "Show session code" : "Select at least 1 exercise"}
       >
@@ -101,9 +101,9 @@ export default function SessionCodeButton({
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-lg">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-base font-semibold">
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-card shadow-lg border border-divider">
+            <div className="flex items-center justify-between p-4 border-b border-divider">
+              <h3 className="text-base font-semibold text-foreground">
                 {weekLabel ? `${weekLabel} — ` : ""}Session Code
               </h3>
               <button
@@ -123,8 +123,8 @@ export default function SessionCodeButton({
               )}
 
               <div>
-                <div className="text-gray-600 text-sm">Exercises (order):</div>
-                <div className="text-sm">
+                <div className="text-gray-500 text-sm">Exercises (order):</div>
+                <div className="text-sm text-foreground">
                   {exercises.length
                     ? exercises.join("  ·  ")
                     : "No exercises selected"}
@@ -134,17 +134,17 @@ export default function SessionCodeButton({
               {code && (
                 <>
                   <div>
-                    <div className="text-gray-600 text-sm">
+                    <div className="text-gray-500 text-sm">
                       Session Code ({code.length}-digit):
                     </div>
-                    <div className="font-mono text-2xl break-all bg-gray-100 p-3 rounded border">
+                    <div className="font-mono text-2xl break-all bg-background p-3 rounded border border-divider text-foreground">
                       {code}
                     </div>
                   </div>
 
                   {/* Use QRCodeCanvas instead of <img> */}
                   <div className="mt-4 flex justify-center">
-                    <div className="bg-white p-4 rounded-lg border">
+                    <div className="bg-white p-4 rounded-lg border border-divider">
                       <QRCodeCanvas value={code} size={192} includeMargin />
                     </div>
                   </div>
@@ -152,13 +152,13 @@ export default function SessionCodeButton({
                   <div className="flex gap-2 pt-2">
                     <button
                       onClick={copy}
-                      className="px-3 py-1.5 rounded bg-blue-600 text-white text-sm hover:bg-blue-500"
+                      className="px-3 py-1.5 rounded bg-primary text-button text-sm bg-primary-hover"
                     >
                       Copy Code
                     </button>
                     <button
                       onClick={() => setOpen(false)}
-                      className="px-3 py-1.5 rounded bg-gray-100 text-sm hover:bg-gray-200"
+                      className="px-3 py-1.5 rounded bg-background text-sm text-foreground hover:bg-primary-light"
                     >
                       Close
                     </button>

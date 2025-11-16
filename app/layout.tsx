@@ -1,5 +1,4 @@
 import "./globals.css";
-import Navbar from './components/Navbar'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -14,9 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-black text-white min-h-screen">
+      {/* These classes from globals.css will now handle light/dark mode */}
+      <body className="bg-background text-foreground min-h-screen">
         <main className="w-full">{children}</main>
-
       </body>
     </html>
   );

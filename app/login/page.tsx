@@ -32,16 +32,16 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#eaf6ff] flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-blue-100">
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="bg-card rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-divider">
         <div className="flex flex-col items-center gap-3">
           <img src="../images/logo.png" alt="Logo" className="h-14 mb-2 drop-shadow" />
-          <h1 className="text-3xl font-extrabold text-blue-400 mb-2 tracking-tight text-center">Login</h1>
-          <p className="text-1xl font-extrabold text-blue-300 mb-2 tracking-tight text-center">Welcome back to FootballEyeQ please log in to continue.</p>
+          <h1 className="text-3xl font-extrabold text-primary mb-2 tracking-tight text-center">Login</h1>
+          <p className="text-1xl font-extrabold text-primary mb-2 tracking-tight text-center opacity-75">Welcome back to FootballEyeQ please log in to continue.</p>
         </div>
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             type="email"
             placeholder="Email"
             value={email}
@@ -49,7 +49,7 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
             required
           />
           <input
-            className="p-3 rounded-lg border border-blue-200 bg-[#eaf6ff] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             type="password"
             placeholder="Password"
             value={password}
@@ -57,7 +57,7 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
             required
           />
           <button
-            className="mt-2 bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg shadow transition"
+            className="mt-2 bg-primary hover:bg-primary-hover text-button font-semibold py-2 rounded-lg shadow transition"
             type="submit"
           >
             Log In
