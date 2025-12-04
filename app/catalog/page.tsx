@@ -17,6 +17,7 @@ export default function CatalogPage() {
   const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState("All Player Involvements");
   const [selectedGameMoment, setSelectedGameMoment] = useState("All Game Moments");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All Difficulty Levels");
+  const [selectedPracticeFormat, setSelectedPracticeFormat] = useState("All Practice Formats");
 
   const ageGroups = [
     "All Age Groups",
@@ -62,6 +63,17 @@ export default function CatalogPage() {
     "Moderate",
     "Advanced",
     "Elite"
+  ];
+
+  const practiceFormats = [
+    "All Practice Formats",
+    "Warm-Up / Ball Mastery",
+    "Fun Game / Physical",
+    "Finishing / Shooting Pattern",
+    "Positional Possession Game",
+    "Rondo / Tight Possession",
+    "Directional Small-Sided Game",
+    "General / Mixed",
   ];
 
   useEffect(() => {
@@ -116,6 +128,9 @@ export default function CatalogPage() {
     if (selectedDifficulty !== "All Difficulty Levels") {
       filtered = filtered.filter((ex) => ex.difficulty === selectedDifficulty);
     }
+    if (selectedPracticeFormat !== "All Practice Formats") {
+      filtered = filtered.filter((ex) => ex.tags?.includes(selectedPracticeFormat));
+    }
 
     setFilteredExercises(filtered);
   }, [
@@ -124,6 +139,7 @@ export default function CatalogPage() {
     selectedPlayerInvolvement,
     selectedGameMoment,
     selectedDifficulty,
+    selectedPracticeFormat,
     exercises,
   ]);
 
@@ -174,13 +190,23 @@ export default function CatalogPage() {
             ))}
           </select>
 
-          <select 
+          <select
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
             className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
           >
             {difficulties.map((d) => (
               <option key={`difficulty-${d}`} value={d}>{d}</option>
+            ))}
+          </select>
+
+          <select
+            value={selectedPracticeFormat}
+            onChange={(e) => setSelectedPracticeFormat(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground"
+          >
+            {practiceFormats.map((pf) => (
+              <option key={`practice-${pf}`} value={pf}>{pf}</option>
             ))}
           </select>
         </div>
