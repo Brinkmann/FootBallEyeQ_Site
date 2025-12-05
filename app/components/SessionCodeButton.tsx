@@ -60,6 +60,13 @@ export default function SessionCodeButton({
     }
   }, [exercises, idByName, canGenerate]);
 
+  const sortedExercises = [...exercises].sort((a, b) => {
+    const idA = idByName[a];
+    const idB = idByName[b];
+    if (idA && idB && idA !== idB) return idA - idB;
+    return a.localeCompare(b);
+  });
+
   const handleOpen = () => {
     setErr(null);
     if (!canGenerate) {
@@ -122,10 +129,10 @@ export default function SessionCodeButton({
               )}
 
               <div>
-                <div className="text-gray-500 text-sm">Exercises (order):</div>
+                <div className="text-gray-500 text-sm">Exercises (sorted):</div>
                 <div className="text-sm text-foreground">
-                  {exercises.length
-                    ? exercises.join("  ·  ")
+                  {sortedExercises.length
+                    ? sortedExercises.join("  ·  ")
                     : "No exercises selected"}
                 </div>
               </div>
@@ -133,9 +140,7 @@ export default function SessionCodeButton({
               {code && (
                 <>
                   <div>
-                    <div className="text-gray-500 text-sm">
-                      Session Code ({code.length}-digit):
-                    </div>
+                    <div className="text-gray-500 text-sm">Session Code (5 characters):</div>
                     <div className="font-mono text-2xl break-all bg-background p-3 rounded border border-divider text-foreground">
                       {code}
                     </div>

@@ -1,11 +1,34 @@
 // app/utils/sessionCode.ts
-// Utility functions for generating and decoding compact session codes.
+// Utilities for encoding and decoding unordered exercise sessions into a
+// compact, reversible base-36 code.
 
-const BASE71 = 71;
 const BASE36_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
+const MIN_EXERCISE = 1;
+const MAX_EXERCISE = 70;
 const MAX_EXERCISES = 5;
 
-const MAX_PACKED_VALUE = 70 * (BASE71 ** 4 + BASE71 ** 3 + BASE71 ** 2 + BASE71 + 1);
+// Offsets[k] = sum_{i=1}^{k-1} C(70, i) for locating the range by cardinality
+const OFFSETS = [0, 0, 70, 2485, 57225, 974120];
+
+// cumulative upper bounds (exclusive) for locating the correct k from the index
+const BOUNDARIES = [70, 2485, 57225, 974120, 13077134];
+
+const TOTAL_COMBINATIONS = BOUNDARIES[BOUNDARIES.length - 1];
+
+/**
+ * Compute a binomial coefficient C(n, k) with small integer inputs.
+ */
+function choose(n: number, k: number): number {
+  if (k < 0 || n < 0 || k > n) return 0;
+  if (k === 0 || k === n) return 1;
+
+  const kEff = Math.min(k, n - k);
+  let result = 1;
+  for (let i = 1; i <= kEff; i += 1) {
+    result = (result * (n - (kEff - i))) / i;
+  }
+  return Math.round(result);
+}
 
 /**
  * Convert a non-negative integer to a base-36 string using digits 0-9 and a-z.
@@ -45,83 +68,89 @@ function fromBase36(code: string): number {
 }
 
 /**
- * Ensure we have exactly five base-71 digits, validating each exercise ID.
+ * Validate and sort the provided exercise IDs.
  */
 function normalizeExercises(exerciseIds: number[]): number[] {
-  if (!Array.isArray(exerciseIds)) {
-    throw new Error("exerciseIds must be an array");
+  if (!Array.isArray(exerciseIds) || exerciseIds.length === 0) {
+    throw new Error("Provide between 1 and 5 exercise IDs");
+  }
+  if (exerciseIds.length > MAX_EXERCISES) {
+    throw new Error("A session can contain at most 5 exercises");
   }
 
-  const trimmed = exerciseIds.slice(0, MAX_EXERCISES);
+  const sorted = [...exerciseIds].sort((a, b) => a - b);
 
-  trimmed.forEach(id => {
-    if (!Number.isInteger(id) || id < 1 || id > 70) {
+  sorted.forEach((id, idx) => {
+    if (!Number.isInteger(id) || id < MIN_EXERCISE || id > MAX_EXERCISE) {
       throw new Error("Exercise IDs must be integers between 1 and 70");
+    }
+    if (idx > 0 && id === sorted[idx - 1]) {
+      throw new Error("Exercises must be distinct");
     }
   });
 
-  const padded: number[] = [...trimmed];
-  while (padded.length < MAX_EXERCISES) {
-    padded.push(0);
-  }
-
-  return padded;
+  return sorted;
 }
 
 /**
- * Convert five base-71 digits into a single integer using positional notation.
+ * Map a sorted combination of exercise IDs to a unique integer index using the
+ * combinatorial number system (lexicographic ranking).
  */
-function packBase71(digits: number[]): number {
-  return digits.reduce((acc, id) => acc * BASE71 + id, 0);
+function combinationIndex(sortedIds: number[]): number {
+  let index = 0;
+  sortedIds.forEach((id, idx) => {
+    const rank = idx + 1; // 1-based rank for binomial
+    index += choose(id - 1, rank);
+  });
+
+  const k = sortedIds.length;
+  return OFFSETS[k] + index;
 }
 
 /**
- * Expand a packed integer back into five base-71 digits.
+ * Recover a sorted combination from its index for a given size k.
  */
-function unpackBase71(value: number): number[] {
-  const ids = new Array<number>(MAX_EXERCISES).fill(0);
-  for (let i = MAX_EXERCISES - 1; i >= 0; i -= 1) {
-    ids[i] = value % BASE71;
-    value = Math.floor(value / BASE71);
+function combinationFromIndex(index: number, k: number): number[] {
+  const ids: number[] = [];
+  let remaining = index;
+  let maxCandidate = MAX_EXERCISE - 1; // 0-based in binomial terms
+
+  for (let rank = k; rank >= 1; rank -= 1) {
+    for (let candidate = maxCandidate; candidate >= rank - 1; candidate -= 1) {
+      const comb = choose(candidate, rank);
+      if (comb <= remaining) {
+        ids.unshift(candidate + 1); // convert back to 1-based exercise ID
+        remaining -= comb;
+        maxCandidate = candidate - 1;
+        break;
+      }
+    }
   }
+
+  if (ids.length !== k || remaining !== 0) {
+    throw new Error("Code represents an invalid session payload");
+  }
+
   return ids;
 }
 
 /**
- * Generate a 6-character session code for up to five exercise IDs.
- *
- * Steps:
- * 1. Validate IDs (1-70) and keep only the first five entries.
- * 2. Pad with zeros to always have five digits.
- * 3. Pack the five base-71 digits into a single integer.
- * 4. Convert to base-36 and left-pad to six characters.
+ * Generate a 5-character session code for 1–5 unordered exercise IDs.
  */
 export function generateSessionCode(exerciseIds: number[]): string {
-  const padded = normalizeExercises(exerciseIds);
+  const sorted = normalizeExercises(exerciseIds);
+  const index = combinationIndex(sorted);
 
-  const packedValue = packBase71(padded);
-  if (packedValue > MAX_PACKED_VALUE) {
-    throw new Error("Packed session value exceeds allowed range");
+  if (index >= TOTAL_COMBINATIONS) {
+    throw new Error("Session combination exceeds supported range");
   }
 
-  const base36 = toBase36(packedValue);
-  return base36.padStart(6, "0");
+  const base36 = toBase36(index);
+  return base36.padStart(5, "0");
 }
 
 /**
- * Provide a human-friendly representation of the five base-71 digits
- * (e.g., "01 02 03 04 05" for exercises [1,2,3,4,5]).
- */
-export function formatBase71Digits(exerciseIds: number[]): string {
-  const padded = normalizeExercises(exerciseIds);
-  return padded
-    .map(id => id.toString().padStart(2, "0"))
-    .join(" ");
-}
-
-/**
- * Decode a 6-character session code back into five exercise IDs.
- * Returns the padded array; callers can remove trailing zeros if desired.
+ * Decode a 5-character session code back into sorted exercise IDs.
  */
 export function decodeSessionCode(code: string): number[] {
   if (typeof code !== "string") {
@@ -129,26 +158,41 @@ export function decodeSessionCode(code: string): number[] {
   }
 
   const normalized = code.trim().toLowerCase();
-  if (!/^[0-9a-z]{6}$/.test(normalized)) {
-    throw new Error("Code must be exactly 6 characters of 0-9 or a-z");
+  if (!/^[0-9a-z]{5}$/.test(normalized)) {
+    throw new Error("Code must be exactly 5 characters of 0-9 or a-z");
   }
 
   const value = fromBase36(normalized);
-  if (value > MAX_PACKED_VALUE) {
+  if (!Number.isSafeInteger(value) || value < 0 || value >= TOTAL_COMBINATIONS) {
     throw new Error("Code represents an invalid session payload");
   }
 
-  return unpackBase71(value);
+  let k = 0;
+  for (let i = 0; i < BOUNDARIES.length; i += 1) {
+    if (value < BOUNDARIES[i]) {
+      k = i + 1;
+      break;
+    }
+  }
+
+  if (k === 0) {
+    throw new Error("Code represents an invalid session payload");
+  }
+
+  const offset = OFFSETS[k];
+  const indexForK = value - offset;
+
+  return combinationFromIndex(indexForK, k);
 }
 
 /*
 Example usage:
 
-const codeA = generateSessionCode([5, 12]);
-// formatBase71Digits([5, 12]) => "05 12 00 00 00"
-console.log(codeA, decodeSessionCode(codeA)); // [5, 12, 0, 0, 0]
+const codeA = generateSessionCode([1, 13, 9, 65, 22]);
+console.log(codeA); // "5kxgh"
+console.log(decodeSessionCode(codeA)); // [1, 9, 13, 22, 65]
 
-const codeB = generateSessionCode([3, 9, 21, 7, 2]);
-// formatBase71Digits([3, 9, 21, 7, 2]) => "03 09 21 07 02"
-console.log(codeB, decodeSessionCode(codeB)); // [3, 9, 21, 7, 2]
+const codeB = generateSessionCode([3]);
+console.log(codeB); // "0000c" (example)
+console.log(decodeSessionCode(codeB)); // [3]
 */
