@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react"; // React QR generator
 import Image from "next/image";
-import { generateSessionCode } from "../utils/sessionCode";
+import { encodeSessionCode } from "../utils/sessionCode";
 
 type Props = {
   exercises: string[];
@@ -28,7 +28,10 @@ function makeCode(names: string[], idByName: Record<string, number>): string {
     throw new Error("Exercises must be distinct");
   }
 
-  return generateSessionCode(ids);
+  const sorted = [...ids].sort((a, b) => a - b);
+  const patternString = sorted.map((id) => id.toString().padStart(2, "0")).join("");
+
+  return encodeSessionCode(patternString);
 }
 
 export default function SessionCodeButton({
@@ -140,7 +143,7 @@ export default function SessionCodeButton({
               {code && (
                 <>
                   <div>
-                    <div className="text-gray-500 text-sm">Session Code (5 characters):</div>
+                    <div className="text-gray-500 text-sm">Session Code (6 characters):</div>
                     <div className="font-mono text-2xl break-all bg-background p-3 rounded border border-divider text-foreground">
                       {code}
                     </div>
