@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react"; // React QR generator
 import Image from "next/image";
+import { encodeSessionCode } from "../utils/sessionCode";
 
 type Props = {
   exercises: string[];
@@ -11,8 +12,6 @@ type Props = {
   buttonText?: string;
   className?: string;
 };
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
 
 function makeCode(names: string[], idByName: Record<string, number>): string {
   if (!Array.isArray(names) || names.length === 0) {
@@ -29,7 +28,10 @@ function makeCode(names: string[], idByName: Record<string, number>): string {
     throw new Error("Exercises must be distinct");
   }
 
-  return ids.map(pad2).join("");
+  const sorted = [...ids].sort((a, b) => a - b);
+  const patternString = sorted.map((id) => id.toString().padStart(2, "0")).join("");
+
+  return encodeSessionCode(patternString);
 }
 
 export default function SessionCodeButton({
@@ -60,6 +62,13 @@ export default function SessionCodeButton({
       setCode(null);
     }
   }, [exercises, idByName, canGenerate]);
+
+  const sortedExercises = [...exercises].sort((a, b) => {
+    const idA = idByName[a];
+    const idB = idByName[b];
+    if (idA && idB && idA !== idB) return idA - idB;
+    return a.localeCompare(b);
+  });
 
   const handleOpen = () => {
     setErr(null);
@@ -123,10 +132,10 @@ export default function SessionCodeButton({
               )}
 
               <div>
-                <div className="text-gray-500 text-sm">Exercises (order):</div>
+                <div className="text-gray-500 text-sm">Exercises (sorted):</div>
                 <div className="text-sm text-foreground">
-                  {exercises.length
-                    ? exercises.join("  ·  ")
+                  {sortedExercises.length
+                    ? sortedExercises.join("  ·  ")
                     : "No exercises selected"}
                 </div>
               </div>
@@ -134,9 +143,7 @@ export default function SessionCodeButton({
               {code && (
                 <>
                   <div>
-                    <div className="text-gray-500 text-sm">
-                      Session Code ({code.length}-digit):
-                    </div>
+                    <div className="text-gray-500 text-sm">Session Code (6 characters):</div>
                     <div className="font-mono text-2xl break-all bg-background p-3 rounded border border-divider text-foreground">
                       {code}
                     </div>
