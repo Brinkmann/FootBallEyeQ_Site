@@ -86,36 +86,33 @@ export default function NavBar() {
       </header>
 
       {userName && (
-        <>
-          {/* Welcome Message */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-foreground">Welcome back, {userName}</h2>
-            <p className="text-gray-600">
-              Plan your training sessions and manage your exercise library
-            </p>
-          </div>
-
-          {/* Navigation Tabs */}
-          <nav className="flex space-x-4 border-b border-divider mb-6">
-            {tabs.map((tab) => {
-              const isActive = pathname === tab.href;
-              return (
-                <Link
-                  key={tab.label}
-                  href={tab.href}
-                  className={`px-4 py-2 border-b-2 text-base ${
-                    isActive
-                      ? "border-primary font-semibold text-primary"
-                      : "border-transparent text-gray-500"
-                  }`}
-                >
-                  {tab.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </>
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground">Welcome back, {userName}</h2>
+          <p className="text-gray-600">
+            Plan your training sessions and manage your exercise library
+          </p>
+        </div>
       )}
+
+      {/* Navigation Tabs */}
+      <nav className="flex space-x-4 border-b border-divider mb-6">
+        {tabs.map((tab) => {
+          const isActive = pathname === tab.href;
+          return (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              className={`px-4 py-2 border-b-2 text-base ${
+                isActive
+                  ? "border-primary font-semibold text-primary"
+                  : "border-transparent text-gray-500"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

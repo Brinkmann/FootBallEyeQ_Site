@@ -12,12 +12,19 @@ export default function CatalogPage() {
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
 
   // Filters
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState("All Age Groups");
-  const [selectedDecisionTheme, setSelectedDecisionTheme] = useState("All Decision Themes");
-  const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState("All Player Involvements");
-  const [selectedGameMoment, setSelectedGameMoment] = useState("All Game Moments");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("All Difficulty Levels");
-  const [selectedPracticeFormat, setSelectedPracticeFormat] = useState("All Practice Formats");
+  const defaultAgeGroup = "All Age Groups";
+  const defaultDecisionTheme = "All Decision Themes";
+  const defaultPlayerInvolvement = "All Player Involvements";
+  const defaultGameMoment = "All Game Moments";
+  const defaultDifficulty = "All Difficulty Levels";
+  const defaultPracticeFormat = "All Practice Formats";
+
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState(defaultAgeGroup);
+  const [selectedDecisionTheme, setSelectedDecisionTheme] = useState(defaultDecisionTheme);
+  const [selectedPlayerInvolvement, setSelectedPlayerInvolvement] = useState(defaultPlayerInvolvement);
+  const [selectedGameMoment, setSelectedGameMoment] = useState(defaultGameMoment);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(defaultDifficulty);
+  const [selectedPracticeFormat, setSelectedPracticeFormat] = useState(defaultPracticeFormat);
 
   const ageGroups = [
     "All Age Groups",
@@ -143,6 +150,15 @@ export default function CatalogPage() {
     exercises,
   ]);
 
+  const resetFilters = () => {
+    setSelectedAgeGroup(defaultAgeGroup);
+    setSelectedDecisionTheme(defaultDecisionTheme);
+    setSelectedPlayerInvolvement(defaultPlayerInvolvement);
+    setSelectedGameMoment(defaultGameMoment);
+    setSelectedDifficulty(defaultDifficulty);
+    setSelectedPracticeFormat(defaultPracticeFormat);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
@@ -209,6 +225,14 @@ export default function CatalogPage() {
               <option key={`practice-${pf}`} value={pf}>{pf}</option>
             ))}
           </select>
+
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="px-3 py-2 rounded-lg border border-divider bg-card text-sm text-foreground hover:bg-muted transition-colors"
+          >
+            Clear all filters
+          </button>
         </div>
 
         {/* Exercise Cards */}
