@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react"; // React QR generator
 import Image from "next/image";
+import { generateSessionCode } from "../utils/sessionCode";
 
 type Props = {
   exercises: string[];
@@ -11,8 +12,6 @@ type Props = {
   buttonText?: string;
   className?: string;
 };
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
 
 function makeCode(names: string[], idByName: Record<string, number>): string {
   if (!Array.isArray(names) || names.length === 0) {
@@ -29,7 +28,7 @@ function makeCode(names: string[], idByName: Record<string, number>): string {
     throw new Error("Exercises must be distinct");
   }
 
-  return ids.map(pad2).join("");
+  return generateSessionCode(ids);
 }
 
 export default function SessionCodeButton({
