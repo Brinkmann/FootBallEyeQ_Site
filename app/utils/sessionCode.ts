@@ -6,6 +6,7 @@ const PATTERN_MIN = 1;
 const PATTERN_MAX = 70;
 const SESSION_SLOTS = 5;
 const BASE = 71; // 0 = none, 1-70 = pattern numbers
+const BASE71_POWERS = [BASE ** 4, BASE ** 3, BASE ** 2, BASE, 1] as const;
 const CODE_LENGTH = 6; // always pad base-36 output to 6 characters
 
 function assertSafeInteger(value: number, message: string) {
@@ -82,10 +83,7 @@ function padPatterns(patterns: number[]): number[] {
 }
 
 function toBase71Value(patterns: number[]): number {
-  return patterns.reduce((acc, id, idx) => {
-    const power = SESSION_SLOTS - 1 - idx;
-    return acc + id * BASE ** power;
-  }, 0);
+  return patterns.reduce((acc, id, idx) => acc + id * BASE71_POWERS[idx], 0);
 }
 
 /**
@@ -120,12 +118,13 @@ export function decodeSessionCode(code: string): string {
 
   const value = fromBase36(normalized);
 
-  const digits: number[] = new Array(SESSION_SLOTS).fill(0);
+  const digits: number[] = [];
   let remainder = value;
-  for (let i = SESSION_SLOTS - 1; i >= 0; i -= 1) {
-    digits[i] = remainder % BASE;
-    remainder = Math.floor(remainder / BASE);
-  }
+  BASE71_POWERS.forEach((power) => {
+    const digit = Math.floor(remainder / power);
+    digits.push(digit);
+    remainder -= digit * power;
+  });
 
   if (remainder !== 0) {
     throw new Error("Code represents an invalid session");
@@ -162,6 +161,6 @@ const codeB = encodeSessionCode("0102030405");
 // codeA === codeB
 
 // Round trip
-const encoded = encodeSessionCode("0102030405"); // "0emd2j"
+const encoded = encodeSessionCode("0102030405"); // "0fkc03"
 const decoded = decodeSessionCode(encoded); // "0102030405"
 */
