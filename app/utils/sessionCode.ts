@@ -3,6 +3,9 @@
 
 const BASE71 = 71;
 const BASE36_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
+const MAX_EXERCISES = 5;
+
+const MAX_PACKED_VALUE = 70 * (BASE71 ** 4 + BASE71 ** 3 + BASE71 ** 2 + BASE71 + 1);
 
 /**
  * Convert a non-negative integer to a base-36 string using digits 0-9 and a-z.
@@ -27,6 +30,64 @@ export function toBase36(value: number): string {
 }
 
 /**
+ * Convert a base-36 string (0-9, a-z) back to a number.
+ */
+function fromBase36(code: string): number {
+  let value = 0;
+  for (const char of code) {
+    const digit = BASE36_DIGITS.indexOf(char);
+    if (digit === -1) {
+      throw new Error("Invalid character in code");
+    }
+    value = value * 36 + digit;
+  }
+  return value;
+}
+
+/**
+ * Ensure we have exactly five base-71 digits, validating each exercise ID.
+ */
+function normalizeExercises(exerciseIds: number[]): number[] {
+  if (!Array.isArray(exerciseIds)) {
+    throw new Error("exerciseIds must be an array");
+  }
+
+  const trimmed = exerciseIds.slice(0, MAX_EXERCISES);
+
+  trimmed.forEach(id => {
+    if (!Number.isInteger(id) || id < 1 || id > 70) {
+      throw new Error("Exercise IDs must be integers between 1 and 70");
+    }
+  });
+
+  const padded: number[] = [...trimmed];
+  while (padded.length < MAX_EXERCISES) {
+    padded.push(0);
+  }
+
+  return padded;
+}
+
+/**
+ * Convert five base-71 digits into a single integer using positional notation.
+ */
+function packBase71(digits: number[]): number {
+  return digits.reduce((acc, id) => acc * BASE71 + id, 0);
+}
+
+/**
+ * Expand a packed integer back into five base-71 digits.
+ */
+function unpackBase71(value: number): number[] {
+  const ids = new Array<number>(MAX_EXERCISES).fill(0);
+  for (let i = MAX_EXERCISES - 1; i >= 0; i -= 1) {
+    ids[i] = value % BASE71;
+    value = Math.floor(value / BASE71);
+  }
+  return ids;
+}
+
+/**
  * Generate a 6-character session code for up to five exercise IDs.
  *
  * Steps:
@@ -36,28 +97,26 @@ export function toBase36(value: number): string {
  * 4. Convert to base-36 and left-pad to six characters.
  */
 export function generateSessionCode(exerciseIds: number[]): string {
-  if (!Array.isArray(exerciseIds)) {
-    throw new Error("exerciseIds must be an array");
+  const padded = normalizeExercises(exerciseIds);
+
+  const packedValue = packBase71(padded);
+  if (packedValue > MAX_PACKED_VALUE) {
+    throw new Error("Packed session value exceeds allowed range");
   }
-
-  const trimmed = exerciseIds.slice(0, 5);
-
-  trimmed.forEach(id => {
-    if (!Number.isInteger(id) || id < 1 || id > 70) {
-      throw new Error("Exercise IDs must be integers between 1 and 70");
-    }
-  });
-
-  const padded: number[] = [...trimmed];
-  while (padded.length < 5) {
-    padded.push(0);
-  }
-
-  // Combine into a single integer using base-71 positional notation.
-  const packedValue = padded.reduce((acc, id) => acc * BASE71 + id, 0);
 
   const base36 = toBase36(packedValue);
   return base36.padStart(6, "0");
+}
+
+/**
+ * Provide a human-friendly representation of the five base-71 digits
+ * (e.g., "01 02 03 04 05" for exercises [1,2,3,4,5]).
+ */
+export function formatBase71Digits(exerciseIds: number[]): string {
+  const padded = normalizeExercises(exerciseIds);
+  return padded
+    .map(id => id.toString().padStart(2, "0"))
+    .join(" ");
 }
 
 /**
@@ -74,32 +133,22 @@ export function decodeSessionCode(code: string): number[] {
     throw new Error("Code must be exactly 6 characters of 0-9 or a-z");
   }
 
-  // Convert base-36 string to an integer.
-  let value = 0;
-  for (const char of normalized) {
-    const digit = BASE36_DIGITS.indexOf(char);
-    if (digit === -1) {
-      throw new Error("Invalid character in code");
-    }
-    value = value * 36 + digit;
+  const value = fromBase36(normalized);
+  if (value > MAX_PACKED_VALUE) {
+    throw new Error("Code represents an invalid session payload");
   }
 
-  // Extract five base-71 digits (id1..id5) from most significant to least.
-  const ids = new Array<number>(5).fill(0);
-  for (let i = 4; i >= 0; i -= 1) {
-    ids[i] = value % BASE71;
-    value = Math.floor(value / BASE71);
-  }
-
-  return ids;
+  return unpackBase71(value);
 }
 
 /*
 Example usage:
 
 const codeA = generateSessionCode([5, 12]);
+// formatBase71Digits([5, 12]) => "05 12 00 00 00"
 console.log(codeA, decodeSessionCode(codeA)); // [5, 12, 0, 0, 0]
 
 const codeB = generateSessionCode([3, 9, 21, 7, 2]);
+// formatBase71Digits([3, 9, 21, 7, 2]) => "03 09 21 07 02"
 console.log(codeB, decodeSessionCode(codeB)); // [3, 9, 21, 7, 2]
 */
