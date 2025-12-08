@@ -4,6 +4,20 @@ import { create } from "zustand";
 type WeekPlan = { week: number; exercises: string[] };
 type SetAllPayload = { weeks: WeekPlan[]; maxPerWeek: number };
 
+const normalizeWeeks = (weeks: WeekPlan[]) => {
+  const emptyWeek = { week: 0, exercises: [] as string[] };
+  const byWeek = new Map<number, WeekPlan>();
+
+  for (const w of weeks || []) {
+    const weekNumber = typeof w.week === "number" ? w.week : Number(w.week);
+    if (!Number.isFinite(weekNumber)) continue;
+    const exercises = Array.isArray(w.exercises) ? [...w.exercises] : [];
+    byWeek.set(weekNumber, { week: weekNumber, exercises });
+  }
+
+  return Array.from({ length: 12 }, (_, i) => byWeek.get(i + 1) ?? { ...emptyWeek, week: i + 1 });
+};
+
 type PlanState = {
   weeks: WeekPlan[];
   maxPerWeek: number;
@@ -14,14 +28,12 @@ type PlanState = {
 };
 
 export const usePlanStore = create<PlanState>((set, get) => ({
-  weeks: Array.from({ length: 12 }, (_, i) => ({
-    week: i + 1,
-    exercises: [], // Removed the seeded "Precision Passing" exercise
-  })),
+  weeks: normalizeWeeks([]),
   maxPerWeek: 5,
 
   addToWeek: (week, name) => {
-    const { weeks, maxPerWeek } = get();
+    const { maxPerWeek } = get();
+    const weeks = normalizeWeeks(get().weeks);
     const idx = week - 1;
     const current = weeks[idx];
     if (!current) return { ok: false, reason: "invalid-week" };
@@ -34,7 +46,7 @@ export const usePlanStore = create<PlanState>((set, get) => ({
   },
 
   removeFromWeek: (week, index) => {
-    const { weeks } = get();
+    const weeks = normalizeWeeks(get().weeks);
     const idx = week - 1;
     const current = weeks[idx];
     if (!current) return;
@@ -49,11 +61,10 @@ export const usePlanStore = create<PlanState>((set, get) => ({
     set({
       weeks: Array.from({ length: 12 }, (_, i) => ({ week: i + 1, exercises: [] })),
     }),
-  
+
   setAll: ({ weeks, maxPerWeek }: SetAllPayload) =>
     set({
-      weeks: weeks.map((w: WeekPlan) => ({ week: w.week, exercises: [...w.exercises] })),
-      maxPerWeek,
-  }),
-
+      weeks: normalizeWeeks(weeks),
+      maxPerWeek: typeof maxPerWeek === "number" && Number.isFinite(maxPerWeek) && maxPerWeek > 0 ? maxPerWeek : 5,
+    }),
 }));
