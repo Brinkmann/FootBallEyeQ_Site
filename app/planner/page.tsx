@@ -5,13 +5,16 @@ import { usePlanStore } from "../store/usePlanStore";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const setAll = usePlanStore((s) => s.setAll);
+
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const isSavingRef = useRef(false);
 
   // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
@@ -53,11 +56,15 @@ export default function SeasonPlanningPage() {
   // Load user's plan once after login (or create a blank one)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+      if (!user) {
+        setIsDataLoaded(false);
+        return;
+      }
 
       const ref = doc(db, "planners", user.uid);
 
       try {
+        isSavingRef.current = true;
         const snap = await getDoc(ref);
 
         const empty = Array.from({ length: 12 }, (_, i) => ({
@@ -78,24 +85,33 @@ export default function SeasonPlanningPage() {
           await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
           setAll({ weeks: empty, maxPerWeek: 5 });
         }
+        
+        setTimeout(() => {
+          isSavingRef.current = false;
+          setIsDataLoaded(true);
+        }, 100);
       } catch (error) {
         console.error("Failed to load or initialize planner:", error);
+        isSavingRef.current = false;
       }
     });
     return () => unsub();
   }, [setAll]);
 
-  // Save whenever weeks/max change (simple + reliable)
+  // Save whenever weeks/max change - only after data has been loaded
   useEffect(() => {
+    if (!isDataLoaded || isSavingRef.current) return;
+    
     const user = auth.currentUser;
     if (!user) return;
+    
     const ref = doc(db, "planners", user.uid);
     setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
       (error) => {
         console.error("Failed to save planner:", error);
       }
     );
-  }, [weeks, maxExercisesPerWeek]);
+  }, [weeks, maxExercisesPerWeek, isDataLoaded]);
 
 
   return (
