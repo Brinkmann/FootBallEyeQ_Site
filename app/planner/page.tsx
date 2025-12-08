@@ -2,16 +2,20 @@
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import { usePlanStore } from "../store/usePlanStore";
+import { useRouter } from "next/navigation";
 import { auth, db } from "../../Firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
 export default function SeasonPlanningPage() {
+  const router = useRouter();
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const setAll = usePlanStore((s) => s.setAll);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
@@ -52,18 +56,25 @@ export default function SeasonPlanningPage() {
   
   // Load user's plan once after login (or create a blank one)
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+    const unsub = onAuthStateChanged(auth, async (nextUser) => {
+      const empty = Array.from({ length: 12 }, (_, i) => ({
+        week: i + 1,
+        exercises: [],
+      }));
 
-      const ref = doc(db, "planners", user.uid);
+      if (!nextUser) {
+        setUser(null);
+        setAll({ weeks: empty, maxPerWeek: 5 });
+        setLoading(false);
+        router.replace("/login");
+        return;
+      }
+
+      setUser(nextUser);
+      const ref = doc(db, "planners", nextUser.uid);
 
       try {
         const snap = await getDoc(ref);
-
-        const empty = Array.from({ length: 12 }, (_, i) => ({
-          week: i + 1,
-          exercises: [],
-        }));
 
         if (snap.exists()) {
           const data = snap.data() as {
@@ -81,13 +92,13 @@ export default function SeasonPlanningPage() {
       } catch (error) {
         console.error("Failed to load or initialize planner:", error);
       }
+      setLoading(false);
     });
     return () => unsub();
-  }, [setAll]);
+  }, [router, setAll]);
 
   // Save whenever weeks/max change (simple + reliable)
   useEffect(() => {
-    const user = auth.currentUser;
     if (!user) return;
     const ref = doc(db, "planners", user.uid);
     setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
@@ -95,7 +106,19 @@ export default function SeasonPlanningPage() {
         console.error("Failed to save planner:", error);
       }
     );
-  }, [weeks, maxExercisesPerWeek]);
+  }, [user, weeks, maxExercisesPerWeek]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
+        Loading planner...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
 
   return (
