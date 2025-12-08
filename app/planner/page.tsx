@@ -18,20 +18,24 @@ export default function SeasonPlanningPage() {
 
   useEffect(() => {
     (async () => {
-      const snap = await getDocs(collection(db, "exercises"));
-      const list = snap.docs.map((d) => {
-        const data = d.data() as { id?: number; title?: string };
-        // Use numeric field if present, otherwise try to coerce doc id → number
-        const id =
-          typeof data.id === "number"
-            ? data.id
-            : Number.isNaN(Number(d.id))
-            ? 0
-            : Number(d.id);
-        const title = data.title ?? d.id;
-        return { id, title };
-      });
-      setCatalog(list);
+      try {
+        const snap = await getDocs(collection(db, "exercises"));
+        const list = snap.docs.map((d) => {
+          const data = d.data() as { id?: number; title?: string };
+          // Use numeric field if present, otherwise try to coerce doc id → number
+          const id =
+            typeof data.id === "number"
+              ? data.id
+              : Number.isNaN(Number(d.id))
+              ? 0
+              : Number(d.id);
+          const title = data.title ?? d.id;
+          return { id, title };
+        });
+        setCatalog(list);
+      } catch (error) {
+        console.error("Failed to load exercise catalog for planner:", error);
+      }
     })();
   }, []);
 
@@ -52,25 +56,30 @@ export default function SeasonPlanningPage() {
       if (!user) return;
 
       const ref = doc(db, "planners", user.uid);
-      const snap = await getDoc(ref);
 
-      const empty = Array.from({ length: 12 }, (_, i) => ({
-        week: i + 1,
-        exercises: [],
-      }));
+      try {
+        const snap = await getDoc(ref);
 
-      if (snap.exists()) {
-        const data = snap.data() as {
-          weeks?: { week: number; exercises: string[] }[];
-          maxPerWeek?: number;
-        };
-        setAll({
-          weeks: Array.isArray(data.weeks) ? data.weeks : empty,
-          maxPerWeek: typeof data.maxPerWeek === "number" ? data.maxPerWeek : 5,
-        });
-      } else {
-        await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
-        setAll({ weeks: empty, maxPerWeek: 5 });
+        const empty = Array.from({ length: 12 }, (_, i) => ({
+          week: i + 1,
+          exercises: [],
+        }));
+
+        if (snap.exists()) {
+          const data = snap.data() as {
+            weeks?: { week: number; exercises: string[] }[];
+            maxPerWeek?: number;
+          };
+          setAll({
+            weeks: Array.isArray(data.weeks) ? data.weeks : empty,
+            maxPerWeek: typeof data.maxPerWeek === "number" ? data.maxPerWeek : 5,
+          });
+        } else {
+          await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
+          setAll({ weeks: empty, maxPerWeek: 5 });
+        }
+      } catch (error) {
+        console.error("Failed to load or initialize planner:", error);
       }
     });
     return () => unsub();
@@ -81,7 +90,11 @@ export default function SeasonPlanningPage() {
     const user = auth.currentUser;
     if (!user) return;
     const ref = doc(db, "planners", user.uid);
-    setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true });
+    setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
+      (error) => {
+        console.error("Failed to save planner:", error);
+      }
+    );
   }, [weeks, maxExercisesPerWeek]);
 
 
