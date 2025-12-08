@@ -16,6 +16,7 @@ export default function SeasonPlanningPage() {
   const setAll = usePlanStore((s) => s.setAll);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [planReady, setPlanReady] = useState(false);
 
   // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
@@ -65,6 +66,7 @@ export default function SeasonPlanningPage() {
       if (!nextUser) {
         setUser(null);
         setAll({ weeks: empty, maxPerWeek: 5 });
+        setPlanReady(false);
         setLoading(false);
         router.replace("/login");
         return;
@@ -92,6 +94,7 @@ export default function SeasonPlanningPage() {
       } catch (error) {
         console.error("Failed to load or initialize planner:", error);
       }
+      setPlanReady(true);
       setLoading(false);
     });
     return () => unsub();
@@ -99,14 +102,14 @@ export default function SeasonPlanningPage() {
 
   // Save whenever weeks/max change (simple + reliable)
   useEffect(() => {
-    if (!user) return;
+    if (!user || !planReady) return;
     const ref = doc(db, "planners", user.uid);
     setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
       (error) => {
         console.error("Failed to save planner:", error);
       }
     );
-  }, [user, weeks, maxExercisesPerWeek]);
+  }, [user, weeks, maxExercisesPerWeek, planReady]);
 
   if (loading) {
     return (
