@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from 'next'
+import PlanSyncProvider from "./components/PlanSyncProvider";
 
 export const metadata: Metadata = {
   title: "Football EyeQ",
@@ -13,9 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* These classes from globals.css will now handle light/dark mode */}
       <body className="bg-background text-foreground min-h-screen">
-        <main className="w-full">{children}</main>
+        <PlanSyncProvider>
+          <main className="w-full">{children}</main>
+        </PlanSyncProvider>
       </body>
     </html>
   );

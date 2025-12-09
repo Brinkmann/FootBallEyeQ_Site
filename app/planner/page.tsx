@@ -2,16 +2,14 @@
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import { usePlanStore } from "../store/usePlanStore";
-import { auth, db } from "../../Firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
+import { db } from "../../Firebase/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
-  const setAll = usePlanStore((s) => s.setAll);
 
   // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
@@ -22,7 +20,6 @@ export default function SeasonPlanningPage() {
         const snap = await getDocs(collection(db, "exercises"));
         const list = snap.docs.map((d) => {
           const data = d.data() as { id?: number; title?: string };
-          // Use numeric field if present, otherwise try to coerce doc id → number
           const id =
             typeof data.id === "number"
               ? data.id
@@ -49,53 +46,6 @@ export default function SeasonPlanningPage() {
     }
     return m;
   }, [catalog]);
-  
-  // Load user's plan once after login (or create a blank one)
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
-
-      const ref = doc(db, "planners", user.uid);
-
-      try {
-        const snap = await getDoc(ref);
-
-        const empty = Array.from({ length: 12 }, (_, i) => ({
-          week: i + 1,
-          exercises: [],
-        }));
-
-        if (snap.exists()) {
-          const data = snap.data() as {
-            weeks?: { week: number; exercises: string[] }[];
-            maxPerWeek?: number;
-          };
-          setAll({
-            weeks: Array.isArray(data.weeks) ? data.weeks : empty,
-            maxPerWeek: typeof data.maxPerWeek === "number" ? data.maxPerWeek : 5,
-          });
-        } else {
-          await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
-          setAll({ weeks: empty, maxPerWeek: 5 });
-        }
-      } catch (error) {
-        console.error("Failed to load or initialize planner:", error);
-      }
-    });
-    return () => unsub();
-  }, [setAll]);
-
-  // Save whenever weeks/max change (simple + reliable)
-  useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const ref = doc(db, "planners", user.uid);
-    setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
-      (error) => {
-        console.error("Failed to save planner:", error);
-      }
-    );
-  }, [weeks, maxExercisesPerWeek]);
 
 
   return (
