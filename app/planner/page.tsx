@@ -5,7 +5,7 @@ import { usePlanStore } from "../store/usePlanStore";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
@@ -13,8 +13,8 @@ export default function SeasonPlanningPage() {
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const setAll = usePlanStore((s) => s.setAll);
 
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-  const isSavingRef = useRef(false);
+  const loadedUserRef = useRef<string | null>(null);
+  const isLoadingRef = useRef(false);
 
   // Fetch exercises catalog from Firestore
   const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
@@ -25,7 +25,6 @@ export default function SeasonPlanningPage() {
         const snap = await getDocs(collection(db, "exercises"));
         const list = snap.docs.map((d) => {
           const data = d.data() as { id?: number; title?: string };
-          // Use numeric field if present, otherwise try to coerce doc id → number
           const id =
             typeof data.id === "number"
               ? data.id
@@ -52,19 +51,37 @@ export default function SeasonPlanningPage() {
     }
     return m;
   }, [catalog]);
+
+  // Stable save function
+  const saveToFirestore = useCallback(async (weeksData: typeof weeks, maxPerWeek: number) => {
+    const user = auth.currentUser;
+    if (!user || isLoadingRef.current) return;
+    
+    const ref = doc(db, "planners", user.uid);
+    try {
+      await setDoc(ref, { weeks: weeksData, maxPerWeek, updatedAt: serverTimestamp() }, { merge: true });
+    } catch (error) {
+      console.error("Failed to save planner:", error);
+    }
+  }, []);
   
   // Load user's plan once after login (or create a blank one)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setIsDataLoaded(false);
+        loadedUserRef.current = null;
         return;
       }
 
+      // Skip if already loaded for this user
+      if (loadedUserRef.current === user.uid) {
+        return;
+      }
+
+      isLoadingRef.current = true;
       const ref = doc(db, "planners", user.uid);
 
       try {
-        isSavingRef.current = true;
         const snap = await getDoc(ref);
 
         const empty = Array.from({ length: 12 }, (_, i) => ({
@@ -86,32 +103,23 @@ export default function SeasonPlanningPage() {
           setAll({ weeks: empty, maxPerWeek: 5 });
         }
         
-        setTimeout(() => {
-          isSavingRef.current = false;
-          setIsDataLoaded(true);
-        }, 100);
+        loadedUserRef.current = user.uid;
       } catch (error) {
         console.error("Failed to load or initialize planner:", error);
-        isSavingRef.current = false;
+      } finally {
+        isLoadingRef.current = false;
       }
     });
     return () => unsub();
   }, [setAll]);
 
-  // Save whenever weeks/max change - only after data has been loaded
+  // Save whenever weeks/max change - only after data has been loaded for current user
   useEffect(() => {
-    if (!isDataLoaded || isSavingRef.current) return;
+    // Only save if we have loaded data for a user
+    if (!loadedUserRef.current || isLoadingRef.current) return;
     
-    const user = auth.currentUser;
-    if (!user) return;
-    
-    const ref = doc(db, "planners", user.uid);
-    setDoc(ref, { weeks, maxPerWeek: maxExercisesPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
-      (error) => {
-        console.error("Failed to save planner:", error);
-      }
-    );
-  }, [weeks, maxExercisesPerWeek, isDataLoaded]);
+    saveToFirestore(weeks, maxExercisesPerWeek);
+  }, [weeks, maxExercisesPerWeek, saveToFirestore]);
 
 
   return (
