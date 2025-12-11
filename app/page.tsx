@@ -1,15 +1,16 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/Firebase/firebaseConfig";
-import { useState } from "react";
 import { User } from "firebase/auth";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
+  const [headerLogoMissing, setHeaderLogoMissing] = useState(false);
+  const [markMissing, setMarkMissing] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -30,14 +31,21 @@ export default function HomePage() {
           href="/"
           className="flex items-center space-x-3 font-bold text-lg text-foreground"
         >
-          <Image
-            src="/brand/logo-wordmark.svg"
-            alt="Football EyeQ wordmark"
-            width={260}
-            height={64}
-            priority
-            className="h-10 w-auto drop-shadow-sm"
-          />
+          {headerLogoMissing ? (
+            <span className="text-xl font-semibold text-foreground">
+              Add your official wordmark to <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/logo-wordmark.svg</code>
+            </span>
+          ) : (
+            <Image
+              src="/brand/user/logo-wordmark.svg"
+              alt="Football EyeQ wordmark"
+              width={260}
+              height={64}
+              priority
+              className="h-10 w-auto drop-shadow-sm"
+              onError={() => setHeaderLogoMissing(true)}
+            />
+          )}
         </Link>
         {!user && (
           <div className="space-x-4">
@@ -119,13 +127,20 @@ export default function HomePage() {
         className="p-8 bg-card rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer border border-divider"
       >
         <div className="mb-4 flex justify-center">
-          <Image
-            src="/brand/mark.svg"
-            alt="Football EyeQ icon"
-            width={56}
-            height={56}
-            className="h-14 w-14"
-          />
+          {markMissing ? (
+            <span className="text-sm text-gray-500 text-center">
+              Place your icon at <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/mark.svg</code>
+            </span>
+          ) : (
+            <Image
+              src="/brand/user/mark.svg"
+              alt="Football EyeQ icon"
+              width={56}
+              height={56}
+              className="h-14 w-14"
+              onError={() => setMarkMissing(true)}
+            />
+          )}
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
         <p className="text-gray-600">{feature.desc}</p>
