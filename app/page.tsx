@@ -26,7 +26,7 @@ export default function HomePage() {
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
         <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-          <img src="/color_logo_transparent.svg" alt="Football EyeQ" className="h-8 w-8" />
+          <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-8 w-auto" />
           <span>Football EyeQ</span>
         </div>
         {!user && (
@@ -108,7 +108,7 @@ export default function HomePage() {
         data-aos-delay={i * 150}
         className="p-8 bg-card rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer border border-divider"
       >
-        <img src="/color_logo_transparent.svg" alt="" className="h-10 w-10 mx-auto mb-4" />
+        <img src="/brand/ball-icon-red.png" alt="" className="h-12 w-12 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
         <p className="text-gray-600">{feature.desc}</p>
       </div>
