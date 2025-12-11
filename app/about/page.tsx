@@ -5,7 +5,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-background flex items-center justify-center">
       <div className="bg-card rounded-2xl shadow-xl p-8 max-w-lg w-full flex flex-col gap-6 border border-divider"> 
         <div className="flex flex-col items-center gap-3"> 
-          <img src="../images/logo.png" alt="Logo" className="h-14 mb-2 drop-shadow" /> 
+          <img src="/brand/logo-full.png" alt="Football EyeQ" className="h-16 mb-4 drop-shadow" /> 
       <h1 className="text-3xl font-bold mb-6 text-foreground">About Football EyeQ</h1>
 </div>
       <section className="text-gray-700 text-sm flex flex-col gap-4">

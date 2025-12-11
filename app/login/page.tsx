@@ -35,9 +35,9 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="bg-card rounded-2xl shadow-xl p-8 max-w-sm w-full flex flex-col gap-6 border border-divider">
         <div className="flex flex-col items-center gap-3">
-          <img src="../images/logo.png" alt="Logo" className="h-14 mb-2 drop-shadow" />
-          <h1 className="text-3xl font-extrabold text-primary mb-2 tracking-tight text-center">Login</h1>
-          <p className="text-1xl font-extrabold text-primary mb-2 tracking-tight text-center opacity-75">Welcome back to FootballEyeQ please log in to continue.</p>
+          <img src="/brand/logo-full.png" alt="Football EyeQ" className="h-16 mb-4 drop-shadow" />
+          <h1 className="text-3xl font-extrabold text-primary mb-2 tracking-tight text-center">Log In</h1>
+          <p className="text-sm text-gray-600 text-center">Welcome back! Sign in to continue.</p>
         </div>
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <input
