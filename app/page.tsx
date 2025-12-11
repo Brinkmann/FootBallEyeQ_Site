@@ -11,6 +11,23 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const [headerLogoMissing, setHeaderLogoMissing] = useState(false);
   const [markMissing, setMarkMissing] = useState(false);
+  const headerLogoOptions = [
+    "/color_logo_transparent.svg",
+    "/dark_logo_transparent.svg",
+    "/white_logo_transparent.svg",
+    "/brand/user/logo-wordmark.svg",
+    "/brand/user/logo-wordmark.png"
+  ];
+  const markOptions = [
+    "/color_logo_with_background.svg",
+    "/color_logo_transparent.svg",
+    "/dark_logo_transparent.svg",
+    "/white_logo_transparent.svg",
+    "/brand/user/mark.svg",
+    "/brand/user/mark.png"
+  ];
+  const [headerLogoIndex, setHeaderLogoIndex] = useState(0);
+  const [markIndex, setMarkIndex] = useState(0);
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -33,17 +50,23 @@ export default function HomePage() {
         >
           {headerLogoMissing ? (
             <span className="text-xl font-semibold text-foreground">
-              Add your official wordmark to <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/logo-wordmark.svg</code>
+              Add your official wordmark to <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_transparent.svg</code>)
             </span>
           ) : (
             <Image
-              src="/brand/user/logo-wordmark.svg"
+              src={headerLogoOptions[headerLogoIndex]}
               alt="Football EyeQ wordmark"
               width={260}
               height={64}
               priority
               className="h-10 w-auto drop-shadow-sm"
-              onError={() => setHeaderLogoMissing(true)}
+              onError={() => {
+                if (headerLogoIndex < headerLogoOptions.length - 1) {
+                  setHeaderLogoIndex((index) => index + 1);
+                } else {
+                  setHeaderLogoMissing(true);
+                }
+              }}
             />
           )}
         </Link>
@@ -129,16 +152,22 @@ export default function HomePage() {
         <div className="mb-4 flex justify-center">
           {markMissing ? (
             <span className="text-sm text-gray-500 text-center">
-              Place your icon at <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/mark.svg</code>
+              Place your icon at <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_with_background.svg</code>)
             </span>
           ) : (
             <Image
-              src="/brand/user/mark.svg"
+              src={markOptions[markIndex]}
               alt="Football EyeQ icon"
               width={56}
               height={56}
               className="h-14 w-14"
-              onError={() => setMarkMissing(true)}
+              onError={() => {
+                if (markIndex < markOptions.length - 1) {
+                  setMarkIndex((index) => index + 1);
+                } else {
+                  setMarkMissing(true);
+                }
+              }}
             />
           )}
         </div>
