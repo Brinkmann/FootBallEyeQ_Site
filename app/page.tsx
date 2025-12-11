@@ -12,17 +12,30 @@ export default function HomePage() {
   const [headerLogoMissing, setHeaderLogoMissing] = useState(false);
   const [markMissing, setMarkMissing] = useState(false);
   const headerLogoOptions = [
+    // Prefer user-uploaded brand assets first
+    "/brand/user/color_logo_transparent.svg",
+    "/brand/user/dark_logo_transparent.svg",
+    "/brand/user/white_logo_transparent.svg",
+    // Support assets placed directly in /public
     "/color_logo_transparent.svg",
     "/dark_logo_transparent.svg",
     "/white_logo_transparent.svg",
+    // Fallback names
     "/brand/user/logo-wordmark.svg",
     "/brand/user/logo-wordmark.png"
   ];
   const markOptions = [
+    // Prefer user-uploaded brand assets first
+    "/brand/user/color_logo_with_background.svg",
+    "/brand/user/color_logo_transparent.svg",
+    "/brand/user/dark_logo_transparent.svg",
+    "/brand/user/white_logo_transparent.svg",
+    // Support assets placed directly in /public
     "/color_logo_with_background.svg",
     "/color_logo_transparent.svg",
     "/dark_logo_transparent.svg",
     "/white_logo_transparent.svg",
+    // Fallback names
     "/brand/user/mark.svg",
     "/brand/user/mark.png"
   ];
