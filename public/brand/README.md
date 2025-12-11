@@ -1,6 +1,6 @@
 # Brand asset placement
 
-To use your official branding on the site, upload your provided assets to the deployed site's `public/brand/user/` directory. The homepage now checks for the following files (in order), so you can drop in the versions that best fit your palette:
+To use your official branding on the site, upload your provided assets to the deployed site's `public/` directory (or alternatively `public/brand/user/`). The homepage now checks for the following files (in order), so you can drop in the versions that best fit your palette:
 
 - `color_logo_transparent.svg` — preferred header wordmark on light backgrounds
 - `dark_logo_transparent.svg` — darker wordmark alternative

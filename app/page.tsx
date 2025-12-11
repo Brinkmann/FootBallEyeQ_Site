@@ -50,7 +50,7 @@ export default function HomePage() {
         >
           {headerLogoMissing ? (
             <span className="text-xl font-semibold text-foreground">
-              Add your official wordmark to <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_transparent.svg</code>)
+              Add your official wordmark to <code className="bg-card px-1 py-0.5 rounded">/public/</code> or <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_transparent.svg</code>)
             </span>
           ) : (
             <Image
@@ -152,7 +152,7 @@ export default function HomePage() {
         <div className="mb-4 flex justify-center">
           {markMissing ? (
             <span className="text-sm text-gray-500 text-center">
-              Place your icon at <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_with_background.svg</code>)
+              Place your icon at <code className="bg-card px-1 py-0.5 rounded">/public/</code> (e.g. <code className="bg-card px-1 py-0.5 rounded">color_logo_with_background.svg</code>) or <code className="bg-card px-1 py-0.5 rounded">/public/brand/user/</code>
             </span>
           ) : (
             <Image
