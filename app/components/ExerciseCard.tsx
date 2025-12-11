@@ -54,10 +54,10 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
     if (!res.ok) {
       const msg =
         res.reason === "duplicate"
-          ? "This exercise is already in that week."
+          ? "This exercise is already in that session."
           : res.reason === "full"
-          ? "That week already has 5 exercises."
-          : "Could not add to that week.";
+          ? "That session already has 5 exercises."
+          : "Could not add to that session.";
       alert(msg);
       return;
     }
@@ -157,7 +157,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           />
           <div className="relative z-10 w-full max-w-sm rounded-2xl bg-card shadow-lg border border-divider">
             <div className="flex items-center justify-between p-4 border-b border-divider">
-              <h3 className="text-base font-semibold text-foreground">Add to which week?</h3>
+              <h3 className="text-base font-semibold text-foreground">Add to which session?</h3>
               <button
                 onClick={() => setShowWeeks(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -174,13 +174,13 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
                   onClick={() => handlePick(w)}
                   className="px-3 py-2 rounded border border-divider text-sm text-foreground hover:bg-background"
                 >
-                  Week {w}
+                  Session {w}
                 </button>
               ))}
             </div>
 
             <div className="p-3 pt-0 text-xs text-gray-500">
-              Tip: up to 5 exercises per week; duplicates are prevented.
+              Tip: up to 5 exercises per session; duplicates are prevented.
             </div>
           </div>
         </div>

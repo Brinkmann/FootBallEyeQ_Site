@@ -54,19 +54,19 @@ export default function SeasonPlanningPage() {
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-foreground">12-Week Season Plan</h3>
+          <h3 className="text-lg font-semibold text-foreground">12-Session Season Plan</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {weeks.map((week) => (
             <div key={week.week} className="bg-card rounded shadow p-4 border border-divider">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-bold text-foreground">Week {week.week}</h4>
+                <h4 className="font-bold text-foreground">Session {week.week}</h4>
 
                 <SessionCodeButton
                   exercises={week.exercises}
                   idByName={ID_BY_NAME}
-                  weekLabel={`Week ${week.week}`}
+                  weekLabel={`Session ${week.week}`}
                   buttonText="Generate Code"
                 />
               </div>

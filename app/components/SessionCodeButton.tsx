@@ -73,7 +73,7 @@ export default function SessionCodeButton({
   const handleOpen = () => {
     setErr(null);
     if (!canGenerate) {
-      setErr("Select at least 1 exercise for this week.");
+      setErr("Select at least 1 exercise for this session.");
       return;
     }
     setOpen(true);

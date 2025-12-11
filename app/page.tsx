@@ -93,7 +93,7 @@ export default function HomePage() {
           },
           {
             title: "Plan Sessions",
-            desc: "Easily create, save, and edit your weekly training plans.",
+            desc: "Easily create, save, and edit your session training plans.",
             link: "/planner"
           },
           {
