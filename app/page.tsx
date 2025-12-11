@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
@@ -25,9 +26,19 @@ export default function HomePage() {
     <div className="min-h-screen bg-background font-sans">
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
-        <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-          ⚽Football EyeQ
-        </div>
+        <Link
+          href="/"
+          className="flex items-center space-x-3 font-bold text-lg text-foreground"
+        >
+          <Image
+            src="/brand/logo-wordmark.svg"
+            alt="Football EyeQ wordmark"
+            width={260}
+            height={64}
+            priority
+            className="h-10 w-auto drop-shadow-sm"
+          />
+        </Link>
         {!user && (
           <div className="space-x-4">
             <Link href="/signup">
@@ -84,7 +95,7 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="mt-32 px-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        {[
+        {[ 
           {
             title: "Browse Exercises",
             desc: "Access 100+ football drills with powerful search and filtering.",
@@ -107,7 +118,15 @@ export default function HomePage() {
         data-aos-delay={i * 150}
         className="p-8 bg-card rounded-xl shadow hover:shadow-lg transition text-center cursor-pointer border border-divider"
       >
-        <div className="text-4xl mb-4">⚽</div>
+        <div className="mb-4 flex justify-center">
+          <Image
+            src="/brand/mark.svg"
+            alt="Football EyeQ icon"
+            width={56}
+            height={56}
+            className="h-14 w-14"
+          />
+        </div>
         <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
         <p className="text-gray-600">{feature.desc}</p>
       </div>
