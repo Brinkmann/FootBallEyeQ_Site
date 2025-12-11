@@ -67,7 +67,10 @@ export default function NavBar() {
     <div className="bg-background px-6 pt-6">
       {/* Header */}
       <header className="flex justify-between items-center mb-6">
-        <Link href="/" className="text-2xl font-bold hover:underline text-foreground">⚽ Football EyeQ </Link>
+        <Link href="/" className="flex items-center space-x-2 text-2xl font-bold hover:underline text-foreground">
+          <img src="/color_logo_transparent.svg" alt="Football EyeQ" className="h-8 w-8" />
+          <span>Football EyeQ</span>
+        </Link>
         {userName ? (
           <div className="flex items-center space-x-4">
             <span className="text-foreground">{userName}</span>
