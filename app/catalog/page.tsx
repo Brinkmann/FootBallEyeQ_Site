@@ -117,26 +117,36 @@ export default function CatalogPage() {
     fetchExercises();
   }, []);
 
+  const normalizeDash = (str: string) => str.replace(/–/g, "-");
+
   useEffect(() => {
     let filtered = [...exercises];
 
     if (selectedAgeGroup !== "All Age Groups") {
-      filtered = filtered.filter((ex) => ex.ageGroup === selectedAgeGroup);
+      const normalizedFilter = normalizeDash(selectedAgeGroup);
+      filtered = filtered.filter((ex) => normalizeDash(ex.ageGroup) === normalizedFilter);
     }
     if (selectedDecisionTheme !== "All Decision Themes") {
-      filtered = filtered.filter((ex) => ex.decisionTheme === selectedDecisionTheme);
+      const normalizedFilter = normalizeDash(selectedDecisionTheme);
+      filtered = filtered.filter((ex) => normalizeDash(ex.decisionTheme) === normalizedFilter);
     }
     if (selectedPlayerInvolvement !== "All Player Involvements") {
-      filtered = filtered.filter((ex) => ex.playerInvolvement === selectedPlayerInvolvement);
+      const normalizedFilter = normalizeDash(selectedPlayerInvolvement);
+      filtered = filtered.filter((ex) => normalizeDash(ex.playerInvolvement) === normalizedFilter);
     }
     if (selectedGameMoment !== "All Game Moments") {
-      filtered = filtered.filter((ex) => ex.gameMoment === selectedGameMoment);
+      const normalizedFilter = normalizeDash(selectedGameMoment);
+      filtered = filtered.filter((ex) => normalizeDash(ex.gameMoment) === normalizedFilter);
     }
     if (selectedDifficulty !== "All Difficulty Levels") {
-      filtered = filtered.filter((ex) => ex.difficulty === selectedDifficulty);
+      const normalizedFilter = normalizeDash(selectedDifficulty);
+      filtered = filtered.filter((ex) => normalizeDash(ex.difficulty) === normalizedFilter);
     }
     if (selectedPracticeFormat !== "All Practice Formats") {
-      filtered = filtered.filter((ex) => ex.tags?.includes(selectedPracticeFormat));
+      const normalizedFilter = normalizeDash(selectedPracticeFormat);
+      filtered = filtered.filter((ex) => 
+        ex.tags?.some((tag) => normalizeDash(tag) === normalizedFilter)
+      );
     }
 
     setFilteredExercises(filtered);
