@@ -175,9 +175,9 @@ export default function AdminPage() {
 
     const ageGroups = [
         "General / Unspecified",
-        "Foundation Phase (U7–U10)",
-        "Youth Development Phase (U11–U14)",
-        "Game Training Phase (U15–U18)",
+        "Foundation Phase (U7-U10)",
+        "Youth Development Phase (U11-U14)",
+        "Game Training Phase (U15-U18)",
         "Performance Phase (U19-Senior)"
     ];
 
@@ -192,7 +192,7 @@ export default function AdminPage() {
         "General / Unspecified",
         "Individual",
         "1v1 / 2v2",
-        "Small Group (3–4 players)",
+        "Small Group (3-4 players)",
         "Team Unit (5+ players)"
     ];
 
