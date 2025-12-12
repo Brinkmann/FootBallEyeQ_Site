@@ -1,0 +1,47 @@
+You are editing the Football EyeQ frontend codebase. The only issue I want you to fix is a potential mismatch between hyphens "-" and en dashes "–" in values that are used for filtering or internal comparisons.
+
+Background:
+- Drills and tags are stored in JSON / Firestore.
+- The UI has filters such as Age Group, Group Size/Players, Difficulty, etc.
+- Filters rely on exact string matches between:
+  (a) tag values stored with each drill, and
+  (b) tag values or enums defined in the frontend code.
+- Some values currently use an en dash (for example "U7–U10", "U11–U14", "U15–U18", "Small Group (3–4 players)"), while others may use a normal hyphen ("-"). This can break filtering.
+
+Your task is limited to internal functional use only:
+
+1. Identify all tag values that are used for filtering or equality checks in the codebase.
+   - This includes Age Group, Group Size/Players, Difficulty, and any other filter enums or tag lists used to query or filter drills.
+   - Focus on the values that are compared in code or used in Firestore queries, not on general UI text.
+
+2. For those filter tag values, standardise on the simple ASCII hyphen "-" as the canonical character.
+   - Replace any en dash "–" occurrences in filter definitions / enums with "-".
+   - Examples:
+     "Foundation Phase (U7–U10)" → "Foundation Phase (U7-10)" or "Foundation Phase (U7-U10)" depending on the current project convention.
+     "Youth Development Phase (U11–U14)" → "Youth Development Phase (U11-14)" or "Youth Development Phase (U11-U14)".
+     "Game Training Phase (U15–U18)" → "Game Training Phase (U15-18)" or "Game Training Phase (U15-U18)".
+     "Small Group (3–4 players)" → "Small Group (3-4 players)".
+
+3. Search the exercise library JSON / seed data (any exercises.json or similar) for tag fields that participate in filtering (for example age group tags, group size tags, difficulty tags).
+   - Where those tag fields contain en dashes, update them so they exactly match the canonical hyphenated values you defined in step 2.
+   - Do not touch long-form text or descriptions in the JSON unless the field is explicitly used as a filter tag.
+
+4. In the filter logic, add a small normalisation helper that is applied only at comparison points, to convert any remaining en dashes to a hyphen before comparing.
+   - For example:
+
+     function normaliseTag(value: string): string {
+       return value.replace(/\u2013/g, "-").trim();
+     }
+
+   - Make sure that whenever a selected filter value is compared with a drill tag value, both are passed through normaliseTag.
+   - This helper is only for internal comparisons. Do not use it to change what is displayed to the user.
+
+5. Do NOT:
+   - Do not change general UI copy, headings, marketing text or long descriptions just for typography.
+   - Do not refactor unrelated code.
+   - Do not introduce new features. Keep the change set minimal and focused on avoiding hyphen/en-dash mismatches in filter-related values.
+
+When you are done, the behaviour should be:
+- All filter tag definitions and drill tag values that are actually used for filtering use ASCII "-" consistently.
+- The normalisation helper ensures that if an en dash sneaks in again in a tag field, filtering still works.
+- No cosmetic or descriptive text is altered unless it is directly used as a filter key.
