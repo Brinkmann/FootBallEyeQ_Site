@@ -72,7 +72,7 @@ export default function HowItWorksPage() {
                 Cognitive Training Embedded in Every Drill
               </h3>
               <p className="text-lg text-gray-600 mb-6">
-                Our drills aren't just physical exercises—they're cognitive challenges that 
+                Our drills aren&apos;t just physical exercises—they&apos;re cognitive challenges that 
                 force players to scan, process, and react. Using color-coded cues and dynamic 
                 sequences, players develop the mental habits that transfer directly to match situations.
               </p>

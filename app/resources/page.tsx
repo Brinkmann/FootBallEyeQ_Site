@@ -133,8 +133,8 @@ export default function ResourcesPage() {
               Downloadable Resources Coming Soon
             </h3>
             <p className="text-gray-600 max-w-md mx-auto">
-              We're preparing printable drill cards, session templates, and other 
-              resources to support your training. Sign up to be notified when they're ready.
+              We&apos;re preparing printable drill cards, session templates, and other 
+              resources to support your training. Sign up to be notified when they&apos;re ready.
             </p>
           </div>
         </div>

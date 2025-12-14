@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react"; // React QR generator
-import Image from "next/image";
 import { encodeSessionCode } from "../utils/sessionCode";
 
 type Props = {

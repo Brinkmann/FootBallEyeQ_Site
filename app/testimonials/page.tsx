@@ -59,7 +59,7 @@ export default function TestimonialsPage() {
               Testimonials Coming Soon
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
-              We're collecting feedback from our early adopters. Check back soon to see 
+              We&apos;re collecting feedback from our early adopters. Check back soon to see 
               what coaches and clubs are saying about Football EyeQ.
             </p>
             <div className="flex flex-wrap justify-center gap-4">

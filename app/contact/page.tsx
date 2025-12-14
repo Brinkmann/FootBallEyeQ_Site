@@ -64,7 +64,7 @@ export default function ContactPage() {
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Have questions about Football EyeQ? Want to learn how we can help your club? 
-            We'd love to hear from you.
+            We&apos;d love to hear from you.
           </p>
         </div>
       </section>
@@ -184,7 +184,7 @@ export default function ContactPage() {
                 Message Sent!
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Thank you for reaching out. We'll get back to you as soon as possible.
+                Thank you for reaching out. We&apos;ll get back to you as soon as possible.
               </p>
               <Link
                 href="/"

@@ -45,7 +45,7 @@ export default function WhyScanningPage() {
             Why <span className="text-[#e63946]">Scanning</span> Matters
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-            Elite players don't just react faster—they see more. Scanning is the foundation 
+            Elite players don&apos;t just react faster—they see more. Scanning is the foundation 
             of game intelligence that separates good players from great ones.
           </p>
         </div>
