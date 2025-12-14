@@ -1,0 +1,101 @@
+
+New
++96
+-0
+
+# Football EyeQ Site Concept & Page Structure
+
+This proposal blends the existing drill catalogue/season planner focus with education about scanning, game intelligence, and the Football EyeQ training method. The goal is to persuade players and coaches to adopt Football EyeQ by showing the value of scanning, how it works, and how the digital tools (planner + drills) fit into a complete training cycle.
+
+**Positioning note:** The Planner & Drill Catalogue are the main event. Education (Why Scanning/How it Works) exists to drive belief and clicks into the planner flow. Every page should reinforce “Plan a session now” and “Browse drills” as the core actions.
+
+## Core Story
+- **Promise:** "See more. Think faster. Play better." Train scanning and decision-making so players act with purpose before the ball arrives.
+- **Audience:** Coaches who want smarter teams, players who want an edge, and parents looking for proven development tools.
+- **Proof:** Infographic-style visuals that show the SEE → THINK → DO cycle, on-field drills with light cones, and the drill catalogue/season planner workflow.
+
+## Navigation
+1. Home (hero + positioning)
+2. Planner & Drill Catalogue (digital product value)
+3. Why Scanning (education + data points → links into drills)
+4. How Football EyeQ Works (interactive method + hardware overview)
+5. Ecosystem Loop (Plan → Train → Improve)
+6. Use Cases & Packages
+7. Testimonials & Social Proof
+8. Resources (blog, guides)
+9. Contact / Stay in Touch (lead capture)
+
+## Page Templates & Sections
+
+### 1) Home / Landing
+- **Hero:** Statement of value ("Unlock your game intelligence") with CTA buttons: *Start a Session Plan* (primary), *Explore Drills* (secondary), *Book a Demo*.
+- **Three Pillars:** Improved scanning/awareness, quicker decisions, better positioning; use icons mirroring the infographic.
+- **SEE–THINK–DO Strip:** Short visual explainer linking to the scanning page; end with a CTA to “Apply this in today’s plan.”
+- **Product Highlights:** Tiles for *Drill Catalogue*, *Season Planner*, *EyeQ Cones & App* with each tile linking into a filtered drill list or plan template.
+- **Social Proof:** Coach quotes, early-adopter badges.
+- **Lead Form:** Light CTA for newsletter/demo.
+
+### 2) Planner & Drill Catalogue (Product Page)
+- **Command Center Concept:** Planner UI + drill library thumbnails; explain building a session in minutes.
+- **Primary CTAs:** "Plan a session now" (primary) and "Browse all drills" (secondary). Keep these persistent.
+- **Filters:** Age group, objective (scanning, first touch, pressing), equipment, duration.
+- **Templates:** Quick-start session/season plans with the option to customize.
+- **Smart Suggestions:** Highlight how scanning drills progress over a season (foundational → pressure → game-realistic).
+- **Supportive Proof:** Sidebars call out scanning benefits but always link back to a drill or plan template.
+
+### 3) Why Scanning (Education Page)
+- **Problem → Solution:** Contrast traditional training (limited cognitive reps) with EyeQ’s random light-driven scanning reps.
+- **Data Points:** Scan rate (0.5s), mental top speed, minutes off the ball; framed as competitive edge.
+- **SEE → THINK → DO Deep Dive:** Before/after ball reception with callouts on shoulder checks and anticipation.
+- **Infographic Panels:** Use existing graphics to show eye movement, cones lighting, and field awareness.
+- **Mini-CTA:** "Try the drills that teach this" linking to the catalogue filter for scanning drills.
+
+### 4) How Football EyeQ Works
+- **Interactive Training:** Explain random light signals (red/green/blue), unpredictability, and constant evaluation.
+- **Hardware/Setup:** Cones, battery life ("charge & forget"), mobile control, and durability.
+- **Game Intelligence Outcomes:** Faster decisions, calmer possession, better off-ball movement.
+- **Video/Loop:** Short demo reel (future addition) showing a drill cycle.
+- **CTA:** "See it live" (demo booking) + "Browse compatible drills" (drill filter pre-set to EyeQ-compatible drills).
+
+### 5) Ecosystem Loop
+- **Graphic:** Plan (planner) → Train (cones/app) → Improve (performance).
+- **Copy:** Shows continuous improvement and how data/notes from sessions feed back into planning.
+- **CTA:** "Start the loop" linking to account signup or demo, plus a secondary "Open planner" button.
+
+### 6) Use Cases & Packages
+- **Player Pathways:** Youth academy, semi-pro, rehab/return-to-play.
+- **Coaches & Clubs:** Team bundles, multi-team management.
+- **Pricing Nudges:** Starter (planner + basic drills), Pro (planner + full drill set + cones), Club (multi-team + support).
+
+### 7) Testimonials & Social Proof
+- **Quotes:** Coaches on improved awareness and decision speed.
+- **Stats:** Before/after scanning frequency; mention real-world improvements.
+- **Logos:** Clubs/academies piloting the system.
+
+### 8) Resources
+- **Guides:** "How to teach scanning in warm-ups", "Building a scanning-first curriculum".
+- **Blog & Video:** Drill spotlights, tactical breakdowns, success stories.
+- **Downloads:** PDF cheat sheets and session cards.
+
+### 9) Contact / Stay in Touch
+- **Lead Capture:** Newsletter + early adopter list.
+- **Direct Contact:** Phone/WhatsApp + booking form for demos or club trials.
+- **Support:** FAQ on hardware availability and shipping timelines.
+
+## Content & CTA Strategy
+- **Primary CTAs:** Explore drills, start a plan, book a demo.
+- **Secondary CTAs:** Download a scanning guide, sign up for early access.
+- **Tone:** Coaching-forward, practical, confident; highlight cognitive gains and time savings for coaches.
+
+## Visual & UX Notes
+- **Illustrations:** Reuse line-art style from provided infographics for consistency.
+- **Motion:** Simple scroll-triggered reveals on SEE → THINK → DO panels and ecosystem loop.
+- **Layout:** Clean grid with parchment/off-white background nodding to infographic texture; accent colors match cone colors (red/green/blue) for calls-to-action.
+- **Accessibility:** High-contrast CTAs, concise headings, and alt text for all diagrams.
+
+## Funnel Flow
+1. **Top-of-funnel education** (Home + Why Scanning) → belief-building.
+2. **Product proof** (How it Works + Planner page) → clarity on tools.
+3. **Conversion** (Use Cases + Contact) → demo, signup, or purchase.
+
+Use this structure to integrate the drill catalogue and planner as the practical way to apply the scanning philosophy while guiding visitors toward signup or demo requests.
