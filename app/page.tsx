@@ -6,10 +6,10 @@ import Link from "next/link";
 import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
-import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765697926151.png";
-import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_9lqcy9lqcy9lqcy9_1765697892905.png";
-import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo_(1)_1765697926152.png";
-import playersConesImage from "@/attached_assets/Gemini_Generated_Image_civasucivasuciva_1765697892906.png";
+import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765753298897.png";
+import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_l11rmgl11rmgl11r_1765753298899.png";
+import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo1_1765753298901.png";
+import playersConesImage from "@/attached_assets/Gemini_Generated_Image_bwhz9zbwhz9zbwhz_1765753298898.png";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);

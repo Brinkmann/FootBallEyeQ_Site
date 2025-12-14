@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
-import architectImage from "@/attached_assets/Gemini_Generated_Image_tas8tdtas8tdtas8_1765697926152.png";
-import scanningStepsImage from "@/attached_assets/Gemini_Generated_Image_equqq9equqq9equq_(1)_1765697892904.png";
-import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_9lqcy9lqcy9lqcy9_1765697892905.png";
+import architectImage from "@/attached_assets/Gemini_Generated_Image_tas8tdtas8tdtas8_1765753298900.png";
+import scanningStepsImage from "@/attached_assets/Gemini_Generated_Image_hhfqpghhfqpghhfq1_1765753298898.png";
+import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_l11rmgl11rmgl11r_1765753298899.png";
 
 export default function WhyScanningPage() {
   useEffect(() => {

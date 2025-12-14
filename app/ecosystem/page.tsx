@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
-import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo_(1)_1765697926152.png";
+import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_hhfqpghhfqpghhfq2_1765753298899.png";
 
 export default function EcosystemPage() {
   useEffect(() => {

@@ -3,10 +3,8 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
-import playersConesImage from "@/attached_assets/Gemini_Generated_Image_civasucivasuciva_1765697892906.png";
-import playersConesAltImage from "@/attached_assets/Gemini_Generated_Image_67o2kk67o2kk67o2_1765697892907.png";
-import singlePlayerImage from "@/attached_assets/Gemini_Generated_Image_dpbastdpbastdpba_1765697892907.png";
-import executeImage from "@/attached_assets/Gemini_Generated_Image_air0sqair0sqair0_1765697926152.png";
+import playersConesImage from "@/attached_assets/Gemini_Generated_Image_bwhz9zbwhz9zbwhz_1765753298898.png";
+import methodImage from "@/attached_assets/Gemini_Generated_Image_hhfqpghhfqpghhfq_1765753298898.png";
 
 export default function HowItWorksPage() {
   useEffect(() => {
@@ -62,8 +60,8 @@ export default function HowItWorksPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div data-aos="fade-right">
               <img 
-                src={singlePlayerImage.src} 
-                alt="Player Scanning" 
+                src={methodImage.src} 
+                alt="Smart Training Revolution" 
                 className="rounded-2xl shadow-lg w-full"
               />
             </div>
@@ -104,21 +102,12 @@ export default function HowItWorksPage() {
             Our intelligent cones create dynamic, reactive training environments
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div data-aos="fade-right">
-              <img 
-                src={playersConesImage.src} 
-                alt="Players training with smart cones" 
-                className="rounded-2xl shadow-lg w-full"
-              />
-            </div>
-            <div data-aos="fade-left">
-              <img 
-                src={playersConesAltImage.src} 
-                alt="Smart cone training setup" 
-                className="rounded-2xl shadow-lg w-full"
-              />
-            </div>
+          <div className="max-w-3xl mx-auto mb-12" data-aos="zoom-in">
+            <img 
+              src={playersConesImage.src} 
+              alt="Players training with smart cones" 
+              className="rounded-2xl shadow-lg w-full"
+            />
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -184,8 +173,8 @@ export default function HowItWorksPage() {
           </div>
           <div data-aos="fade-left">
             <img 
-              src={executeImage.src} 
-              alt="Execute On-Field" 
+              src={playersConesImage.src} 
+              alt="Execute On-Field Training" 
               className="rounded-2xl shadow-lg w-full"
             />
           </div>
