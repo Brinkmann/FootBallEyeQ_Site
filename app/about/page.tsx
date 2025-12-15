@@ -13,7 +13,7 @@ export default function AboutPage() {
           <strong>Football EyeQ</strong> is an innovative coaching platform designed to simplify session planning, player development, and team management.
         </p>
         <p className="text-foreground mb-4">
-          Built by football enthusiasts, our goal is to make coaching smarter — not harder. We empower coaches with tools to organize drills, plan seasons, and track progress all in one place.
+          Built by football enthusiasts, our goal is to make coaching smarter — not harder. We empower coaches with tools to organize drills, plan seasons, and develop cognitive skills all in one place.
         </p>
         <p className="text-foreground">
           Whether you are coaching grassroots, academy, or elite-level teams, Football EyeQ helps you deliver better sessions and grow your players effectively.

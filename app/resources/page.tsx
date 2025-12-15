@@ -10,7 +10,7 @@ export default function ResourcesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#F0EFEA]">
       {/* Header */}
       <header className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
         <Link href="/" className="flex items-center space-x-2 font-bold text-lg text-gray-900">
@@ -18,28 +18,28 @@ export default function ResourcesPage() {
           <span>Football EyeQ</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#e63946] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#e63946] transition font-semibold">Session Planner</Link>
+          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
+          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
           <div className="relative group">
-            <span className="hover:text-[#e63946] transition cursor-pointer">Learn ▾</span>
+            <span className="hover:text-[#A10115] transition cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Use Cases</Link>
+              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Why Scanning</Link>
+              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">How It Works</Link>
+              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Ecosystem</Link>
+              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
             </div>
           </div>
-          <Link href="/resources" className="text-[#e63946] font-semibold">Resources</Link>
-          <Link href="/testimonials" className="hover:text-[#e63946] transition">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#e63946] transition">Contact</Link>
+          <Link href="/resources" className="text-[#A10115] font-semibold">Resources</Link>
+          <Link href="/testimonials" className="hover:text-[#A10115] transition">Testimonials</Link>
+          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
         </nav>
       </header>
 
       {/* Hero */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#faf8f5]">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            <span className="text-[#457b9d]">Resources</span> & Guides
+            <span className="text-[#D72C16]">Resources</span> & Guides
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Educational materials, guides, and downloads to help you get the most from Football EyeQ.
@@ -55,7 +55,7 @@ export default function ResourcesPage() {
               {
                 title: "Getting Started",
                 icon: "🚀",
-                color: "#e63946",
+                color: "#A10115",
                 desc: "New to Football EyeQ? Start here with our beginner guides and setup tutorials.",
                 items: ["Quick Start Guide", "Platform Overview", "First Session Tips"],
                 status: "Coming Soon"
@@ -63,7 +63,7 @@ export default function ResourcesPage() {
               {
                 title: "Training Guides",
                 icon: "📘",
-                color: "#2a9d8f",
+                color: "#D72C16",
                 desc: "Deep dives into training methodology, drill categories, and session planning.",
                 items: ["Scanning Fundamentals", "Age-Group Progressions", "Position-Specific Training"],
                 status: "Coming Soon"
@@ -71,7 +71,7 @@ export default function ResourcesPage() {
               {
                 title: "Blog & Articles",
                 icon: "📰",
-                color: "#457b9d",
+                color: "#D72C16",
                 desc: "Latest articles on cognitive training, player development, and Football EyeQ updates.",
                 items: ["Why Scanning Matters", "Science of Decision Making", "Coach Interviews"],
                 status: "Coming Soon"
@@ -126,7 +126,7 @@ export default function ResourcesPage() {
           <div 
             data-aos="fade-up"
             data-aos-delay="200"
-            className="bg-[#faf8f5] rounded-2xl p-12 border-2 border-dashed border-gray-300"
+            className="bg-[#F0EFEA] rounded-2xl p-12 border-2 border-dashed border-gray-300"
           >
             <div className="text-5xl mb-6">📥</div>
             <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -141,11 +141,11 @@ export default function ResourcesPage() {
       </section>
 
       {/* Tag Explanation Link */}
-      <section className="py-16 px-6 bg-[#faf8f5]">
+      <section className="py-16 px-6 bg-[#F0EFEA]">
         <div className="max-w-4xl mx-auto">
           <div 
             data-aos="fade-up"
-            className="bg-gradient-to-r from-[#e63946] to-[#c5303c] rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between"
+            className="bg-gradient-to-r from-[#A10115] to-[#c5303c] rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between"
           >
             <div className="mb-6 md:mb-0">
               <h3 className="text-2xl font-bold mb-2">Tag Explanation Guide</h3>
@@ -155,7 +155,7 @@ export default function ResourcesPage() {
             </div>
             <Link
               href="/explanation"
-              className="px-6 py-3 bg-white text-[#e63946] font-bold rounded-lg hover:bg-gray-100 transition"
+              className="px-6 py-3 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             >
               View Guide →
             </Link>
@@ -164,7 +164,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#457b9d]">
+      <section className="py-16 px-6 bg-[#A10115]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Stay Updated
@@ -174,7 +174,7 @@ export default function ResourcesPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-white text-[#457b9d] font-bold rounded-lg hover:bg-gray-100 transition"
+            className="inline-block px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             data-aos="fade-up"
             data-aos-delay="200"
           >

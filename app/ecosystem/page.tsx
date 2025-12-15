@@ -11,7 +11,7 @@ export default function EcosystemPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#F0EFEA]">
       {/* Header */}
       <header className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
         <Link href="/" className="flex items-center space-x-2 font-bold text-lg text-gray-900">
@@ -19,28 +19,28 @@ export default function EcosystemPage() {
           <span>Football EyeQ</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#e63946] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#e63946] transition font-semibold">Session Planner</Link>
+          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
+          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
           <div className="relative group">
-            <span className="text-[#e63946] cursor-pointer">Learn ▾</span>
+            <span className="text-[#A10115] cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 bg-gray-50 text-[#e63946] font-semibold">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Use Cases</Link>
+              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Why Scanning</Link>
+              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">How It Works</Link>
+              <Link href="/ecosystem" className="block px-4 py-2 bg-gray-50 text-[#A10115] font-semibold">Ecosystem</Link>
+              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
             </div>
           </div>
-          <Link href="/resources" className="hover:text-[#e63946] transition">Resources</Link>
-          <Link href="/testimonials" className="hover:text-[#e63946] transition">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#e63946] transition">Contact</Link>
+          <Link href="/resources" className="hover:text-[#A10115] transition">Resources</Link>
+          <Link href="/testimonials" className="hover:text-[#A10115] transition">Testimonials</Link>
+          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
         </nav>
       </header>
 
       {/* Hero */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#faf8f5]">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            The Football EyeQ <span className="text-[#2a9d8f]">Ecosystem</span>
+            The Football EyeQ <span className="text-[#D72C16]">Ecosystem</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             A complete cycle for developing smarter players—from planning to performance to continuous improvement.
@@ -71,7 +71,7 @@ export default function EcosystemPage() {
               {
                 phase: "Plan",
                 icon: "📋",
-                color: "#e63946",
+                color: "#A10115",
                 desc: "Design training sessions using our comprehensive drill catalogue. Select exercises that target specific cognitive skills and match your team's development goals.",
                 features: [
                   "Access 100+ cognitive drills",
@@ -83,19 +83,19 @@ export default function EcosystemPage() {
               {
                 phase: "Train",
                 icon: "⚽",
-                color: "#2a9d8f",
+                color: "#D72C16",
                 desc: "Execute sessions on the pitch with smart cone technology. Players engage with dynamic, reactive drills that develop scanning habits and decision-making.",
                 features: [
                   "Smart cone integration",
-                  "Real-time drill adjustments",
+                  "Adaptable difficulty levels",
                   "Progressive difficulty scaling",
-                  "Immediate feedback loops"
+                  "Cognitive challenge variety"
                 ]
               },
               {
                 phase: "Enjoy",
                 icon: "🎯",
-                color: "#457b9d",
+                color: "#D72C16",
                 desc: "Watch players develop game intelligence and confidence. The skills trained transfer directly to match situations, making the game more enjoyable for everyone.",
                 features: [
                   "Visible skill development",
@@ -109,7 +109,7 @@ export default function EcosystemPage() {
                 key={i}
                 data-aos="fade-up"
                 data-aos-delay={i * 100}
-                className="p-8 rounded-2xl border-2 bg-[#faf8f5]"
+                className="p-8 rounded-2xl border-2 bg-[#F0EFEA]"
                 style={{ borderColor: item.color }}
               >
                 <div className="text-4xl mb-4">{item.icon}</div>
@@ -135,7 +135,7 @@ export default function EcosystemPage() {
       </section>
 
       {/* How It Connects */}
-      <section className="py-20 px-6 bg-[#faf8f5]">
+      <section className="py-20 px-6 bg-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-8" data-aos="fade-up">
             Everything Connected
@@ -147,7 +147,7 @@ export default function EcosystemPage() {
           <div className="grid md:grid-cols-2 gap-8">
             <div data-aos="fade-right" className="bg-white p-8 rounded-xl shadow-md text-left">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-[#e63946] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
+                <div className="w-12 h-12 bg-[#A10115] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
                   📚
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">Drill Catalogue</h3>
@@ -155,14 +155,14 @@ export default function EcosystemPage() {
               <p className="text-gray-600 mb-4">
                 Your source for cognitive training exercises. Filter, search, and find the perfect drills for your team.
               </p>
-              <Link href="/catalog" className="text-[#e63946] font-semibold hover:underline">
+              <Link href="/catalog" className="text-[#A10115] font-semibold hover:underline">
                 Explore Drills →
               </Link>
             </div>
 
             <div data-aos="fade-left" className="bg-white p-8 rounded-xl shadow-md text-left">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-[#2a9d8f] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
+                <div className="w-12 h-12 bg-[#D72C16] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
                   📋
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">Session Planner</h3>
@@ -170,7 +170,7 @@ export default function EcosystemPage() {
               <p className="text-gray-600 mb-4">
                 Organize your training with our drag-and-drop planner. Plan sessions, track your season, stay organized.
               </p>
-              <Link href="/planner" className="text-[#2a9d8f] font-semibold hover:underline">
+              <Link href="/planner" className="text-[#D72C16] font-semibold hover:underline">
                 Start Planning →
               </Link>
             </div>
@@ -179,7 +179,7 @@ export default function EcosystemPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#2a9d8f]">
+      <section className="py-16 px-6 bg-[#D72C16]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Join the Football EyeQ Ecosystem
@@ -190,13 +190,13 @@ export default function EcosystemPage() {
           <div className="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
             <Link
               href="/signup"
-              className="px-8 py-4 bg-white text-[#2a9d8f] font-bold rounded-lg hover:bg-gray-100 transition"
+              className="px-8 py-4 bg-white text-[#D72C16] font-bold rounded-lg hover:bg-gray-100 transition"
             >
               Get Started Free
             </Link>
             <Link
               href="/contact"
-              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#2a9d8f] transition"
+              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#D72C16] transition"
             >
               Learn More
             </Link>

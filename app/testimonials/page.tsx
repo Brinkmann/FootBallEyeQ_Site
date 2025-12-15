@@ -10,7 +10,7 @@ export default function TestimonialsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#F0EFEA]">
       {/* Header */}
       <header className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
         <Link href="/" className="flex items-center space-x-2 font-bold text-lg text-gray-900">
@@ -18,28 +18,28 @@ export default function TestimonialsPage() {
           <span>Football EyeQ</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#e63946] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#e63946] transition font-semibold">Session Planner</Link>
+          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
+          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
           <div className="relative group">
-            <span className="hover:text-[#e63946] transition cursor-pointer">Learn ▾</span>
+            <span className="hover:text-[#A10115] transition cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Use Cases</Link>
+              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Why Scanning</Link>
+              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">How It Works</Link>
+              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Ecosystem</Link>
+              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
             </div>
           </div>
-          <Link href="/resources" className="hover:text-[#e63946] transition">Resources</Link>
-          <Link href="/testimonials" className="text-[#e63946] font-semibold">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#e63946] transition">Contact</Link>
+          <Link href="/resources" className="hover:text-[#A10115] transition">Resources</Link>
+          <Link href="/testimonials" className="text-[#A10115] font-semibold">Testimonials</Link>
+          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
         </nav>
       </header>
 
       {/* Hero */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#faf8f5]">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            What Coaches Are <span className="text-[#2a9d8f]">Saying</span>
+            What Coaches Are <span className="text-[#D72C16]">Saying</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Hear from coaches and clubs who are developing smarter players with Football EyeQ.
@@ -65,13 +65,13 @@ export default function TestimonialsPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/contact"
-                className="px-6 py-3 bg-[#2a9d8f] text-white font-semibold rounded-lg hover:bg-[#238b7e] transition"
+                className="px-6 py-3 bg-[#D72C16] text-white font-semibold rounded-lg hover:bg-[#b82010] transition"
               >
                 Share Your Experience
               </Link>
               <Link
                 href="/catalog"
-                className="px-6 py-3 border-2 border-[#e63946] text-[#e63946] font-semibold rounded-lg hover:bg-[#e63946] hover:text-white transition"
+                className="px-6 py-3 border-2 border-[#A10115] text-[#A10115] font-semibold rounded-lg hover:bg-[#A10115] hover:text-white transition"
               >
                 Try It Yourself
               </Link>
@@ -106,7 +106,7 @@ export default function TestimonialsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#2a9d8f]">
+      <section className="py-16 px-6 bg-[#D72C16]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Be Part of the Story
@@ -116,7 +116,7 @@ export default function TestimonialsPage() {
           </p>
           <Link
             href="/signup"
-            className="inline-block px-8 py-4 bg-white text-[#2a9d8f] font-bold rounded-lg hover:bg-gray-100 transition"
+            className="inline-block px-8 py-4 bg-white text-[#D72C16] font-bold rounded-lg hover:bg-gray-100 transition"
             data-aos="fade-up"
             data-aos-delay="200"
           >

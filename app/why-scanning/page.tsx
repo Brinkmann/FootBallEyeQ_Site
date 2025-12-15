@@ -13,7 +13,7 @@ export default function WhyScanningPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#F0EFEA]">
       {/* Header */}
       <header className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
         <Link href="/" className="flex items-center space-x-2 font-bold text-lg text-gray-900">
@@ -21,28 +21,28 @@ export default function WhyScanningPage() {
           <span>Football EyeQ</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#e63946] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#e63946] transition font-semibold">Session Planner</Link>
+          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
+          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
           <div className="relative group">
-            <span className="text-[#e63946] cursor-pointer">Learn ▾</span>
+            <span className="text-[#A10115] cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 bg-gray-50 text-[#e63946] font-semibold">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Use Cases</Link>
+              <Link href="/why-scanning" className="block px-4 py-2 bg-gray-50 text-[#A10115] font-semibold">Why Scanning</Link>
+              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">How It Works</Link>
+              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Ecosystem</Link>
+              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
             </div>
           </div>
-          <Link href="/resources" className="hover:text-[#e63946] transition">Resources</Link>
-          <Link href="/testimonials" className="hover:text-[#e63946] transition">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#e63946] transition">Contact</Link>
+          <Link href="/resources" className="hover:text-[#A10115] transition">Resources</Link>
+          <Link href="/testimonials" className="hover:text-[#A10115] transition">Testimonials</Link>
+          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
         </nav>
       </header>
 
       {/* Hero */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#faf8f5]">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            Why <span className="text-[#e63946]">Scanning</span> Matters
+            Why <span className="text-[#A10115]">Scanning</span> Matters
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Elite players don&apos;t just react faster—they see more. Scanning is the foundation 
@@ -57,7 +57,7 @@ export default function WhyScanningPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div data-aos="fade-right">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Traditional Training vs. <span className="text-[#2a9d8f]">EyeQ Training</span>
+                Traditional Training vs. <span className="text-[#D72C16]">EyeQ Training</span>
               </h2>
               <p className="text-lg text-gray-600 mb-6">
                 Traditional drills often focus on technical skills in isolation—passing, dribbling, 
@@ -108,9 +108,9 @@ export default function WhyScanningPage() {
                 key={i} 
                 data-aos="fade-up" 
                 data-aos-delay={i * 100}
-                className="text-center p-8 bg-[#faf8f5] rounded-xl"
+                className="text-center p-8 bg-[#F0EFEA] rounded-xl"
               >
-                <div className="text-4xl md:text-5xl font-bold text-[#e63946] mb-2">{item.stat}</div>
+                <div className="text-4xl md:text-5xl font-bold text-[#A10115] mb-2">{item.stat}</div>
                 <div className="text-lg font-semibold text-gray-900 mb-2">{item.label}</div>
                 <p className="text-gray-600">{item.desc}</p>
               </div>
@@ -120,12 +120,12 @@ export default function WhyScanningPage() {
       </section>
 
       {/* Power of Scanning */}
-      <section className="py-20 px-6 bg-[#faf8f5]">
+      <section className="py-20 px-6 bg-[#F0EFEA]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12" data-aos="fade-up">
             The Power of Scanning
           </h2>
-          <div data-aos="zoom-in">
+          <div data-aos="zoom-in" className="max-w-3xl mx-auto">
             <img 
               src={scanningStepsImage.src} 
               alt="See Think Do - The Power of Scanning" 
@@ -157,7 +157,7 @@ export default function WhyScanningPage() {
             {[
               {
                 title: "See",
-                color: "#e63946",
+                color: "#A10115",
                 points: [
                   "Develop scanning habits before receiving",
                   "Train peripheral vision awareness",
@@ -166,7 +166,7 @@ export default function WhyScanningPage() {
               },
               {
                 title: "Think",
-                color: "#2a9d8f",
+                color: "#D72C16",
                 points: [
                   "Process information rapidly",
                   "Identify optimal options",
@@ -175,7 +175,7 @@ export default function WhyScanningPage() {
               },
               {
                 title: "Do",
-                color: "#457b9d",
+                color: "#D72C16",
                 points: [
                   "Execute with confidence",
                   "React instinctively to cues",
@@ -211,7 +211,7 @@ export default function WhyScanningPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#e63946]">
+      <section className="py-16 px-6 bg-[#A10115]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Ready to develop smarter players?
@@ -222,13 +222,13 @@ export default function WhyScanningPage() {
           <div className="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
             <Link
               href="/catalog"
-              className="px-8 py-4 bg-white text-[#e63946] font-bold rounded-lg hover:bg-gray-100 transition"
+              className="px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             >
               Browse Drills
             </Link>
             <Link
               href="/how-it-works"
-              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#e63946] transition"
+              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#A10115] transition"
             >
               How It Works
             </Link>

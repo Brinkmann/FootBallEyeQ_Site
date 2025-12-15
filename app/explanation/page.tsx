@@ -261,7 +261,7 @@ export default function ExplanationGuide() {
 
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-700 mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#A10115] mb-3">
             Football EyeQ
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -290,7 +290,7 @@ function Section({ title, intro, items }: Section) {
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-slate-900">{title}</h2>
         <p className="text-slate-600 leading-relaxed">{intro}</p>
-        <div className="h-px bg-gradient-to-r from-blue-500 via-blue-300 to-transparent" />
+        <div className="h-px bg-gradient-to-r from-[#A10115] via-[#D72C16] to-transparent" />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -305,7 +305,7 @@ function Section({ title, intro, items }: Section) {
 function Item({ code, label, description }: Item) {
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 shadow-inner">
-      <p className="text-sm font-semibold text-blue-700">{code}</p>
+      <p className="text-sm font-semibold text-[#A10115]">{code}</p>
       <p className="text-base font-medium text-slate-900">{label}</p>
       <p className="text-sm text-slate-600 leading-relaxed">{description}</p>
     </div>

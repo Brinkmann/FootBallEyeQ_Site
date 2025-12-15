@@ -12,7 +12,7 @@ export default function HowItWorksPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#F0EFEA]">
       {/* Header */}
       <header className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
         <Link href="/" className="flex items-center space-x-2 font-bold text-lg text-gray-900">
@@ -20,28 +20,28 @@ export default function HowItWorksPage() {
           <span>Football EyeQ</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#e63946] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#e63946] transition font-semibold">Session Planner</Link>
+          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
+          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
           <div className="relative group">
-            <span className="text-[#e63946] cursor-pointer">Learn ▾</span>
+            <span className="text-[#A10115] cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 bg-gray-50 text-[#e63946] font-semibold">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#e63946]">Use Cases</Link>
+              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Why Scanning</Link>
+              <Link href="/how-it-works" className="block px-4 py-2 bg-gray-50 text-[#A10115] font-semibold">How It Works</Link>
+              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Ecosystem</Link>
+              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
             </div>
           </div>
-          <Link href="/resources" className="hover:text-[#e63946] transition">Resources</Link>
-          <Link href="/testimonials" className="hover:text-[#e63946] transition">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#e63946] transition">Contact</Link>
+          <Link href="/resources" className="hover:text-[#A10115] transition">Resources</Link>
+          <Link href="/testimonials" className="hover:text-[#A10115] transition">Testimonials</Link>
+          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
         </nav>
       </header>
 
       {/* Hero */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#faf8f5]">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            How <span className="text-[#457b9d]">Football EyeQ</span> Works
+            How <span className="text-[#D72C16]">Football EyeQ</span> Works
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Discover our training method and smart cone technology that brings cognitive 
@@ -82,7 +82,7 @@ export default function HowItWorksPage() {
                   "Multi-tasking and divided attention"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center text-gray-700">
-                    <span className="w-5 h-5 bg-[#457b9d] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
+                    <span className="w-5 h-5 bg-[#D72C16] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
                     {item}
                   </li>
                 ))}
@@ -123,16 +123,16 @@ export default function HowItWorksPage() {
                 desc: "Control cone sequences from any device—switch drills instantly without interruption"
               },
               {
-                icon: "⚡",
-                title: "Real-Time Response",
-                desc: "Cones respond instantly to player actions, creating truly interactive training"
+                icon: "🔀",
+                title: "Varied Sequences",
+                desc: "Unpredictable light patterns keep players scanning and mentally engaged throughout every drill"
               }
             ].map((feature, i) => (
               <div 
                 key={i}
                 data-aos="fade-up"
                 data-aos-delay={i * 100}
-                className="text-center p-6 bg-[#faf8f5] rounded-xl"
+                className="text-center p-6 bg-[#F0EFEA] rounded-xl"
               >
                 <div className="text-3xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
@@ -144,11 +144,11 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Execute On Field */}
-      <section className="py-20 px-6 bg-[#faf8f5]">
+      <section className="py-20 px-6 bg-[#F0EFEA]">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div data-aos="fade-right">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Execute <span className="text-[#e63946]">On-Field</span>
+              Execute <span className="text-[#A10115]">On-Field</span>
             </h2>
             <p className="text-lg text-gray-600 mb-6">
               Football EyeQ bridges the gap between training and match performance. 
@@ -163,7 +163,7 @@ export default function HowItWorksPage() {
                 { step: "4", text: "Players develop scanning habits automatically" }
               ].map((item, i) => (
                 <div key={i} className="flex items-start">
-                  <div className="w-8 h-8 bg-[#e63946] rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">
+                  <div className="w-8 h-8 bg-[#A10115] rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">
                     {item.step}
                   </div>
                   <p className="text-gray-700 pt-1">{item.text}</p>
@@ -182,7 +182,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#457b9d]">
+      <section className="py-16 px-6 bg-[#A10115]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Experience Football EyeQ
@@ -193,13 +193,13 @@ export default function HowItWorksPage() {
           <div className="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
             <Link
               href="/catalog"
-              className="px-8 py-4 bg-white text-[#457b9d] font-bold rounded-lg hover:bg-gray-100 transition"
+              className="px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             >
               Browse Drills
             </Link>
             <Link
               href="/planner"
-              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#457b9d] transition"
+              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#A10115] transition"
             >
               Plan a Session
             </Link>
