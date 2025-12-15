@@ -125,7 +125,7 @@ export default function WhyScanningPage() {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12" data-aos="fade-up">
             The Power of Scanning
           </h2>
-          <div data-aos="zoom-in">
+          <div data-aos="zoom-in" className="max-w-3xl mx-auto">
             <img 
               src={scanningStepsImage.src} 
               alt="See Think Do - The Power of Scanning" 
