@@ -145,7 +145,7 @@ export default function HomePage() {
               title: "Do",
               desc: "Execute with precision and confidence, turning smart decisions into effective actions on the pitch.",
               color: "#D72C16",
-              icon: "🎯"
+              icon: "⚽"
             }
           ].map((pillar, i) => (
             <div
