@@ -175,7 +175,7 @@ export default function WhyScanningPage() {
               },
               {
                 title: "Do",
-                color: "#C0B2B5",
+                color: "#D72C16",
                 points: [
                   "Execute with confidence",
                   "React instinctively to cues",

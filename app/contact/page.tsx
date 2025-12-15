@@ -221,7 +221,7 @@ export default function ContactPage() {
                 title: "Plan a Session",
                 desc: "Start building your training plan",
                 href: "/planner",
-                color: "#C0B2B5"
+                color: "#D72C16"
               }
             ].map((link, i) => (
               <Link

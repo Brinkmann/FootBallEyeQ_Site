@@ -81,7 +81,7 @@ export default function UseCasesPage() {
               {
                 title: "Professional Clubs",
                 icon: "🏆",
-                color: "#C0B2B5",
+                color: "#D72C16",
                 audience: "Elite and professional",
                 desc: "Integrate Football EyeQ into your existing training methodology. Our system complements top-level coaching with measurable cognitive training.",
                 benefits: [
@@ -203,7 +203,7 @@ export default function UseCasesPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { position: "Goalkeepers", benefit: "Organize defense, read play", color: "#C0B2B5" },
+              { position: "Goalkeepers", benefit: "Organize defense, read play", color: "#A10115" },
               { position: "Defenders", benefit: "Track runners, anticipate", color: "#D72C16" },
               { position: "Midfielders", benefit: "Find space, link play", color: "#A10115" },
               { position: "Forwards", benefit: "Create chances, score", color: "#f4a261" }

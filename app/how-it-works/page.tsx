@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
       <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            How <span className="text-[#C0B2B5]">Football EyeQ</span> Works
+            How <span className="text-[#D72C16]">Football EyeQ</span> Works
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Discover our training method and smart cone technology that brings cognitive 
@@ -82,7 +82,7 @@ export default function HowItWorksPage() {
                   "Multi-tasking and divided attention"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center text-gray-700">
-                    <span className="w-5 h-5 bg-[#C0B2B5] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
+                    <span className="w-5 h-5 bg-[#D72C16] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
                     {item}
                   </li>
                 ))}
@@ -182,7 +182,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#C0B2B5]">
+      <section className="py-16 px-6 bg-[#A10115]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Experience Football EyeQ
@@ -193,13 +193,13 @@ export default function HowItWorksPage() {
           <div className="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
             <Link
               href="/catalog"
-              className="px-8 py-4 bg-white text-[#C0B2B5] font-bold rounded-lg hover:bg-gray-100 transition"
+              className="px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             >
               Browse Drills
             </Link>
             <Link
               href="/planner"
-              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#C0B2B5] transition"
+              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#A10115] transition"
             >
               Plan a Session
             </Link>

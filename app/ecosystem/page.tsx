@@ -95,7 +95,7 @@ export default function EcosystemPage() {
               {
                 phase: "Enjoy",
                 icon: "🎯",
-                color: "#C0B2B5",
+                color: "#D72C16",
                 desc: "Watch players develop game intelligence and confidence. The skills trained transfer directly to match situations, making the game more enjoyable for everyone.",
                 features: [
                   "Visible skill development",

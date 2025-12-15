@@ -144,7 +144,7 @@ export default function HomePage() {
             {
               title: "Do",
               desc: "Execute with precision and confidence, turning smart decisions into effective actions on the pitch.",
-              color: "#C0B2B5",
+              color: "#D72C16",
               icon: "⚽"
             }
           ].map((pillar, i) => (
@@ -281,7 +281,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div data-aos="fade-right" className="order-2 md:order-1">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Smart LED Cones for <span className="text-[#C0B2B5]">Interactive Training</span>
+              Smart LED Cones for <span className="text-[#D72C16]">Interactive Training</span>
             </h2>
             <p className="text-lg text-gray-600 mb-6">
               Our smart cone technology brings drills to life with dynamic light sequences 
@@ -289,7 +289,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/how-it-works"
-              className="inline-flex items-center text-[#C0B2B5] font-semibold hover:underline"
+              className="inline-flex items-center text-[#D72C16] font-semibold hover:underline"
             >
               See how it works →
             </Link>

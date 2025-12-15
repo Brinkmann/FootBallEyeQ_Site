@@ -39,7 +39,7 @@ export default function ResourcesPage() {
       <section className="py-20 px-6 bg-gradient-to-b from-white to-[#F0EFEA]">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6" data-aos="fade-up">
-            <span className="text-[#C0B2B5]">Resources</span> & Guides
+            <span className="text-[#D72C16]">Resources</span> & Guides
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
             Educational materials, guides, and downloads to help you get the most from Football EyeQ.
@@ -71,7 +71,7 @@ export default function ResourcesPage() {
               {
                 title: "Blog & Articles",
                 icon: "📰",
-                color: "#C0B2B5",
+                color: "#D72C16",
                 desc: "Latest articles on cognitive training, player development, and Football EyeQ updates.",
                 items: ["Why Scanning Matters", "Science of Decision Making", "Coach Interviews"],
                 status: "Coming Soon"
@@ -164,7 +164,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-[#C0B2B5]">
+      <section className="py-16 px-6 bg-[#A10115]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4" data-aos="fade-up">
             Stay Updated
@@ -174,7 +174,7 @@ export default function ResourcesPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-white text-[#C0B2B5] font-bold rounded-lg hover:bg-gray-100 transition"
+            className="inline-block px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition"
             data-aos="fade-up"
             data-aos-delay="200"
           >
