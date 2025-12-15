@@ -85,7 +85,7 @@ export default function UseCasesPage() {
                 audience: "Elite and professional",
                 desc: "Integrate Football EyeQ into your existing training methodology. Our system complements top-level coaching with measurable cognitive training.",
                 benefits: [
-                  "Data-driven insights",
+                  "Systematic cognitive development",
                   "Position-specific training",
                   "Injury prevention focus",
                   "Match scenario simulation"
@@ -152,7 +152,7 @@ export default function UseCasesPage() {
                   "Self-paced progression",
                   "Focus on personal weaknesses",
                   "Flexible scheduling",
-                  "Track individual improvement"
+                  "Build personal scanning habits"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center text-gray-700">
                     <span className="w-5 h-5 bg-[#A10115] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>

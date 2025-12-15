@@ -123,9 +123,9 @@ export default function HowItWorksPage() {
                 desc: "Control cone sequences from any device—switch drills instantly without interruption"
               },
               {
-                icon: "⚡",
-                title: "Real-Time Response",
-                desc: "Cones respond instantly to player actions, creating truly interactive training"
+                icon: "🔀",
+                title: "Varied Sequences",
+                desc: "Unpredictable light patterns keep players scanning and mentally engaged throughout every drill"
               }
             ].map((feature, i) => (
               <div 

@@ -87,9 +87,9 @@ export default function EcosystemPage() {
                 desc: "Execute sessions on the pitch with smart cone technology. Players engage with dynamic, reactive drills that develop scanning habits and decision-making.",
                 features: [
                   "Smart cone integration",
-                  "Real-time drill adjustments",
+                  "Adaptable difficulty levels",
                   "Progressive difficulty scaling",
-                  "Immediate feedback loops"
+                  "Cognitive challenge variety"
                 ]
               },
               {
