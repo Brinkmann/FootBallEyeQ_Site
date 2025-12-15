@@ -15,6 +15,36 @@ Football EyeQ is a Next.js application that helps coaches organize football trai
 - `app/store/` - Zustand store for planner state
 - `Firebase/` - Firebase configuration and auth helpers
 - `public/` - Static assets and images
+- `attached_assets/` - User-provided infographic images
+
+## Site Structure
+The site has the following pages:
+1. **Home** (`/`) - Hero section with infographics, three pillars (See/Think/Do), product highlights, CTAs
+2. **Drill Catalogue** (`/catalog`) - Main feature - searchable exercise library
+3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool
+4. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
+5. **How It Works** (`/how-it-works`) - Training method and hardware overview
+6. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
+7. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
+8. **Testimonials** (`/testimonials`) - Placeholder for future social proof
+9. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
+10. **Contact** (`/contact`) - Lead capture form
+11. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
+
+## Navigation Structure
+- **Header nav**: Drill Catalogue, Session Planner, Learn (dropdown), Resources, Testimonials, Contact
+- **Learn dropdown**: Why Scanning, How It Works, Ecosystem, Use Cases
+- **Navbar (authenticated)**: Full tab navigation for logged-in users
+
+## Infographic Assets (in attached_assets/)
+- Hero/Game Intelligence image
+- Traditional vs EyeQ comparison
+- Ecosystem cycle (Plan.Train.Enjoy)
+- Power of Scanning steps
+- See/Think/Do player illustrations
+- Players with colored cones variants
+- Single player scanning
+- Execute On-Field text
 
 ## Key Features
 - Exercise catalog with filters (age group, difficulty, game moment, etc.)
@@ -32,7 +62,15 @@ Football EyeQ is a Next.js application that helps coaches organize football trai
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
-- Added PlanSyncProvider for global Firebase sync (fixes data persistence on login/logout)
+- **Site Restructure (Dec 2024)**: Complete redesign with 7 new pages
+  - New home page with hero infographic, three pillars, product highlights
+  - Educational pages: Why Scanning, How It Works, Ecosystem
+  - Use Cases page for different player pathways
+  - Placeholder pages: Testimonials, Resources
+  - Contact page with lead capture form
+  - Updated navigation with Learn dropdown menu
+  - Integrated user-provided infographic images throughout
+- Added PlanSyncProvider for global Firebase sync
 - Configured Next.js for Replit environment (port 5000, allowed origins)
 - Disabled Turbopack for compatibility
 
@@ -81,3 +119,6 @@ match /signups/{docId} {
 ## User Preferences
 - Architecture: Firebase + Vercel + GitHub only (no Replit-specific dependencies)
 - Admin access: Controlled via Firestore `admin: true` field on user documents
+- Use ONLY user-provided infographic images (in attached_assets/)
+- Drill Catalogue + Session Planner = main features, front and center
+- No pricing information needed on the site
