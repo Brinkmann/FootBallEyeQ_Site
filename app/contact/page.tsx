@@ -63,8 +63,8 @@ export default function ContactPage() {
             Get in <span className="text-[#A10115]">Touch</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-            Have questions about Football EyeQ? Want to learn how we can help your club? 
-            We&apos;d love to hear from you.
+            Have questions about Football EyeQ?<br />
+            Want to learn how we can help your club? We&apos;d love to hear from you.
           </p>
         </div>
       </section>
