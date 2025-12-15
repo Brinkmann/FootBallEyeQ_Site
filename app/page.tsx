@@ -51,12 +51,12 @@ export default function HomePage() {
         {!user && (
           <div className="space-x-3">
             <Link href="/login">
-              <button className="px-4 py-2 rounded-md border border-[#A10115] text-[#A10115] font-semibold hover:bg-[#A10115] hover:text-white transition">
-                Log In
+              <button className="px-4 py-2 text-[#D72C16] font-semibold hover:text-[#A10115] transition">
+                Login
               </button>
             </Link>
             <Link href="/signup">
-              <button className="px-4 py-2 rounded-md bg-[#A10115] text-white font-semibold hover:bg-[#8a0110] transition">
+              <button className="px-4 py-2 rounded-md bg-[#D72C16] text-white font-semibold hover:bg-[#b82010] transition">
                 Sign Up
               </button>
             </Link>
