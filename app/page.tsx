@@ -7,7 +7,7 @@ import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
 import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765753298897.png";
-import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_l11rmgl11rmgl11r_1765753298899.png";
+import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_2f9rfc2f9rfc2f9r_1765758694890.png";
 import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo1_1765753298901.png";
 import playersConesImage from "@/attached_assets/Gemini_Generated_Image_bwhz9zbwhz9zbwhz_1765753298898.png";
 

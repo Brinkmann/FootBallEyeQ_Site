@@ -5,7 +5,7 @@ import "aos/dist/aos.css";
 import Link from "next/link";
 import architectImage from "@/attached_assets/Gemini_Generated_Image_tas8tdtas8tdtas8_1765753298900.png";
 import scanningStepsImage from "@/attached_assets/Gemini_Generated_Image_ovalg8ovalg8oval_1765756651460.png";
-import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_l11rmgl11rmgl11r_1765753298899.png";
+import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_2f9rfc2f9rfc2f9r_1765758694890.png";
 
 export default function WhyScanningPage() {
   useEffect(() => {
