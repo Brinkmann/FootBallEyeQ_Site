@@ -133,10 +133,10 @@ export async function triggerPattern(patternNum: number) {
 
 ## Learn More
 
-- [Why Scanning Matters](/why-scanning](https://football-eyeq.com/why-scanning) — The science behind visual awareness in football
-- [How It Works](/how-it-works) — Smart cone technology explained
-- [Ecosystem](/ecosystem) — The complete Football EyeQ training system
-- [Use Cases](/use-cases) — Real-world applications for different age groups
+- <a href="https://football-eyeq.com/why-scanning" target="_blank">Why Scanning Matters</a> — The science behind visual awareness in football
+- <a href="https://football-eyeq.com/how-it-works" target="_blank">How It Works</a> — Smart cone technology explained
+- <a href="https://football-eyeq.com/ecosystem" target="_blank">Ecosystem</a> — The complete Football EyeQ training system
+- <a href="https://football-eyeq.com/use-cases" target="_blank">Use Cases</a> — Real-world applications for different age groups
 
 ---
 
