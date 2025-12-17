@@ -21,7 +21,7 @@ import { login } from "@/Firebase/auth";export default function LoginPage() {
       JSON.stringify({ uid: user.uid, email: user.email, name: storedName })
     );
 
-    router.push("/"); // redirect after login
+    router.push("/planner"); // redirect after login to session planner
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error("Login failed:", err.message);
