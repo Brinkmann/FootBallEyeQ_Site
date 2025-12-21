@@ -33,6 +33,18 @@ interface FilterChipGroupProps {
   onChange: (value: string) => void;
 }
 
+function formatChipLabel(option: string, defaultValue: string): string {
+  if (option === defaultValue) return "All";
+  
+  let label = option.replace(/^All\s+/i, "");
+  
+  label = label.replace(/\s+Phase\s*/gi, " ");
+  
+  label = label.trim().replace(/\s+/g, " ");
+  
+  return label;
+}
+
 export function FilterChipGroup({ title, options, selected, defaultValue, onChange }: FilterChipGroupProps) {
   return (
     <div className="mb-4">
@@ -41,7 +53,7 @@ export function FilterChipGroup({ title, options, selected, defaultValue, onChan
         {options.map((option) => (
           <FilterChip
             key={option}
-            label={option === defaultValue ? "All" : option.replace(/^All\s+/i, "").replace(/\s*\(.*?\)/g, "")}
+            label={formatChipLabel(option, defaultValue)}
             selected={selected === option}
             onClick={() => onChange(option === selected ? defaultValue : option)}
           />
