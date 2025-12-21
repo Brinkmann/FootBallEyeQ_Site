@@ -62,6 +62,13 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Catalog UX Modernization Phase 1 (Dec 2024)**: Smart filtering and search
+  - Replaced dropdown filters with horizontal scrollable filter chips (FilterChipGroup)
+  - Added search bar with instant debounced filtering by title, tags, description
+  - Added ActiveFilters component showing dismissible filter tags
+  - Added AdvancedFilters bottom sheet for secondary filters (Decision Theme, Player Involvement, Game Moment)
+  - Improved empty state with friendly message and reset button
+  - Post-login now redirects to Session Planner page
 - **Site Restructure (Dec 2024)**: Complete redesign with 7 new pages
   - New home page with hero infographic, three pillars, product highlights
   - Educational pages: Why Scanning, How It Works, Ecosystem
