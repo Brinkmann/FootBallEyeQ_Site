@@ -125,13 +125,23 @@ export default function CatalogPage() {
     let filtered = [...exercises];
 
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((ex) => 
-        ex.title.toLowerCase().includes(query) ||
-        ex.overview.toLowerCase().includes(query) ||
-        ex.description.toLowerCase().includes(query) ||
-        ex.tags?.some((tag) => tag.toLowerCase().includes(query))
-      );
+      const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+      
+      filtered = filtered.filter((ex) => {
+        const searchableText = [
+          ex.title,
+          ex.overview,
+          ex.description,
+          ex.ageGroup,
+          ex.difficulty,
+          ex.decisionTheme,
+          ex.playerInvolvement,
+          ex.gameMoment,
+          ...(ex.tags || [])
+        ].join(" ").toLowerCase();
+        
+        return searchTerms.every(term => searchableText.includes(term));
+      });
     }
 
     if (selectedAgeGroup !== defaultAgeGroup) {
