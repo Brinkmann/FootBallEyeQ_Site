@@ -8,6 +8,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 const baseTabs = [
   { label: "Drill Catalogue", href: "/catalog" },
   { label: "Session Planner", href: "/planner" },
+  { label: "Session Stats", href: "/planner/stats" },
   { label: "Why Scanning", href: "/why-scanning" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Ecosystem", href: "/ecosystem" },
