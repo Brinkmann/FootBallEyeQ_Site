@@ -22,14 +22,15 @@ The site has the following pages:
 1. **Home** (`/`) - Hero section with infographics, three pillars (See/Think/Do), product highlights, CTAs
 2. **Drill Catalogue** (`/catalog`) - Main feature - searchable exercise library
 3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool
-4. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
-5. **How It Works** (`/how-it-works`) - Training method and hardware overview
-6. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
-7. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
-8. **Testimonials** (`/testimonials`) - Placeholder for future social proof
-9. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
-10. **Contact** (`/contact`) - Lead capture form
-11. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
+4. **Session Stats** (`/planner/stats`) - Exercise selection analytics and plan balance
+5. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
+6. **How It Works** (`/how-it-works`) - Training method and hardware overview
+7. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
+8. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
+9. **Testimonials** (`/testimonials`) - Placeholder for future social proof
+10. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
+11. **Contact** (`/contact`) - Lead capture form
+12. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
 
 ## Navigation Structure
 - **Header nav**: Drill Catalogue, Session Planner, Learn (dropdown), Resources, Testimonials, Contact
