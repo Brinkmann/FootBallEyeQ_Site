@@ -31,28 +31,49 @@ export default function FacetedFilters({
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
+  const normalizeDash = (str: string) => str.replace(/–/g, "-");
+
   const filterCounts = useMemo(() => {
     const counts: Record<string, Record<string, number>> = {};
 
-    filters.forEach((filter) => {
-      counts[filter.key] = {};
-      filter.options.forEach((option) => {
-        if (option === filter.defaultValue) {
-          counts[filter.key][option] = exercises.length;
+    filters.forEach((currentFilter) => {
+      counts[currentFilter.key] = {};
+      
+      const baseExercises = exercises.filter((ex) => {
+        return filters.every((otherFilter) => {
+          if (otherFilter.key === currentFilter.key) return true;
+          
+          const selectedValue = selectedFilters[otherFilter.key];
+          if (!selectedValue || selectedValue === otherFilter.defaultValue) return true;
+          
+          const exValue = otherFilter.getValue(ex);
+          const normalizedSelected = normalizeDash(selectedValue);
+          
+          if (Array.isArray(exValue)) {
+            return exValue.some((v) => normalizeDash(v) === normalizedSelected || normalizeDash(v).includes(normalizedSelected));
+          }
+          return normalizeDash(exValue as string) === normalizedSelected;
+        });
+      });
+
+      currentFilter.options.forEach((option) => {
+        if (option === currentFilter.defaultValue) {
+          counts[currentFilter.key][option] = baseExercises.length;
         } else {
-          counts[filter.key][option] = exercises.filter((ex) => {
-            const val = filter.getValue(ex);
+          const normalizedOption = normalizeDash(option);
+          counts[currentFilter.key][option] = baseExercises.filter((ex) => {
+            const val = currentFilter.getValue(ex);
             if (Array.isArray(val)) {
-              return val.some((v) => v === option || v.includes(option));
+              return val.some((v) => normalizeDash(v) === normalizedOption || normalizeDash(v).includes(normalizedOption));
             }
-            return val === option;
+            return normalizeDash(val as string) === normalizedOption;
           }).length;
         }
       });
     });
 
     return counts;
-  }, [exercises, filters]);
+  }, [exercises, filters, selectedFilters]);
 
   const toggleSection = (key: string) => {
     setExpandedSection(expandedSection === key ? null : key);
