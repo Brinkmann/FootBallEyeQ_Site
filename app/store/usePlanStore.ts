@@ -9,6 +9,7 @@ type PlanState = {
   maxPerWeek: number;
   addToWeek: (week: number, name: string) => { ok: boolean; reason?: string };
   removeFromWeek: (week: number, index: number) => void;
+  removeExerciseFromAll: (name: string) => void;
   reset: () => void;
   setAll: (payload: { weeks: WeekPlan[]; maxPerWeek: number }) => void;
 };
@@ -42,6 +43,15 @@ export const usePlanStore = create<PlanState>((set, get) => ({
     next.splice(index, 1);
     const nextWeeks = weeks.slice();
     nextWeeks[idx] = { ...current, exercises: next };
+    set({ weeks: nextWeeks });
+  },
+
+  removeExerciseFromAll: (name) => {
+    const { weeks } = get();
+    const nextWeeks = weeks.map((w) => ({
+      ...w,
+      exercises: w.exercises.filter((e) => e !== name),
+    }));
     set({ weeks: nextWeeks });
   },
 
