@@ -123,6 +123,10 @@ match /signups/{docId} {
 
 ---
 
+## Feature Planning
+- **Trello Board:** https://trello.com/b/EoF15m6W/showmystyle
+- **Local Reference:** See `FUTURE_FEATURES.md` for UX modernization roadmap
+
 ## User Preferences
 - Architecture: Firebase + Vercel + GitHub only (no Replit-specific dependencies)
 - Admin access: Controlled via Firestore `admin: true` field on user documents
