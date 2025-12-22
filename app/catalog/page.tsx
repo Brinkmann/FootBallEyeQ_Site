@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
 import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { Exercise } from "../types/exercise";
-import { FilterChipGroup } from "../components/FilterChip";
+import SmartSearch from "../components/SmartSearch";
+import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
-import SearchBar from "../components/SearchBar";
-import AdvancedFilters from "../components/AdvancedFilters";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -193,13 +192,62 @@ export default function CatalogPage() {
     setSearchQuery("");
   };
 
+  const handleFilterSelect = useCallback((type: string, value: string) => {
+    switch (type) {
+      case "ageGroup":
+        setSelectedAgeGroup(value);
+        break;
+      case "difficulty":
+        setSelectedDifficulty(value);
+        break;
+      case "practiceFormat":
+        const matchingFormat = practiceFormats.find(f => f.includes(value) || value.includes(f.split("/")[0].trim()));
+        if (matchingFormat) {
+          setSelectedPracticeFormat(matchingFormat);
+        }
+        break;
+      case "decisionTheme":
+        setSelectedDecisionTheme(value);
+        break;
+      case "playerInvolvement":
+        setSelectedPlayerInvolvement(value);
+        break;
+      case "gameMoment":
+        setSelectedGameMoment(value);
+        break;
+    }
+  }, [practiceFormats]);
+
+  const handleFacetedFilterChange = useCallback((key: string, value: string) => {
+    switch (key) {
+      case "ageGroup":
+        setSelectedAgeGroup(value);
+        break;
+      case "difficulty":
+        setSelectedDifficulty(value);
+        break;
+      case "practiceFormat":
+        setSelectedPracticeFormat(value);
+        break;
+      case "decisionTheme":
+        setSelectedDecisionTheme(value);
+        break;
+      case "playerInvolvement":
+        setSelectedPlayerInvolvement(value);
+        break;
+      case "gameMoment":
+        setSelectedGameMoment(value);
+        break;
+    }
+  }, []);
+
   const activeFilters = useMemo(() => {
     const filters = [];
     if (selectedAgeGroup !== defaultAgeGroup) {
       filters.push({
         key: "ageGroup",
         label: "Age",
-        value: selectedAgeGroup.replace(/\s*\(.*?\)/g, ""),
+        value: selectedAgeGroup.replace(/\s*Phase\s*/gi, " ").trim(),
         onRemove: () => setSelectedAgeGroup(defaultAgeGroup)
       });
     }
@@ -215,7 +263,7 @@ export default function CatalogPage() {
       filters.push({
         key: "practiceFormat",
         label: "Format",
-        value: selectedPracticeFormat.replace(/\s*\/.*$/g, ""),
+        value: selectedPracticeFormat.split("/")[0].trim(),
         onRemove: () => setSelectedPracticeFormat(defaultPracticeFormat)
       });
     }
@@ -246,40 +294,61 @@ export default function CatalogPage() {
     return filters;
   }, [selectedAgeGroup, selectedDifficulty, selectedPracticeFormat, selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
 
-  const advancedFilterCount = useMemo(() => {
-    let count = 0;
-    if (selectedDecisionTheme !== defaultDecisionTheme) count++;
-    if (selectedPlayerInvolvement !== defaultPlayerInvolvement) count++;
-    if (selectedGameMoment !== defaultGameMoment) count++;
-    return count;
-  }, [selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
+  const activeFilterCount = activeFilters.length;
 
-  const advancedFiltersConfig = [
+  const facetedFiltersConfig = useMemo(() => [
+    {
+      key: "ageGroup",
+      label: "Age Group",
+      options: ageGroups,
+      defaultValue: defaultAgeGroup,
+      getValue: (ex: Exercise) => ex.ageGroup,
+    },
+    {
+      key: "difficulty",
+      label: "Difficulty",
+      options: difficulties,
+      defaultValue: defaultDifficulty,
+      getValue: (ex: Exercise) => ex.difficulty,
+    },
+    {
+      key: "practiceFormat",
+      label: "Practice Format",
+      options: practiceFormats,
+      defaultValue: defaultPracticeFormat,
+      getValue: (ex: Exercise) => ex.tags || [],
+    },
     {
       key: "decisionTheme",
       label: "Decision Theme",
       options: decisionThemes,
-      value: selectedDecisionTheme,
       defaultValue: defaultDecisionTheme,
-      onChange: setSelectedDecisionTheme
+      getValue: (ex: Exercise) => ex.decisionTheme,
     },
     {
       key: "playerInvolvement",
       label: "Player Involvement",
       options: playerInvolvements,
-      value: selectedPlayerInvolvement,
       defaultValue: defaultPlayerInvolvement,
-      onChange: setSelectedPlayerInvolvement
+      getValue: (ex: Exercise) => ex.playerInvolvement,
     },
     {
       key: "gameMoment",
       label: "Game Moment",
       options: gameMoments,
-      value: selectedGameMoment,
       defaultValue: defaultGameMoment,
-      onChange: setSelectedGameMoment
-    }
-  ];
+      getValue: (ex: Exercise) => ex.gameMoment,
+    },
+  ], []);
+
+  const selectedFilters = useMemo(() => ({
+    ageGroup: selectedAgeGroup,
+    difficulty: selectedDifficulty,
+    practiceFormat: selectedPracticeFormat,
+    decisionTheme: selectedDecisionTheme,
+    playerInvolvement: selectedPlayerInvolvement,
+    gameMoment: selectedGameMoment,
+  }), [selectedAgeGroup, selectedDifficulty, selectedPracticeFormat, selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -287,51 +356,32 @@ export default function CatalogPage() {
 
       <div className="px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Drill Catalogue</h1>
-            <p className="text-foreground opacity-60">Find the perfect drill for your training session</p>
+          <div className="mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Drill Catalogue</h1>
+            <p className="text-foreground opacity-60 text-sm">Find the perfect drill for your training session</p>
           </div>
 
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search drills by name, tags, or description..."
-            resultCount={filteredExercises.length}
-            totalCount={exercises.length}
-          />
-
-          <div className="mb-6">
-            <FilterChipGroup
-              title="Age Group"
-              options={ageGroups}
-              selected={selectedAgeGroup}
-              defaultValue={defaultAgeGroup}
-              onChange={setSelectedAgeGroup}
-            />
-
-            <FilterChipGroup
-              title="Difficulty"
-              options={difficulties}
-              selected={selectedDifficulty}
-              defaultValue={defaultDifficulty}
-              onChange={setSelectedDifficulty}
-            />
-
-            <div className="flex items-center gap-4 flex-wrap">
-              <FilterChipGroup
-                title="Practice Format"
-                options={practiceFormats}
-                selected={selectedPracticeFormat}
-                defaultValue={defaultPracticeFormat}
-                onChange={setSelectedPracticeFormat}
+          <div className="flex gap-3 items-start mb-4">
+            <div className="flex-1">
+              <SmartSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                exercises={exercises}
+                onFilterSelect={handleFilterSelect}
+                placeholder="Search or type to filter..."
+                resultCount={filteredExercises.length}
+                totalCount={exercises.length}
               />
-              
-              <div className="mt-6">
-                <AdvancedFilters 
-                  filters={advancedFiltersConfig}
-                  activeCount={advancedFilterCount}
-                />
-              </div>
+            </div>
+            <div className="flex-shrink-0 pt-0">
+              <FacetedFilters
+                exercises={exercises}
+                filters={facetedFiltersConfig}
+                selectedFilters={selectedFilters}
+                onFilterChange={handleFacetedFilterChange}
+                onClearAll={resetFilters}
+                activeCount={activeFilterCount}
+              />
             </div>
           </div>
 
