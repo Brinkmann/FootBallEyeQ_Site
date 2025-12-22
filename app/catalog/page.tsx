@@ -9,10 +9,14 @@ import { Exercise } from "../types/exercise";
 import SmartSearch from "../components/SmartSearch";
 import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
+import { useFavoritesContext } from "../components/FavoritesProvider";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  
+  const { favorites, isAuthenticated } = useFavoritesContext();
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -170,6 +174,10 @@ export default function CatalogPage() {
       );
     }
 
+    if (showFavoritesOnly) {
+      filtered = filtered.filter((ex) => favorites.has(ex.id));
+    }
+
     return filtered;
   }, [
     searchQuery,
@@ -180,6 +188,8 @@ export default function CatalogPage() {
     selectedDifficulty,
     selectedPracticeFormat,
     exercises,
+    showFavoritesOnly,
+    favorites,
   ]);
 
   const resetFilters = () => {
@@ -190,6 +200,7 @@ export default function CatalogPage() {
     setSelectedDifficulty(defaultDifficulty);
     setSelectedPracticeFormat(defaultPracticeFormat);
     setSearchQuery("");
+    setShowFavoritesOnly(false);
   };
 
   const handleFilterSelect = useCallback((type: string, value: string) => {
@@ -243,6 +254,14 @@ export default function CatalogPage() {
 
   const activeFilters = useMemo(() => {
     const filters = [];
+    if (showFavoritesOnly) {
+      filters.push({
+        key: "favorites",
+        label: "",
+        value: "Favorites",
+        onRemove: () => setShowFavoritesOnly(false)
+      });
+    }
     if (selectedAgeGroup !== defaultAgeGroup) {
       filters.push({
         key: "ageGroup",
@@ -292,7 +311,7 @@ export default function CatalogPage() {
       });
     }
     return filters;
-  }, [selectedAgeGroup, selectedDifficulty, selectedPracticeFormat, selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
+  }, [showFavoritesOnly, selectedAgeGroup, selectedDifficulty, selectedPracticeFormat, selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
 
   const activeFilterCount = activeFilters.length;
 
@@ -373,7 +392,30 @@ export default function CatalogPage() {
                 totalCount={exercises.length}
               />
             </div>
-            <div className="flex-shrink-0 pt-0">
+            <div className="flex-shrink-0 flex gap-2 pt-0">
+              {isAuthenticated && (
+                <button
+                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all duration-200 text-sm font-medium
+                    ${showFavoritesOnly 
+                      ? "border-red-400 bg-red-50 text-red-600" 
+                      : "border-divider bg-card text-foreground hover:border-red-300 hover:bg-red-50"
+                    }`}
+                  aria-label={showFavoritesOnly ? "Show all drills" : "Show favorites only"}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill={showFavoritesOnly ? "currentColor" : "none"}
+                    stroke="currentColor"
+                    strokeWidth={showFavoritesOnly ? 0 : 1.5}
+                    className="w-5 h-5"
+                  >
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                  </svg>
+                  <span className="hidden sm:inline">{favorites.size}</span>
+                </button>
+              )}
               <FacetedFilters
                 exercises={exercises}
                 filters={facetedFiltersConfig}
