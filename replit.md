@@ -48,6 +48,7 @@ The site has the following pages:
 
 ## Key Features
 - Exercise catalog with filters (age group, difficulty, game moment, etc.)
+- Favorites system - coaches can favorite drills and filter to show only favorites
 - 12-week season planner with Firebase persistence
 - Coach authentication and profiles
 - Admin console for managing exercises
@@ -62,6 +63,12 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Favorites Feature (Dec 2024)**: Allow coaches to save favorite drills
+  - Heart icon next to each exercise title for quick favoriting
+  - Favorites stored in Firestore per user (real-time sync across devices)
+  - FavoritesProvider context for efficient single-listener pattern
+  - Favorites toggle button in catalog header shows count and filters to favorites only
+  - Favorites filter integrates with ActiveFilters tag strip
 - **Catalog UX Modernization (Dec 2024)**: Compact smart filtering system
   - SmartSearch with autocomplete suggestions showing filter options and drill counts
   - FacetedFilters bottom sheet (mobile) / side panel with collapsible accordion sections
@@ -70,6 +77,7 @@ The site has the following pages:
   - Search supports multi-term matching across all drill fields
   - Improved empty state with friendly message and reset button
   - Post-login now redirects to Session Planner page
+  - Fixed contextual filter counts (counts now reflect current filter selections)
 - **Site Restructure (Dec 2024)**: Complete redesign with 7 new pages
   - New home page with hero infographic, three pillars, product highlights
   - Educational pages: Why Scanning, How It Works, Ecosystem
