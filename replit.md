@@ -62,11 +62,12 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
-- **Catalog UX Modernization Phase 1 (Dec 2024)**: Smart filtering and search
-  - Replaced dropdown filters with horizontal scrollable filter chips (FilterChipGroup)
-  - Added search bar with instant debounced filtering by title, tags, description
-  - Added ActiveFilters component showing dismissible filter tags
-  - Added AdvancedFilters bottom sheet for secondary filters (Decision Theme, Player Involvement, Game Moment)
+- **Catalog UX Modernization (Dec 2024)**: Compact smart filtering system
+  - SmartSearch with autocomplete suggestions showing filter options and drill counts
+  - FacetedFilters bottom sheet (mobile) / side panel with collapsible accordion sections
+  - Each filter option shows live drill counts to guide coach decisions
+  - ActiveFilters tag strip for dismissing selected filters
+  - Search supports multi-term matching across all drill fields
   - Improved empty state with friendly message and reset button
   - Post-login now redirects to Session Planner page
 - **Site Restructure (Dec 2024)**: Complete redesign with 7 new pages
