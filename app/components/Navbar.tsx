@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { auth, db } from "@/Firebase/firebaseConfig";
+import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const baseTabs = [
@@ -71,6 +72,12 @@ export default function NavBar() {
                 🧑‍🏫
               </div>
             </Link>
+            <button
+              onClick={() => signOut(auth)}
+              className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
+            >
+              Log out
+            </button>
           </div>
         ) : (
           <div className="flex items-center space-x-3">
