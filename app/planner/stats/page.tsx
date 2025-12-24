@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import NavBar from "../../components/Navbar";
 import { usePlanStore } from "../../store/usePlanStore";
 import { useFavoritesContext } from "../../components/FavoritesProvider";
-import { db } from "../../../Firebase/firebaseConfig";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../../../Firebase/firebaseConfig";
+import { collection, getDocs, onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Exercise } from "../../types/exercise";
 
 interface ExerciseWithStats extends Exercise {
@@ -18,12 +18,14 @@ interface ExerciseWithStats extends Exercise {
 export default function StatsPage() {
   const router = useRouter();
   const weeks = usePlanStore((s) => s.weeks);
+  const maxPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeExerciseFromAll = usePlanStore((s) => s.removeExerciseFromAll);
   const { isFavorite, toggleFavorite, isAuthenticated } = useFavoritesContext();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [ratings, setRatings] = useState<Record<string, { avg: number; count: number }>>({});
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     async function fetchExercises() {
@@ -156,9 +158,30 @@ export default function StatsPage() {
   const uniqueExercises = Object.keys(usedExercises).length;
   const sessionsWithDrills = weeks.filter((w) => w.exercises.length > 0).length;
 
-  const handleRemoveFromAll = (name: string) => {
-    removeExerciseFromAll(name);
-    setConfirmRemove(null);
+  const handleRemoveFromAll = async (name: string) => {
+    const user = auth.currentUser;
+    if (!user) {
+      removeExerciseFromAll(name);
+      setConfirmRemove(null);
+      return;
+    }
+
+    setIsSaving(true);
+    const updatedWeeks = weeks.map((w) => ({
+      ...w,
+      exercises: w.exercises.filter((e) => e !== name),
+    }));
+
+    try {
+      const ref = doc(db, "planners", user.uid);
+      await setDoc(ref, { weeks: updatedWeeks, maxPerWeek, updatedAt: serverTimestamp() }, { merge: true });
+      removeExerciseFromAll(name);
+    } catch (error) {
+      console.error("Failed to save removal:", error);
+    } finally {
+      setIsSaving(false);
+      setConfirmRemove(null);
+    }
   };
 
   const navigateToSession = (sessionNum: number) => {
@@ -313,8 +336,9 @@ export default function StatsPage() {
                         {ex.sessions.map((sessionNum) => (
                           <button
                             key={sessionNum}
-                            onClick={() => navigateToSession(sessionNum)}
-                            className="px-3 py-1 text-xs font-medium rounded-full bg-primary-light text-primary-dark hover:bg-primary hover:text-white transition-colors"
+                            onClick={() => !isSaving && navigateToSession(sessionNum)}
+                            disabled={isSaving}
+                            className="px-3 py-1 text-xs font-medium rounded-full bg-primary-light text-primary-dark hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Session {sessionNum}
                           </button>
@@ -335,16 +359,20 @@ export default function StatsPage() {
                     <div className="flex-shrink-0">
                       {confirmRemove === ex.title ? (
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-foreground opacity-60">Remove?</span>
+                          <span className="text-sm text-foreground opacity-60">
+                            {isSaving ? "Saving..." : "Remove?"}
+                          </span>
                           <button
                             onClick={() => handleRemoveFromAll(ex.title)}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
+                            disabled={isSaving}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Yes
+                            {isSaving ? "..." : "Yes"}
                           </button>
                           <button
                             onClick={() => setConfirmRemove(null)}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-divider text-foreground hover:bg-background transition-colors"
+                            disabled={isSaving}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-divider text-foreground hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             No
                           </button>
