@@ -124,9 +124,9 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           )}
         </div>
 
-        {/* Overview - this is the "blurb" on the exercise cards */}
+        {/* Overview - full description, no truncation */}
         {overview && (
-          <p className="text-foreground opacity-80 text-sm mb-4 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+          <p className="text-foreground opacity-80 text-sm mb-4">
             {overview}
           </p>
         )}
