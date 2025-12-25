@@ -9,6 +9,7 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
   const weeks = usePlanStore((s) => s.weeks);
   const maxPerWeek = usePlanStore((s) => s.maxPerWeek);
   const setAll = usePlanStore((s) => s.setAll);
+  const reset = usePlanStore((s) => s.reset);
 
   const loadedUserRef = useRef<string | null>(null);
   const isLoadingRef = useRef(false);
@@ -18,6 +19,8 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         loadedUserRef.current = null;
+        lastSavedRef.current = "";
+        reset();
         return;
       }
 
@@ -61,7 +64,7 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
     });
 
     return () => unsub();
-  }, [setAll]);
+  }, [setAll, reset]);
 
   useEffect(() => {
     if (!loadedUserRef.current || isLoadingRef.current) return;
