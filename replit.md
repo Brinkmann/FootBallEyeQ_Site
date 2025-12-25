@@ -72,6 +72,13 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Super Admin System (Dec 2024)**: Hidden system administration page
+  - Route: `/super-admin` (not linked anywhere in UI)
+  - Access: Only obrinkmann@gmail.com (hardcoded email check)
+  - Features: View/suspend/unsuspend/delete clubs and coaches
+  - Club suspension cascades to all associated coaches
+  - Suspended users get downgraded to free entitlements
+  - **SECURITY NOTE**: Production requires Firestore rules (see Future Improvements section)
 - **Two-Tier Account System (Dec 2024)**: Club/Coach monetization model
   - Three account types: Free, Club Coach, Individual Premium
   - Free users limited to 1 session, 10 favorites, no stats access
@@ -146,6 +153,41 @@ match /signups/{docId} {
 - [ ] Add Firestore security rules for `exercises` collection (admin-only writes)
 - [ ] Add route protection for `/admin` page (middleware or server component)
 - [ ] Consider using Firebase Custom Claims for admin status (more secure than Firestore field)
+
+### Priority: HIGH - Super Admin Security
+
+The `/super-admin` page currently uses client-side email verification only. Before production:
+
+#### Issue: Client-Side Only Protection
+**Problem**: Super admin operations (suspend/delete clubs and coaches) are executed directly from browser. A technically savvy user could bypass the UI check.
+
+**Solution Options**:
+1. **Firebase Callable Functions** (Recommended): Move suspend/delete logic to Cloud Functions that verify the caller's email server-side
+2. **Firebase Custom Claims**: Set a `superAdmin: true` custom claim on the user and verify in Firestore rules
+3. **Firestore Security Rules**: Add rules that only allow writes to `status`/`accountStatus` fields from the super admin UID
+
+**Example Firestore Rules**:
+```javascript
+// Define super admin UID (get this from Firebase Console)
+function isSuperAdmin() {
+  return request.auth.uid == 'SUPER_ADMIN_UID_HERE';
+}
+
+match /clubs/{clubId} {
+  allow read: if request.auth != null;
+  allow update: if isSuperAdmin() || (request.auth != null && 
+    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'suspendedAt', 'suspendedReason']));
+  allow delete: if isSuperAdmin();
+}
+
+match /signups/{docId} {
+  allow read: if request.auth != null;
+  allow update: if isSuperAdmin() || (request.auth != null && 
+    request.auth.uid == resource.data.uid &&
+    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['accountStatus', 'suspendedAt', 'suspendedReason', 'admin']));
+  allow delete: if isSuperAdmin();
+}
+```
 
 ---
 
