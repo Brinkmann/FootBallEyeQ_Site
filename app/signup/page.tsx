@@ -74,8 +74,8 @@ export default function SignupPage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">I&apos;m a Coach</h2>
-                  <p className="text-sm text-gray-500">Individual account</p>
+                  <h2 className="text-xl font-bold text-foreground">Individual Coach</h2>
+                  <p className="text-sm text-gray-500">For coaches training on their own</p>
                 </div>
               </div>
               <ul className="space-y-2 text-sm text-gray-600 mb-4">
@@ -83,7 +83,7 @@ export default function SignupPage() {
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Start free instantly</span>
+                  <span>Start free - no credit card required</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -95,11 +95,11 @@ export default function SignupPage() {
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Upgrade or join a club anytime</span>
+                  <span>Join a club later for full access</span>
                 </li>
               </ul>
               <div className="text-primary font-medium flex items-center gap-1">
-                Sign up free
+                Get started free
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
@@ -117,8 +117,8 @@ export default function SignupPage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">Register a Club</h2>
-                  <p className="text-sm text-gray-500">Team or organization</p>
+                  <h2 className="text-xl font-bold text-foreground">Club Account</h2>
+                  <p className="text-sm text-gray-500">For club admins who manage coaches</p>
                 </div>
               </div>
               <ul className="space-y-2 text-sm text-gray-600 mb-4">
@@ -126,19 +126,19 @@ export default function SignupPage() {
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Full access for your entire team</span>
+                  <span>You become the club admin</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>12 sessions, unlimited favorites, stats</span>
+                  <span>Invite your coaches with access codes</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Invite coaches with one-time codes</span>
+                  <span>All coaches get full access (12 sessions, stats)</span>
                 </li>
               </ul>
               <div className="text-primary font-medium flex items-center gap-1">
@@ -151,15 +151,15 @@ export default function SignupPage() {
           </div>
 
           <div className="bg-card border border-divider rounded-xl p-6 text-center">
-            <p className="text-gray-600 mb-3">Already have an invite code from your club?</p>
+            <p className="text-gray-600 mb-3">Already a coach at a registered club?</p>
             <Link
               href="/login?redirect=/upgrade"
               className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
               </svg>
-              Log in to enter your invite code
+              Enter your club access code
             </Link>
           </div>
 
