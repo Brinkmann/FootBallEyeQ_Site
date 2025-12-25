@@ -259,7 +259,7 @@ export default function ClubSignupPage() {
         )}
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>After registration, you'll be taken to your club dashboard where you can invite coaches.</p>
+          <p>After registration, you&apos;ll be taken to your club dashboard where you can invite coaches.</p>
         </div>
       </div>
     </div>

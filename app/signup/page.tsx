@@ -74,7 +74,7 @@ export default function SignupPage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">I'm a Coach</h2>
+                  <h2 className="text-xl font-bold text-foreground">I&apos;m a Coach</h2>
                   <p className="text-sm text-gray-500">Individual account</p>
                 </div>
               </div>

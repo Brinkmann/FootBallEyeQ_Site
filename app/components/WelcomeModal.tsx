@@ -41,7 +41,7 @@ export default function WelcomeModal({ type, userName, clubName }: WelcomeModalP
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h3 className="font-medium text-gray-900 mb-3">Here's what you can do:</h3>
+            <h3 className="font-medium text-gray-900 mb-3">Here&apos;s what you can do:</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">1.</span>
@@ -96,7 +96,7 @@ export default function WelcomeModal({ type, userName, clubName }: WelcomeModalP
             {clubName ? `${clubName} is ready!` : "Your club is ready!"}
           </h2>
           <p className="text-gray-600 mt-2">
-            You're now the admin. Let's get your team set up.
+            You&apos;re now the admin. Let&apos;s get your team set up.
           </p>
         </div>
 
