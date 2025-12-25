@@ -60,20 +60,20 @@ export default function WelcomeModal({ type, userName, clubName }: WelcomeModalP
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
             <p className="text-sm text-blue-800">
-              <span className="font-medium">Want more?</span> Join a club with an invite code to unlock all 12 sessions, unlimited favorites, and stats.
+              <span className="font-medium">Want more?</span> Upgrade to premium or join a club to unlock all 12 sessions, unlimited favorites, and stats.
             </p>
           </div>
 
           <div className="flex gap-3">
             <Link
               href="/catalog"
-              className="flex-1 py-3 border border-divider rounded-lg text-center text-gray-700 hover:bg-gray-50 transition font-medium"
+              className="flex-1 py-3 bg-primary text-white rounded-lg text-center hover:bg-primary-hover transition font-medium"
             >
               Browse Drills
             </Link>
             <button
               onClick={handleClose}
-              className="flex-1 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition font-medium"
+              className="flex-1 py-3 border border-divider rounded-lg text-gray-700 hover:bg-gray-50 transition font-medium"
             >
               Start Planning
             </button>
