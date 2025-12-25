@@ -84,7 +84,7 @@ export default function NavBar() {
     <div className="bg-white px-6 pt-4 shadow-sm">
       {/* Header */}
       <header className="flex justify-between items-center mb-4">
-        <Link href="/" className="flex items-center space-x-2 text-xl font-bold hover:opacity-80 transition text-gray-900">
+        <Link href="/" className="flex items-center space-x-2 text-xl font-bold hover:opacity-80 transition text-gray-900 focus:outline-none">
           <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-8 w-auto" />
           <span>Football EyeQ</span>
         </Link>
