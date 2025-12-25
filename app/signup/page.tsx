@@ -25,12 +25,13 @@ export default function SignupPage() {
 
       // 2. Store extra info in Firestore under "signups" collection
       await addDoc(collection(db, "signups"), {
-        uid: userCredential.user.uid,  // link data to user
+        uid: userCredential.user.uid,
         fname: name,
         lname: lastName,
         email: email,
         admin: false,
         organization: organization,
+        accountType: "free",
         createdAt: serverTimestamp(),
       });
 

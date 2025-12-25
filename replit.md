@@ -21,16 +21,19 @@ Football EyeQ is a Next.js application that helps coaches organize football trai
 The site has the following pages:
 1. **Home** (`/`) - Hero section with infographics, three pillars (See/Think/Do), product highlights, CTAs
 2. **Drill Catalogue** (`/catalog`) - Main feature - searchable exercise library
-3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool
-4. **Session Stats** (`/planner/stats`) - Exercise selection analytics and plan balance
-5. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
-6. **How It Works** (`/how-it-works`) - Training method and hardware overview
-7. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
-8. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
-9. **Testimonials** (`/testimonials`) - Placeholder for future social proof
-10. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
-11. **Contact** (`/contact`) - Lead capture form
-12. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
+3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool (locked sessions for free users)
+4. **Session Stats** (`/planner/stats`) - Exercise selection analytics and plan balance (premium only)
+5. **Upgrade** (`/upgrade`) - Join club via invite code or individual subscription options
+6. **Club Signup** (`/club/signup`) - Register a new club as admin
+7. **Club Dashboard** (`/club/dashboard`) - Club admin: manage coaches, generate invite codes
+8. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
+9. **How It Works** (`/how-it-works`) - Training method and hardware overview
+10. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
+11. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
+12. **Testimonials** (`/testimonials`) - Placeholder for future social proof
+13. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
+14. **Contact** (`/contact`) - Lead capture form
+15. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
 
 ## Navigation Structure
 - **Header nav**: Drill Catalogue, Session Planner, Learn (dropdown), Resources, Testimonials, Contact
@@ -53,6 +56,11 @@ The site has the following pages:
 - 12-week season planner with Firebase persistence
 - Coach authentication and profiles
 - Admin console for managing exercises
+- **Two-tier account system (Club/Coach)**:
+  - Free coaches: 1 session, 10 favorites, no stats access
+  - Club coaches: Full access (12 sessions, unlimited favorites, stats)
+  - Club admins can manage coach roster and generate invite codes
+  - Upgrade page for joining clubs via invite code
 
 ## Environment Variables Required
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
@@ -64,6 +72,21 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Super Admin System (Dec 2024)**: Hidden system administration page
+  - Route: `/super-admin` (not linked anywhere in UI)
+  - Access: Only obrinkmann@gmail.com (hardcoded email check)
+  - Features: View/suspend/unsuspend/delete clubs and coaches
+  - Club suspension cascades to all associated coaches
+  - Suspended users get downgraded to free entitlements
+  - **SECURITY NOTE**: Production requires Firestore rules (see Future Improvements section)
+- **Two-Tier Account System (Dec 2024)**: Club/Coach monetization model
+  - Three account types: Free, Club Coach, Individual Premium
+  - Free users limited to 1 session, 10 favorites, no stats access
+  - Clubs can register and manage coach accounts via invite codes
+  - EntitlementProvider tracks user access level across the app
+  - Locked UI states with upgrade CTAs for premium features
+  - Club dashboard for admin roster management
+  - Invite code system with expiration and single-use enforcement
 - **Favorites Feature (Dec 2024)**: Allow coaches to save favorite drills
   - Heart icon next to each exercise title for quick favoriting
   - Favorites stored in Firestore per user (real-time sync across devices)
@@ -130,6 +153,41 @@ match /signups/{docId} {
 - [ ] Add Firestore security rules for `exercises` collection (admin-only writes)
 - [ ] Add route protection for `/admin` page (middleware or server component)
 - [ ] Consider using Firebase Custom Claims for admin status (more secure than Firestore field)
+
+### Priority: HIGH - Super Admin Security
+
+The `/super-admin` page currently uses client-side email verification only. Before production:
+
+#### Issue: Client-Side Only Protection
+**Problem**: Super admin operations (suspend/delete clubs and coaches) are executed directly from browser. A technically savvy user could bypass the UI check.
+
+**Solution Options**:
+1. **Firebase Callable Functions** (Recommended): Move suspend/delete logic to Cloud Functions that verify the caller's email server-side
+2. **Firebase Custom Claims**: Set a `superAdmin: true` custom claim on the user and verify in Firestore rules
+3. **Firestore Security Rules**: Add rules that only allow writes to `status`/`accountStatus` fields from the super admin UID
+
+**Example Firestore Rules**:
+```javascript
+// Define super admin UID (get this from Firebase Console)
+function isSuperAdmin() {
+  return request.auth.uid == 'SUPER_ADMIN_UID_HERE';
+}
+
+match /clubs/{clubId} {
+  allow read: if request.auth != null;
+  allow update: if isSuperAdmin() || (request.auth != null && 
+    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'suspendedAt', 'suspendedReason']));
+  allow delete: if isSuperAdmin();
+}
+
+match /signups/{docId} {
+  allow read: if request.auth != null;
+  allow update: if isSuperAdmin() || (request.auth != null && 
+    request.auth.uid == resource.data.uid &&
+    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['accountStatus', 'suspendedAt', 'suspendedReason', 'admin']));
+  allow delete: if isSuperAdmin();
+}
+```
 
 ---
 

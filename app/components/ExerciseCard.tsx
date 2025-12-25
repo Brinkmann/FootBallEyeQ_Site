@@ -9,6 +9,21 @@ import { useFavoritesContext } from "./FavoritesProvider";
 import ExercisePreviewModal from "./ExercisePreviewModal";
 import ExerciseReviewModal from "./ExerciseReviewModal";
 
+const abbreviateLabel = (label: string): string => {
+  const abbreviations: Record<string, string> = {
+    "Foundation Phase (U7-U10)": "U7-U10",
+    "Youth Development Phase (U11-U14)": "U11-U14",
+    "Performance Phase (U15-U18)": "U15-U18",
+    "Senior / Adult": "Adult",
+    "Team Unit (5+ players)": "5+ Players",
+    "Small Group (2-4 players)": "2-4 Players",
+    "Individual (1 player)": "Individual",
+    "Warm-Up / Ball Mastery": "Warm-Up",
+    "General / Unspecified": "",
+  };
+  return abbreviations[label] || label;
+};
+
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showWeeks, setShowWeeks] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -109,31 +124,41 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           )}
         </div>
 
-        {/* Meta */}
-        <div className="text-sm text-gray-600 mb-2">
-          {exercise.ageGroup} • {exercise.duration} • {exercise.difficulty}
-        </div>
-
-        {/* Overview - this is the "blurb" on the exercise cards */}
+        {/* Overview - full description, no truncation */}
         {overview && (
           <p className="text-foreground opacity-80 text-sm mb-4">
             {overview}
           </p>
         )}
 
-        {/* Tags */}
-        {!!exercise.tags?.length && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {exercise.tags.map((tag, i) => (
-              <span
-                key={`${exercise.id}-tag-${i}`}
-                className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        {/* Attribute chips - using individual fields with abbreviated labels */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {exercise.ageGroup && exercise.ageGroup !== "General / Unspecified" && (
+            <span className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium">
+              {abbreviateLabel(exercise.ageGroup)}
+            </span>
+          )}
+          {exercise.decisionTheme && exercise.decisionTheme !== "General / Unspecified" && (
+            <span className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium">
+              {abbreviateLabel(exercise.decisionTheme)}
+            </span>
+          )}
+          {exercise.gameMoment && exercise.gameMoment !== "General / Unspecified" && (
+            <span className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium">
+              {abbreviateLabel(exercise.gameMoment)}
+            </span>
+          )}
+          {exercise.playerInvolvement && exercise.playerInvolvement !== "General / Unspecified" && (
+            <span className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium">
+              {abbreviateLabel(exercise.playerInvolvement)}
+            </span>
+          )}
+          {exercise.difficulty && exercise.difficulty !== "General / Unspecified" && (
+            <span className="bg-primary-light text-primary-dark px-2 py-1 rounded text-xs font-medium">
+              {abbreviateLabel(exercise.difficulty)}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Footer: rating + actions (kept) */}

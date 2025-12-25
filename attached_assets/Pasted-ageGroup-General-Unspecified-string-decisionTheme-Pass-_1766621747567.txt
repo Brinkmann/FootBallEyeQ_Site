@@ -1,0 +1,87 @@
+ageGroup
+"General / Unspecified"
+(string)
+
+
+decisionTheme
+"Pass or Dribble"
+(string)
+
+
+description
+"Exercise ID 01 – Pass to the Cone Matching the Pass-From Colour Age Group Tag: General / Unspecified Decision Theme Tag: Pass or Dribble Player Involvement Tag: Team Unit (5+ players) Game Moment Tag: Build-Up Difficulty Level Tag: General / Unspecified Practice Format Tag: Warm-Up / Ball Mastery Exercise ID 01 – Pass to the Cone Matching the Pass-From Colour ### 2. Title & Basic Info Title: Pass to the Cone Matching the Pass-From Colour Age Range: U10–U14 Recommended Numbers: 5–8 players (4 corner players and 1–2 central players) ### 3. Drill Overview A passing and awareness drill played in a square with one player in the middle and players on each corner. EyeQ SmartCones on the corners change colour; the central player must scan, identify the active colour, then pass to the corner whose cone matches that colour. The focus is on quick scanning and accurate passing under a simple but constant visual cue. ### 4. Objective & Scanning Emphasis Objective: Improve short passing, first touch and decision-making for the central player while keeping outside players tidy and involved. Scanning emphasis: The central player must scan as the ball travels back towards them, pick up the current light colour, then quickly re-scan across the four corner cones to find the matching target. If they fail to scan or guess, they are likely to pass to the wrong cone, which results in a lost point or turnover and reinforces the value of checking the cue. ### 5. Setup & Equipment Area: Square of approximately 10–12m per side (adjust to age and level). Players: 4 players on the corners, 1–2 players working in the centre. Equipment required: 4 EyeQ SmartCones (one on each corner), 1–2 balls, flat markers if needed. EyeQ Smart Cone placement: One SmartCone placed at each corner of the square; each cone cycles through colours (e.g. red, blue, green, yellow) independently. ### 6. EyeQ Cue Rules (Colour / Cue Key) - When the ball is travelling back to the central player, one colour on the EyeQ system is active (as defined in the app). - The central player must pass to the corner whose EyeQ cone currently shows the same active colour. - If no corner cone is showing the active colour when the central player receives the ball, they must return the ball to the original passer. - Passing to the wrong colour or playing before clearly identifying the colour = point to defenders/coach or simple “reset” and the next player steps in. ### 7. How to Play (Step-by-Step) 1. Place a player on each corner cone and 1–2 players in the middle with a ball. 2. A central player starts by passing to any corner player. 3. The corner player receives and returns the ball to the central player. 4. As the ball travels back, the EyeQ system changes the active colour; the central player must see this, then quickly scan all four cones. 5. The central player then passes to the corner whose cone matches the active colour cue. 6. If no cone matches, the central player passes back to the original corner and the pattern continues. 7. After a set time or number of passes, rotate a new player into the central role. ### 8. Coaching Points - Scan as the ball travels, not after it arrives – central player should lift their head before first touch. - Open body shape in the centre so they can see both the returning pass and as many corner cones as possible. - Crisp passing technique with the inside of the foot; weight of pass appropriate to distance. - Corner players check to the ball and play first-time where possible to keep tempo high. - Encourage communication (e.g. corners can call their colour to support the central player). ### 9. Progressions and Variations - Easier: Allow the central player 2–3 touches before passing; slow the cone colour changes slightly. - Easier: Use only two colours and two active corners to reduce complexity for younger players. - Harder: One-touch passing for the central player; they must already know their target before the ball arrives. - Harder: Add a passive defender in the middle who can intercept lazy or slow passes. - Harder: If the central player chooses the wrong colour, they immediately swap with that corner player as a “penalty” rotation. ---"
+(string)
+
+
+difficulty
+"General / Unspecified"
+(string)
+
+
+duration
+"15-20 mins"
+(string)
+
+
+gameMoment
+"Build-Up"
+(string)
+
+
+id
+1
+(number)
+
+
+image
+""
+(string)
+
+
+overview
+"A passing and awareness drill played in a square with one player in the middle and players on each corner. EyeQ SmartCones on the corners change colour; the central player must scan, identify the active colour, then pass to the corner whose cone matches that colour. The focus is on quick scanning and accurate passing under a simple but constant visual cue."
+(string)
+
+
+playerInvolvement
+"Team Unit (5+ players)"
+(string)
+
+
+
+tags
+(array)
+
+
+0
+"General / Unspecified"
+(string)
+
+
+1
+"Pass or Dribble"
+(string)
+
+
+2
+"Team Unit (5+ players)"
+(string)
+
+
+3
+"Build-Up"
+(string)
+
+
+4
+"General / Unspecified"
+(string)
+
+
+5
+"Warm-Up / Ball Mastery"
+(string)
+
+
+title
+"Pass to the Cone Matching the Pass-From Colour"

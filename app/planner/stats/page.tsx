@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import NavBar from "../../components/Navbar";
 import { usePlanStore } from "../../store/usePlanStore";
 import { useFavoritesContext } from "../../components/FavoritesProvider";
+import { useEntitlements } from "../../components/EntitlementProvider";
 import { auth, db } from "../../../Firebase/firebaseConfig";
 import { collection, getDocs, onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Exercise } from "../../types/exercise";
@@ -21,6 +23,7 @@ export default function StatsPage() {
   const maxPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeExerciseFromAll = usePlanStore((s) => s.removeExerciseFromAll);
   const { isFavorite, toggleFavorite, isAuthenticated } = useFavoritesContext();
+  const { entitlements, isLoading: entitlementsLoading } = useEntitlements();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [ratings, setRatings] = useState<Record<string, { avg: number; count: number }>>({});
@@ -193,6 +196,41 @@ export default function StatsPage() {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength).trim() + "...";
   };
+
+  if (!entitlementsLoading && !entitlements.canAccessStats) {
+    return (
+      <div className="min-h-screen bg-background">
+        <NavBar />
+        <div className="px-4 sm:px-6 py-6">
+          <div className="max-w-xl mx-auto text-center py-16">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-3">Session Stats Locked</h1>
+            <p className="text-gray-600 mb-6">
+              Upgrade to access detailed analytics about your training plan, including exercise balance, difficulty spread, and session insights.
+            </p>
+            <Link
+              href="/upgrade"
+              className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-hover transition font-medium"
+            >
+              Upgrade to Unlock
+            </Link>
+            <div className="mt-4">
+              <Link
+                href="/planner"
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Back to Planner
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

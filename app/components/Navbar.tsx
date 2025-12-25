@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { auth, db } from "@/Firebase/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { AccountType } from "../types/account";
 
 const baseTabs = [
   { label: "Drill Catalogue", href: "/catalog" },
@@ -23,6 +24,9 @@ export default function NavBar() {
   const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [accountType, setAccountType] = useState<AccountType>("free");
+  const [clubName, setClubName] = useState<string | null>(null);
+  const [isClubAdmin, setIsClubAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -34,6 +38,19 @@ export default function NavBar() {
             const data = querySnapshot.docs[0].data();
             setUserName(`${data.fname} ${data.lname}`);
             setIsAdmin(data.admin === true);
+            setAccountType((data.accountType as AccountType) || "free");
+            setIsClubAdmin(data.clubRole === "admin");
+            
+            if (data.clubId) {
+              const clubQuery = query(
+                collection(db, "clubs"),
+                where("__name__", "==", data.clubId)
+              );
+              const clubSnap = await getDocs(clubQuery);
+              if (!clubSnap.empty) {
+                setClubName(clubSnap.docs[0].data().name || null);
+              }
+            }
           } else {
             setUserName(user.email ?? "User");
             setIsAdmin(false);
@@ -46,15 +63,22 @@ export default function NavBar() {
       } else {
         setUserName(null);
         setIsAdmin(false);
+        setAccountType("free");
+        setClubName(null);
+        setIsClubAdmin(false);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const tabs = isAdmin
-    ? [...baseTabs, { label: "Admin", href: "/admin" }]
-    : baseTabs;
+  let tabs = [...baseTabs];
+  if (isClubAdmin) {
+    tabs = [...tabs, { label: "Club Dashboard", href: "/club/dashboard" }];
+  }
+  if (isAdmin) {
+    tabs = [...tabs, { label: "Admin", href: "/admin" }];
+  }
 
   return (
     <div className="bg-white px-6 pt-4 shadow-sm">
@@ -66,7 +90,25 @@ export default function NavBar() {
         </Link>
         {userName ? (
           <div className="flex items-center space-x-4">
-            <span className="text-gray-700 text-sm">{userName}</span>
+            <div className="flex items-center gap-2">
+              {accountType === "free" ? (
+                <Link
+                  href="/upgrade"
+                  className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded hover:bg-primary-light hover:text-primary transition"
+                >
+                  Free Plan
+                </Link>
+              ) : accountType === "clubCoach" ? (
+                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">
+                  {clubName || "Club"}
+                </span>
+              ) : (
+                <span className="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded">
+                  Premium
+                </span>
+              )}
+              <span className="text-gray-700 text-sm">{userName}</span>
+            </div>
             <Link href="/profile">
               <div className="w-8 h-8 bg-[#e63946] rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
                 🧑‍🏫
