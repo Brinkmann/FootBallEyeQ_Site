@@ -43,11 +43,10 @@ export default function StatsPage() {
             decisionTheme: data.decisionTheme || "",
             playerInvolvement: data.playerInvolvement || "",
             gameMoment: data.gameMoment || "",
-            duration: data.duration || "",
             difficulty: data.difficulty || "",
+            practiceFormat: data.practiceFormat || "General / Mixed",
             overview: data.overview || "",
             description: data.description || "",
-            tags: data.tags || [],
             image: data.image || "",
           };
         });
@@ -114,11 +113,10 @@ export default function StatsPage() {
             decisionTheme: "Unknown",
             playerInvolvement: "Unknown",
             gameMoment: "Unknown",
-            duration: "Unknown",
             difficulty: "Unknown",
+            practiceFormat: "General / Mixed",
             overview: "",
             description: "",
-            tags: [],
             image: "",
           }),
           sessions: usedExercises[name],
@@ -147,11 +145,9 @@ export default function StatsPage() {
       if (isValid(ex.gameMoment)) {
         gameMoments[ex.gameMoment] = (gameMoments[ex.gameMoment] || 0) + 1;
       }
-      ex.tags?.forEach((tag) => {
-        if (tag && tag.trim() !== "") {
-          formats[tag] = (formats[tag] || 0) + 1;
-        }
-      });
+      if (ex.practiceFormat && ex.practiceFormat.trim() !== "" && ex.practiceFormat !== "General / Mixed") {
+        formats[ex.practiceFormat] = (formats[ex.practiceFormat] || 0) + 1;
+      }
     });
 
     return { difficulties, decisionThemes, gameMoments, formats };
@@ -383,13 +379,11 @@ export default function StatsPage() {
                         ))}
                       </div>
 
-                      {ex.tags && ex.tags.length > 0 && (
+                      {ex.practiceFormat && ex.practiceFormat !== "General / Mixed" && (
                         <div className="flex flex-wrap gap-1.5">
-                          {ex.tags.map((tag, i) => (
-                            <span key={i} className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
-                              {tag}
-                            </span>
-                          ))}
+                          <span className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
+                            {ex.practiceFormat}
+                          </span>
                         </div>
                       )}
                     </div>

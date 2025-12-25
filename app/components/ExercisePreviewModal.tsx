@@ -24,9 +24,15 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
     pdf.setFontSize(12);
     pdf.text(`Age group: ${exercise.ageGroup}`, 10, y);
     y += 7;
-    pdf.text(`Duration: ${exercise.duration}`, 10, y);
-    y += 7;
     pdf.text(`Difficulty: ${exercise.difficulty}`, 10, y);
+    y += 7;
+    pdf.text(`Decision Theme: ${exercise.decisionTheme}`, 10, y);
+    y += 7;
+    pdf.text(`Player Involvement: ${exercise.playerInvolvement}`, 10, y);
+    y += 7;
+    pdf.text(`Game Moment: ${exercise.gameMoment}`, 10, y);
+    y += 7;
+    pdf.text(`Practice Format: ${exercise.practiceFormat}`, 10, y);
     y += 10;
 
     // Overview
@@ -122,7 +128,7 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
                 <p><span className="font-semibold">Player involvement:</span> {exercise.playerInvolvement}</p>
                 <p><span className="font-semibold">Game moment simulated:</span> {exercise.gameMoment}</p>
                 <p><span className="font-semibold">Difficulty level:</span> {exercise.difficulty}</p>
-                <p><span className="font-semibold">Duration:</span> {exercise.duration}</p>
+                <p><span className="font-semibold">Practice format:</span> {exercise.practiceFormat}</p>
               </div>
 
               <hr className="border-divider mb-4" />

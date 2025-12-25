@@ -104,11 +104,10 @@ export default function CatalogPage() {
             decisionTheme: data.decisionTheme || "N/A",
             playerInvolvement: data.playerInvolvement || "N/A",
             gameMoment: data.gameMoment || "N/A",
-            duration: data.duration || "Unknown",
             difficulty: data.difficulty || "Unknown",
+            practiceFormat: data.practiceFormat || "General / Mixed",
             overview: data.overview || "",
             description: data.description || "",
-            tags: data.tags || [],
             image: data.image || null,
           };
         });
@@ -140,7 +139,7 @@ export default function CatalogPage() {
           ex.decisionTheme,
           ex.playerInvolvement,
           ex.gameMoment,
-          ...(ex.tags || [])
+          ex.practiceFormat
         ].join(" ").toLowerCase();
         
         return searchTerms.every(term => searchableText.includes(term));
@@ -169,9 +168,7 @@ export default function CatalogPage() {
     }
     if (selectedPracticeFormat !== defaultPracticeFormat) {
       const normalizedFilter = normalizeDash(selectedPracticeFormat);
-      filtered = filtered.filter((ex) => 
-        ex.tags?.some((tag) => normalizeDash(tag) === normalizedFilter)
-      );
+      filtered = filtered.filter((ex) => normalizeDash(ex.practiceFormat) === normalizedFilter);
     }
 
     if (showFavoritesOnly) {
@@ -335,7 +332,7 @@ export default function CatalogPage() {
       label: "Practice Format",
       options: practiceFormats,
       defaultValue: defaultPracticeFormat,
-      getValue: (ex: Exercise) => ex.tags || [],
+      getValue: (ex: Exercise) => ex.practiceFormat,
     },
     {
       key: "decisionTheme",

@@ -20,8 +20,8 @@ export default function AdminPage() {
     const [decisionTheme, setDecisionTheme] = useState("General / Unspecified");
     const [playerInvolvement, setPlayerInvolvement] = useState("General / Unspecified");
     const [gameMoment, setGameMoment] = useState("General / Unspecified");
-    const [duration, setDuration] = useState("");
     const [difficulty, setDifficulty] = useState("General / Unspecified");
+    const [practiceFormat, setPracticeFormat] = useState("General / Mixed");
     const [overview, setOverview] = useState("");
 
     const descriptionTemplate = `    Overview
@@ -75,8 +75,8 @@ export default function AdminPage() {
         setDecisionTheme("General / Unspecified");
         setPlayerInvolvement("General / Unspecified");
         setGameMoment("General / Unspecified");
-        setDuration("");
         setDifficulty("General / Unspecified");
+        setPracticeFormat("General / Mixed");
         setOverview("");
         setDescription(descriptionTemplate);
         setImageFile(null);
@@ -93,16 +93,6 @@ export default function AdminPage() {
             alert("Please enter an ID!");
             return;
         }
-
-        const tagsArray = [
-            ageGroup, 
-            decisionTheme,
-            playerInvolvement,
-            gameMoment,
-            difficulty
-        ]
-            .filter(Boolean) // Remove empty or null tags
-            .map(normalizeTag);
 
         try {
             let imageBase64 = null;
@@ -123,11 +113,10 @@ export default function AdminPage() {
                     decisionTheme,
                     playerInvolvement,
                     gameMoment,
-                    duration,
                     difficulty,
+                    practiceFormat,
                     overview,
                     description,
-                    tags: tagsArray,
                     image: imageBase64,
                 },
                 { merge: true }
@@ -165,8 +154,8 @@ export default function AdminPage() {
         setDecisionTheme(exercise.decisionTheme || "General / Unspecified");
         setPlayerInvolvement(exercise.playerInvolvement || "General / Unspecified");
         setGameMoment(exercise.gameMoment || "General / Unspecified");
-        setDuration(exercise.duration);
         setDifficulty(exercise.difficulty || "General / Unspecified");
+        setPracticeFormat(exercise.practiceFormat || "General / Mixed");
         setOverview(exercise.overview || "");
         setDescription(exercise.description);
         setImageFile(null); // Do not pre-fill image
@@ -214,6 +203,16 @@ export default function AdminPage() {
         "Elite"
     ];
 
+    const practiceFormats = [
+        "General / Mixed",
+        "Warm-Up / Ball Mastery",
+        "Fun Game / Physical",
+        "Finishing / Shooting Pattern",
+        "Positional Possession Game",
+        "Rondo / Tight Possession",
+        "Directional Small-Sided Game"
+    ];
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -249,20 +248,6 @@ export default function AdminPage() {
                                 onChange={(e) => setTitle(e.target.value)}
                                 className="w-full border px-3 py-2"
                                 placeholder="Enter exercise title"
-                                required
-                            />
-                        </div>
-                        
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Duration
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="E.g., 10 mins"
-                                value={duration}
-                                onChange={(e) => setDuration(e.target.value)}
-                                className="w-full border px-3 py-2"
                                 required
                             />
                         </div>
@@ -363,6 +348,21 @@ export default function AdminPage() {
                             >
                                 {difficulties.map((d) => (
                                     <option key={`difficulty-${d}`} value={d}>{d}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Practice Format
+                            </label>
+                            <select
+                                value={practiceFormat}
+                                onChange={(e) => setPracticeFormat(e.target.value)}
+                                className="w-full border px-3 py-2"
+                            >
+                                {practiceFormats.map((pf) => (
+                                    <option key={`format-${pf}`} value={pf}>{pf}</option>
                                 ))}
                             </select>
                         </div>
