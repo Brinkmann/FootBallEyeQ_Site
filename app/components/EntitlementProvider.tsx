@@ -12,6 +12,8 @@ import {
   PREMIUM_ENTITLEMENTS,
 } from "../types/account";
 
+const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
+
 interface EntitlementContextType {
   accountType: AccountType;
   accountStatus: AccountStatus;
@@ -20,6 +22,9 @@ interface EntitlementContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   isSuspended: boolean;
+  isSuperAdmin: boolean;
+  isClubAdmin: boolean;
+  userEmail: string | null;
 }
 
 const EntitlementContext = createContext<EntitlementContextType | null>(null);
@@ -30,6 +35,8 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   const [clubName, setClubName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isClubAdmin, setIsClubAdmin] = useState(false);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
@@ -39,10 +46,13 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         setClubName(null);
         setIsLoading(false);
         setIsAuthenticated(false);
+        setUserEmail(null);
+        setIsClubAdmin(false);
         return;
       }
 
       setIsAuthenticated(true);
+      setUserEmail(user.email || null);
       setIsLoading(true);
 
       try {
@@ -58,6 +68,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
           const userAccountStatus = (userData.accountStatus as AccountStatus) || "active";
           setAccountType(userAccountType);
           setAccountStatus(userAccountStatus);
+          setIsClubAdmin(userData.clubRole === "admin");
 
           if (userAccountType === "clubCoach" && userData.clubId) {
             const clubQuery = query(
@@ -76,11 +87,13 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         } else {
           setAccountType("free");
           setAccountStatus("active");
+          setIsClubAdmin(false);
         }
       } catch (error) {
         console.error("Failed to load user entitlements:", error);
         setAccountType("free");
         setAccountStatus("active");
+        setIsClubAdmin(false);
       } finally {
         setIsLoading(false);
       }
@@ -90,6 +103,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const isSuspended = accountStatus === "suspended";
+  const isSuperAdmin = userEmail === SUPER_ADMIN_EMAIL;
   
   const entitlements: Entitlements =
     isSuspended || accountType === "free" ? FREE_ENTITLEMENTS : PREMIUM_ENTITLEMENTS;
@@ -104,6 +118,9 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated,
         isSuspended,
+        isSuperAdmin,
+        isClubAdmin,
+        userEmail,
       }}
     >
       {children}
