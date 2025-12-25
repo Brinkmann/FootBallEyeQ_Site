@@ -72,6 +72,14 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Improved Signup Flow (Dec 2024)**: Enhanced onboarding experience
+  - `/signup` is now a decision hub with Coach vs Club choice cards
+  - Coach signup form has optional organization field
+  - `/club/signup` is a 2-step wizard with benefits preview and progress indicator
+  - WelcomeModal component shows contextual guidance after signup
+  - Coaches see "Welcome to Football EyeQ" modal with feature highlights
+  - Club admins see "Your club is ready" modal with next steps for inviting coaches
+  - Post-signup redirects include `?welcome=true` to trigger onboarding screens
 - **Super Admin System (Dec 2024)**: Hidden system administration page
   - Route: `/super-admin` (not linked anywhere in UI)
   - Access: Only obrinkmann@gmail.com (hardcoded email check)

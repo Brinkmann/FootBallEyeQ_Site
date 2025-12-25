@@ -2,6 +2,7 @@
 import Link from "next/link";
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
+import WelcomeModal from "../components/WelcomeModal";
 import { usePlanStore } from "../store/usePlanStore";
 import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
@@ -54,6 +55,7 @@ export default function SeasonPlanningPage() {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
+      <WelcomeModal type="coach" />
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
