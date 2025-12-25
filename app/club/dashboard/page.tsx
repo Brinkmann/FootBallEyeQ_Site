@@ -127,10 +127,11 @@ export default function ClubDashboardPage() {
   };
 
   const handleCreateInvite = async () => {
-    if (!clubId) return;
+    if (!clubId || !inviteEmail.trim()) return;
     setInviteLoading(true);
 
     try {
+      const normalizedEmail = inviteEmail.trim().toLowerCase();
       const code = generateInviteCode();
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);
@@ -139,7 +140,7 @@ export default function ClubDashboardPage() {
         clubId,
         clubName,
         code,
-        email: inviteEmail || null,
+        email: normalizedEmail,
         createdAt: serverTimestamp(),
         expiresAt,
       });
@@ -149,7 +150,7 @@ export default function ClubDashboardPage() {
         {
           id: inviteDoc.id,
           code,
-          email: inviteEmail || undefined,
+          email: normalizedEmail,
           createdAt: new Date(),
           expiresAt,
         },
@@ -204,116 +205,135 @@ export default function ClubDashboardPage() {
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-card border border-divider rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Coaches</h2>
-              <span className="text-sm text-gray-500">{members.length} members</span>
+        <div className="bg-card border border-divider rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">Team Roster</h2>
+              <p className="text-sm text-gray-500">
+                {members.length} active {members.length === 1 ? "coach" : "coaches"}
+                {invites.length > 0 && ` + ${invites.length} pending`}
+              </p>
             </div>
-
-            <div className="space-y-3">
-              {members.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center justify-between p-3 bg-background rounded-lg border border-divider"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{member.email}</p>
-                    <p className="text-xs text-gray-500 capitalize">{member.role}</p>
-                  </div>
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      member.status === "active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {member.status}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <button
+              onClick={() => setShowInviteForm(true)}
+              className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Invite Coach
+            </button>
           </div>
 
-          <div className="bg-card border border-divider rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Invite Codes</h2>
-              <button
-                onClick={() => setShowInviteForm(true)}
-                className="text-sm text-primary hover:underline"
-              >
-                + Create Invite
-              </button>
-            </div>
-
-            {showInviteForm && (
-              <div className="mb-4 p-4 bg-primary-light rounded-lg">
+          {showInviteForm && (
+            <div className="mb-6 p-4 bg-primary-light rounded-lg border border-primary/20">
+              <h3 className="font-medium text-foreground mb-3">Create invite for new coach</h3>
+              <div className="mb-3">
+                <label className="block text-sm text-gray-600 mb-1">Coach email address <span className="text-red-500">*</span></label>
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="Coach email (optional)"
-                  className="w-full p-2 rounded border border-divider bg-background text-sm mb-2"
+                  placeholder="coach@example.com"
+                  className="w-full p-3 rounded-lg border border-divider bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
                 />
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleCreateInvite}
-                    disabled={inviteLoading}
-                    className="flex-1 bg-primary text-white text-sm py-2 rounded hover:bg-primary-hover transition"
-                  >
-                    {inviteLoading ? "..." : "Generate Code"}
-                  </button>
-                  <button
-                    onClick={() => setShowInviteForm(false)}
-                    className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
-                  >
-                    Cancel
-                  </button>
-                </div>
+                <p className="text-xs text-gray-500 mt-1">The access code will only work for this email</p>
               </div>
-            )}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleCreateInvite}
+                  disabled={inviteLoading || !inviteEmail.trim()}
+                  className="flex-1 bg-primary text-white text-sm py-2.5 rounded-lg hover:bg-primary-hover transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {inviteLoading ? "Creating..." : "Generate Access Code"}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowInviteForm(false);
+                    setInviteEmail("");
+                  }}
+                  className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 border border-divider rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
-            <div className="space-y-3">
-              {invites.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-4">
-                  No active invite codes
-                </p>
-              ) : (
-                invites.map((invite) => (
+          <div className="space-y-2">
+            {members.length === 0 && invites.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-8">
+                No coaches yet. Click &quot;Invite Coach&quot; to add your first team member.
+              </p>
+            ) : (
+              <>
+                {members.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between p-4 bg-background rounded-lg border border-divider"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-green-600">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{member.email}</p>
+                        <p className="text-xs text-gray-500 capitalize">{member.role}</p>
+                      </div>
+                    </div>
+                    <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+                      Active
+                    </span>
+                  </div>
+                ))}
+
+                {invites.map((invite) => (
                   <div
                     key={invite.id}
-                    className="flex items-center justify-between p-3 bg-background rounded-lg border border-divider"
+                    className="flex items-center justify-between p-4 bg-amber-50 rounded-lg border border-amber-200"
                   >
-                    <div>
-                      <p className="font-mono text-lg font-bold text-primary">
-                        {invite.code}
-                      </p>
-                      {invite.email && (
-                        <p className="text-xs text-gray-500">For: {invite.email}</p>
-                      )}
-                      <p className="text-xs text-gray-400">
-                        Expires: {invite.expiresAt?.toLocaleDateString()}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-600">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{invite.email || "No email"}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-amber-300 text-primary font-bold">
+                            {invite.code}
+                          </span>
+                          <span className="text-xs text-amber-600">
+                            Expires {invite.expiresAt?.toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                     <button
                       onClick={() => handleDeleteInvite(invite.id)}
-                      className="text-xs text-red-500 hover:text-red-700"
+                      className="text-xs text-red-500 hover:text-red-700 hover:underline"
                     >
-                      Delete
+                      Cancel
                     </button>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
 
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <h3 className="font-medium text-blue-800 mb-1">How to invite coaches</h3>
-          <p className="text-sm text-blue-700">
-            Generate an invite code and share it with your coaches. They can enter the code on
-            the upgrade page to join your club and get full access.
-          </p>
+          <ol className="text-sm text-blue-700 list-decimal list-inside space-y-1">
+            <li>Click &quot;Invite Coach&quot; and enter their email address</li>
+            <li>Share the generated access code with them</li>
+            <li>They sign up using the same email, then enter the code</li>
+          </ol>
+          <p className="text-xs text-blue-600 mt-2">Each code is single-use and only works for the assigned email.</p>
         </div>
       </div>
     </div>

@@ -57,6 +57,12 @@ export default function UpgradePage() {
         return;
       }
 
+      if (invite.email && user.email?.toLowerCase() !== invite.email.toLowerCase()) {
+        setError(`This code was created for a different email address. Please log in with the email your club admin used when generating your invite.`);
+        setLoading(false);
+        return;
+      }
+
       const signupsQuery = query(
         collection(db, "signups"),
         where("uid", "==", user.uid)
