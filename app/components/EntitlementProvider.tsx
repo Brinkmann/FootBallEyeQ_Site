@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import {
   AccountType,
+  AccountStatus,
   Entitlements,
   FREE_ENTITLEMENTS,
   PREMIUM_ENTITLEMENTS,
@@ -13,16 +14,19 @@ import {
 
 interface EntitlementContextType {
   accountType: AccountType;
+  accountStatus: AccountStatus;
   entitlements: Entitlements;
   clubName: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isSuspended: boolean;
 }
 
 const EntitlementContext = createContext<EntitlementContextType | null>(null);
 
 export function EntitlementProvider({ children }: { children: ReactNode }) {
   const [accountType, setAccountType] = useState<AccountType>("free");
+  const [accountStatus, setAccountStatus] = useState<AccountStatus>("active");
   const [clubName, setClubName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,6 +35,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         setAccountType("free");
+        setAccountStatus("active");
         setClubName(null);
         setIsLoading(false);
         setIsAuthenticated(false);
@@ -50,7 +55,9 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         if (!snapshot.empty) {
           const userData = snapshot.docs[0].data();
           const userAccountType = (userData.accountType as AccountType) || "free";
+          const userAccountStatus = (userData.accountStatus as AccountStatus) || "active";
           setAccountType(userAccountType);
+          setAccountStatus(userAccountStatus);
 
           if (userAccountType === "clubCoach" && userData.clubId) {
             const clubQuery = query(
@@ -59,15 +66,21 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
             );
             const clubSnapshot = await getDocs(clubQuery);
             if (!clubSnapshot.empty) {
-              setClubName(clubSnapshot.docs[0].data().name || null);
+              const clubData = clubSnapshot.docs[0].data();
+              setClubName(clubData.name || null);
+              if (clubData.status === "suspended") {
+                setAccountStatus("suspended");
+              }
             }
           }
         } else {
           setAccountType("free");
+          setAccountStatus("active");
         }
       } catch (error) {
         console.error("Failed to load user entitlements:", error);
         setAccountType("free");
+        setAccountStatus("active");
       } finally {
         setIsLoading(false);
       }
@@ -76,17 +89,21 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
     return () => unsubAuth();
   }, []);
 
+  const isSuspended = accountStatus === "suspended";
+  
   const entitlements: Entitlements =
-    accountType === "free" ? FREE_ENTITLEMENTS : PREMIUM_ENTITLEMENTS;
+    isSuspended || accountType === "free" ? FREE_ENTITLEMENTS : PREMIUM_ENTITLEMENTS;
 
   return (
     <EntitlementContext.Provider
       value={{
         accountType,
+        accountStatus,
         entitlements,
         clubName,
         isLoading,
         isAuthenticated,
+        isSuspended,
       }}
     >
       {children}

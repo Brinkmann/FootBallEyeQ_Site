@@ -1,5 +1,7 @@
 export type AccountType = "free" | "clubCoach" | "individualPremium";
 
+export type AccountStatus = "active" | "suspended";
+
 export interface UserProfile {
   uid: string;
   email: string;
@@ -8,8 +10,12 @@ export interface UserProfile {
   organization?: string;
   accountType: AccountType;
   clubId?: string;
+  clubRole?: "admin" | "coach";
   admin: boolean;
   createdAt: Date;
+  accountStatus?: AccountStatus;
+  suspendedAt?: Date;
+  suspendedReason?: string;
 }
 
 export interface Club {
@@ -18,6 +24,9 @@ export interface Club {
   contactEmail: string;
   createdAt: Date;
   subscriptionStatus: "active" | "inactive" | "trial";
+  status?: AccountStatus;
+  suspendedAt?: Date;
+  suspendedReason?: string;
 }
 
 export interface ClubMember {
