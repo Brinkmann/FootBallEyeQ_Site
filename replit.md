@@ -21,16 +21,19 @@ Football EyeQ is a Next.js application that helps coaches organize football trai
 The site has the following pages:
 1. **Home** (`/`) - Hero section with infographics, three pillars (See/Think/Do), product highlights, CTAs
 2. **Drill Catalogue** (`/catalog`) - Main feature - searchable exercise library
-3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool
-4. **Session Stats** (`/planner/stats`) - Exercise selection analytics and plan balance
-5. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
-6. **How It Works** (`/how-it-works`) - Training method and hardware overview
-7. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
-8. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
-9. **Testimonials** (`/testimonials`) - Placeholder for future social proof
-10. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
-11. **Contact** (`/contact`) - Lead capture form
-12. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
+3. **Session Planner** (`/planner`) - Main feature - 12-week season planning tool (locked sessions for free users)
+4. **Session Stats** (`/planner/stats`) - Exercise selection analytics and plan balance (premium only)
+5. **Upgrade** (`/upgrade`) - Join club via invite code or individual subscription options
+6. **Club Signup** (`/club/signup`) - Register a new club as admin
+7. **Club Dashboard** (`/club/dashboard`) - Club admin: manage coaches, generate invite codes
+8. **Why Scanning** (`/why-scanning`) - Educational content on scanning importance
+9. **How It Works** (`/how-it-works`) - Training method and hardware overview
+10. **Ecosystem** (`/ecosystem`) - Plan/Train/Enjoy cycle visualization
+11. **Use Cases** (`/use-cases`) - Player pathways (youth, semi-pro, professional)
+12. **Testimonials** (`/testimonials`) - Placeholder for future social proof
+13. **Resources** (`/resources`) - Placeholder for guides, blog, downloads
+14. **Contact** (`/contact`) - Lead capture form
+15. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
 
 ## Navigation Structure
 - **Header nav**: Drill Catalogue, Session Planner, Learn (dropdown), Resources, Testimonials, Contact
@@ -53,6 +56,11 @@ The site has the following pages:
 - 12-week season planner with Firebase persistence
 - Coach authentication and profiles
 - Admin console for managing exercises
+- **Two-tier account system (Club/Coach)**:
+  - Free coaches: 1 session, 10 favorites, no stats access
+  - Club coaches: Full access (12 sessions, unlimited favorites, stats)
+  - Club admins can manage coach roster and generate invite codes
+  - Upgrade page for joining clubs via invite code
 
 ## Environment Variables Required
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
@@ -64,6 +72,14 @@ The site has the following pages:
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
 ## Recent Changes
+- **Two-Tier Account System (Dec 2024)**: Club/Coach monetization model
+  - Three account types: Free, Club Coach, Individual Premium
+  - Free users limited to 1 session, 10 favorites, no stats access
+  - Clubs can register and manage coach accounts via invite codes
+  - EntitlementProvider tracks user access level across the app
+  - Locked UI states with upgrade CTAs for premium features
+  - Club dashboard for admin roster management
+  - Invite code system with expiration and single-use enforcement
 - **Favorites Feature (Dec 2024)**: Allow coaches to save favorite drills
   - Heart icon next to each exercise title for quick favoriting
   - Favorites stored in Firestore per user (real-time sync across devices)
