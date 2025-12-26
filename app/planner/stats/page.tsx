@@ -382,13 +382,23 @@ export default function StatsPage() {
                         ))}
                       </div>
 
-                      {ex.practiceFormat && ex.practiceFormat !== "General / Mixed" && (
-                        <div className="flex flex-wrap gap-1.5">
-                          <span className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
-                            {ex.practiceFormat}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { label: ex.ageGroup, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.decisionTheme, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.playerInvolvement, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.gameMoment, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.difficulty, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.practiceFormat, skip: ["Unknown", "N/A", "General / Mixed", ""] },
+                        ]
+                          .filter(tag => tag.label && !tag.skip.includes(tag.label))
+                          .map((tag, idx) => (
+                            <span key={idx} className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
+                              {tag.label}
+                            </span>
+                          ))
+                        }
+                      </div>
                     </div>
 
                     <div className="flex-shrink-0">
