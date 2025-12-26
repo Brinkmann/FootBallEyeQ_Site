@@ -129,6 +129,7 @@ export default function StatsPage() {
           reviewCount: rating.count,
         };
       })
+      .filter((ex) => ex.exerciseType === selectedExerciseType)
       .sort((a, b) => b.sessions.length - a.sessions.length);
   }, [usedExercises, exercises, ratings, selectedExerciseType]);
 
@@ -158,9 +159,16 @@ export default function StatsPage() {
     return { difficulties, decisionThemes, gameMoments, formats };
   }, [exercisesWithStats]);
 
-  const totalSelections = weeks.reduce((sum, w) => sum + w.exercises.length, 0);
-  const uniqueExercises = Object.keys(usedExercises).length;
-  const sessionsWithDrills = weeks.filter((w) => w.exercises.length > 0).length;
+  // Calculate stats from filtered exercises
+  const totalSelections = exercisesWithStats.reduce((sum, ex) => sum + ex.sessions.length, 0);
+  const uniqueExercises = exercisesWithStats.length;
+  const sessionsWithDrills = useMemo(() => {
+    const sessionsSet = new Set<number>();
+    exercisesWithStats.forEach(ex => {
+      ex.sessions.forEach(s => sessionsSet.add(s));
+    });
+    return sessionsSet.size;
+  }, [exercisesWithStats]);
 
   const handleRemoveFromAll = async (name: string) => {
     const user = auth.currentUser;
