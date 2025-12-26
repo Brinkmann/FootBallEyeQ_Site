@@ -36,9 +36,10 @@ The site has the following pages:
 15. **Tag Explanation Guide** (`/explanation`) - Drill coding system reference
 
 ## Navigation Structure
-- **Header nav**: Drill Catalogue, Session Planner, Learn (dropdown), Resources, Testimonials, Contact
+- **Navbar (all users)**: Drill Catalogue, Session Planner, Tag Guide, Learn (dropdown)
 - **Learn dropdown**: Why Scanning, How It Works, Ecosystem, Use Cases
-- **Navbar (authenticated)**: Full tab navigation for logged-in users
+- **Role-specific tabs**: My Club (club admins), Admin Hub (super admin)
+- **Footer**: 4-column layout with Training Tools, Learn, About, Support sections
 
 ## Infographic Assets (in attached_assets/)
 - Hero/Game Intelligence image
