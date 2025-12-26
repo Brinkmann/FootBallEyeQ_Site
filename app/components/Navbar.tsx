@@ -171,7 +171,7 @@ export default function NavBar() {
             </svg>
           </button>
           {learnOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50 overflow-hidden">
               {learnLinks.map((link) => (
                 <Link
                   key={link.href}
