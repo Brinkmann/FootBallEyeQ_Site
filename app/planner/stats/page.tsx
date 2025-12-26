@@ -43,11 +43,11 @@ export default function StatsPage() {
             decisionTheme: data.decisionTheme || "",
             playerInvolvement: data.playerInvolvement || "",
             gameMoment: data.gameMoment || "",
-            duration: data.duration || "",
             difficulty: data.difficulty || "",
+            practiceFormat: data.practiceFormat || "General / Mixed",
             overview: data.overview || "",
             description: data.description || "",
-            tags: data.tags || [],
+            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
             image: data.image || "",
           };
         });
@@ -114,11 +114,10 @@ export default function StatsPage() {
             decisionTheme: "Unknown",
             playerInvolvement: "Unknown",
             gameMoment: "Unknown",
-            duration: "Unknown",
             difficulty: "Unknown",
+            practiceFormat: "General / Mixed",
             overview: "",
             description: "",
-            tags: [],
             image: "",
           }),
           sessions: usedExercises[name],
@@ -147,11 +146,9 @@ export default function StatsPage() {
       if (isValid(ex.gameMoment)) {
         gameMoments[ex.gameMoment] = (gameMoments[ex.gameMoment] || 0) + 1;
       }
-      ex.tags?.forEach((tag) => {
-        if (tag && tag.trim() !== "") {
-          formats[tag] = (formats[tag] || 0) + 1;
-        }
-      });
+      if (ex.practiceFormat && ex.practiceFormat.trim() !== "" && ex.practiceFormat !== "General / Mixed") {
+        formats[ex.practiceFormat] = (formats[ex.practiceFormat] || 0) + 1;
+      }
     });
 
     return { difficulties, decisionThemes, gameMoments, formats };
@@ -366,8 +363,10 @@ export default function StatsPage() {
                         </div>
                       </div>
                       
-                      {ex.overview && (
-                        <p className="text-sm text-foreground opacity-70 mb-3">{truncateOverview(ex.overview)}</p>
+                      {(ex.exerciseBreakdownDesc || ex.overview) && (
+                        <p className="text-sm text-foreground opacity-70 mb-3">
+                          {ex.exerciseBreakdownDesc || truncateOverview(ex.overview)}
+                        </p>
                       )}
 
                       <div className="flex flex-wrap gap-2 mb-3">
@@ -383,15 +382,23 @@ export default function StatsPage() {
                         ))}
                       </div>
 
-                      {ex.tags && ex.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
-                          {ex.tags.map((tag, i) => (
-                            <span key={i} className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
-                              {tag}
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { label: ex.ageGroup, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.decisionTheme, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.playerInvolvement, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.gameMoment, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.difficulty, skip: ["Unknown", "N/A", "General / Unspecified", ""] },
+                          { label: ex.practiceFormat, skip: ["Unknown", "N/A", "General / Mixed", ""] },
+                        ]
+                          .filter(tag => tag.label && !tag.skip.includes(tag.label))
+                          .map((tag, idx) => (
+                            <span key={idx} className="text-xs px-2 py-0.5 rounded bg-background text-foreground opacity-70 border border-divider">
+                              {tag.label}
                             </span>
-                          ))}
-                        </div>
-                      )}
+                          ))
+                        }
+                      </div>
                     </div>
 
                     <div className="flex-shrink-0">

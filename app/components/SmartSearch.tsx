@@ -91,22 +91,7 @@ export default function SmartSearch({
     countByField("playerInvolvement", "players");
     countByField("gameMoment", "moment");
 
-    const tagCounts: Record<string, number> = {};
-    exercises.forEach((ex) => {
-      ex.tags?.forEach((tag) => {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-      });
-    });
-    Object.entries(tagCounts).forEach(([tag, count]) => {
-      if (tag.toLowerCase().includes(query)) {
-        results.push({
-          type: "format",
-          label: tag,
-          value: tag,
-          count,
-        });
-      }
-    });
+    countByField("practiceFormat", "format");
 
     return results.sort((a, b) => b.count - a.count).slice(0, 8);
   }, [localValue, exercises]);

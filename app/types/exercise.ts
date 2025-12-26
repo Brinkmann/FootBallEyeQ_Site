@@ -6,10 +6,10 @@ export interface Exercise {
   decisionTheme: string;
   playerInvolvement: string;
   gameMoment: string;
-  duration: string;
   difficulty: string;
+  practiceFormat: string;
   overview: string;
   description: string;
-  tags: string[];
+  exerciseBreakdownDesc?: string;
   image: string;
 }
