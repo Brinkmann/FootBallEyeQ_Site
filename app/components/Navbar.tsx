@@ -7,17 +7,17 @@ import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
 
-const baseTabs = [
+const coreTabs = [
   { label: "Drill Catalogue", href: "/catalog" },
   { label: "Session Planner", href: "/planner" },
+  { label: "Tag Guide", href: "/explanation" },
+];
+
+const learnLinks = [
   { label: "Why Scanning", href: "/why-scanning" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Ecosystem", href: "/ecosystem" },
   { label: "Use Cases", href: "/use-cases" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Resources", href: "/resources" },
-  { label: "Contact", href: "/contact" },
-  { label: "Tag Guide", href: "/explanation" },
 ];
 
 export default function NavBar() {
@@ -49,14 +49,16 @@ export default function NavBar() {
     return () => unsubscribe();
   }, []);
 
-  let tabs = [...baseTabs];
+  const [learnOpen, setLearnOpen] = useState(false);
+
+  let tabs = [...coreTabs];
   
   if (isClubAdmin) {
     tabs = [...tabs, { label: "My Club", href: "/club/dashboard" }];
   }
   
   if (isSuperAdmin) {
-    tabs = [...tabs, { label: "Admin", href: "/admin" }];
+    tabs = [...tabs, { label: "Admin Hub", href: "/admin" }];
   }
 
   return (
@@ -135,7 +137,7 @@ export default function NavBar() {
         </div>
       )}
 
-      <nav className="flex space-x-1 overflow-x-auto border-b border-gray-200">
+      <nav className="flex space-x-1 border-b border-gray-200">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
           return (
@@ -152,6 +154,40 @@ export default function NavBar() {
             </Link>
           );
         })}
+        
+        <div className="relative">
+          <button
+            onClick={() => setLearnOpen(!learnOpen)}
+            onBlur={() => setTimeout(() => setLearnOpen(false), 150)}
+            className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
+              learnLinks.some(l => pathname === l.href)
+                ? "border-[#e63946] text-[#e63946]"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            Learn
+            <svg className={`w-4 h-4 transition-transform ${learnOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {learnOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+              {learnLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`block px-4 py-2 text-sm transition ${
+                    pathname === link.href
+                      ? "text-[#e63946] bg-red-50"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
     </div>
   );
