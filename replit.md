@@ -50,6 +50,21 @@ The site has the following pages:
 - Single player scanning
 - Execute On-Field text
 
+## Exercise Schema
+Exercises use a clean, explicit field structure (no redundant tags array):
+- `id` - Unique identifier (e.g., "001")
+- `title` - Exercise name
+- `ageGroup` - Foundation Phase (U7-U10), Youth Development (U11-U14), etc.
+- `decisionTheme` - Pass or Dribble, Attack or Hold, Shoot or Pass
+- `playerInvolvement` - Individual, 1v1/2v2, Small Group, Team Unit
+- `gameMoment` - Build-Up, Switch of Play, Final Third Decision
+- `difficulty` - Basic, Moderate, Advanced, Elite
+- `practiceFormat` - Warm-Up, Fun Game, Finishing, Possession, Rondo, SSG
+- `overview` - Full summary of the drill
+- `description` - Detailed setup and coaching points
+- `exerciseBreakdownDesc` - Short one-line summary for stats page display
+- `image` - Base64 encoded image (optional)
+
 ## Key Features
 - Exercise catalog with filters (age group, difficulty, game moment, etc.)
 - Favorites system - coaches can favorite drills and filter to show only favorites
