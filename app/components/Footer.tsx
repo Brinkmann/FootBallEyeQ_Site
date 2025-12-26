@@ -1,0 +1,75 @@
+"use client";
+import Link from "next/link";
+
+const footerColumns = [
+  {
+    title: "Training Tools",
+    links: [
+      { label: "Drill Catalogue", href: "/catalog" },
+      { label: "Session Planner", href: "/planner" },
+      { label: "Tag Guide", href: "/explanation" },
+    ],
+  },
+  {
+    title: "Learn",
+    links: [
+      { label: "Why Scanning", href: "/why-scanning" },
+      { label: "How It Works", href: "/how-it-works" },
+      { label: "Ecosystem", href: "/ecosystem" },
+      { label: "Use Cases", href: "/use-cases" },
+    ],
+  },
+  {
+    title: "About",
+    links: [
+      { label: "Testimonials", href: "/testimonials" },
+      { label: "Resources", href: "/resources" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+];
+
+export default function Footer() {
+  return (
+    <footer className="bg-gray-900 text-gray-300 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {footerColumns.map((column) => (
+            <div key={column.title}>
+              <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
+                {column.title}
+              </h3>
+              <ul className="space-y-3">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-gray-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-6 w-auto opacity-80" />
+            <span className="text-white font-semibold">Football EyeQ</span>
+          </div>
+          <p className="text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} Football EyeQ. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
