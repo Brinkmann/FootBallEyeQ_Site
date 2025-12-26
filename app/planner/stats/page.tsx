@@ -7,6 +7,7 @@ import NavBar from "../../components/Navbar";
 import { usePlanStore } from "../../store/usePlanStore";
 import { useFavoritesContext } from "../../components/FavoritesProvider";
 import { useEntitlements } from "../../components/EntitlementProvider";
+import { useExerciseType } from "../../components/ExerciseTypeProvider";
 import { auth, db } from "../../../Firebase/firebaseConfig";
 import { collection, getDocs, onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Exercise } from "../../types/exercise";
@@ -24,6 +25,7 @@ export default function StatsPage() {
   const removeExerciseFromAll = usePlanStore((s) => s.removeExerciseFromAll);
   const { isFavorite, toggleFavorite, isAuthenticated } = useFavoritesContext();
   const { entitlements, isLoading: entitlementsLoading } = useEntitlements();
+  const { selectedExerciseType } = useExerciseType();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [ratings, setRatings] = useState<Record<string, { avg: number; count: number }>>({});
@@ -49,6 +51,7 @@ export default function StatsPage() {
             description: data.description || "",
             exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
             image: data.image || "",
+            exerciseType: data.exerciseType || "eyeq",
           };
         });
         setExercises(list);
@@ -119,6 +122,7 @@ export default function StatsPage() {
             overview: "",
             description: "",
             image: "",
+            exerciseType: selectedExerciseType,
           }),
           sessions: usedExercises[name],
           avgRating: rating.avg,
@@ -126,7 +130,7 @@ export default function StatsPage() {
         };
       })
       .sort((a, b) => b.sessions.length - a.sessions.length);
-  }, [usedExercises, exercises, ratings]);
+  }, [usedExercises, exercises, ratings, selectedExerciseType]);
 
   const planAnalysis = useMemo(() => {
     const difficulties: Record<string, number> = {};

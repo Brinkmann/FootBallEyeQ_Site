@@ -10,7 +10,9 @@ import {
   Entitlements,
   FREE_ENTITLEMENTS,
   PREMIUM_ENTITLEMENTS,
+  ExerciseTypePolicy,
 } from "../types/account";
+import { ExerciseType } from "../types/exercise";
 
 const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
 
@@ -19,12 +21,16 @@ interface EntitlementContextType {
   accountStatus: AccountStatus;
   entitlements: Entitlements;
   clubName: string | null;
+  clubId: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   isSuspended: boolean;
   isSuperAdmin: boolean;
   isClubAdmin: boolean;
   userEmail: string | null;
+  clubExerciseTypePolicy: ExerciseTypePolicy | null;
+  canChooseExerciseType: boolean;
+  enforcedExerciseType: ExerciseType | null;
 }
 
 const EntitlementContext = createContext<EntitlementContextType | null>(null);
@@ -33,10 +39,12 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   const [accountType, setAccountType] = useState<AccountType>("free");
   const [accountStatus, setAccountStatus] = useState<AccountStatus>("active");
   const [clubName, setClubName] = useState<string | null>(null);
+  const [clubId, setClubId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isClubAdmin, setIsClubAdmin] = useState(false);
+  const [clubExerciseTypePolicy, setClubExerciseTypePolicy] = useState<ExerciseTypePolicy | null>(null);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
@@ -44,10 +52,12 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         setAccountType("free");
         setAccountStatus("active");
         setClubName(null);
+        setClubId(null);
         setIsLoading(false);
         setIsAuthenticated(false);
         setUserEmail(null);
         setIsClubAdmin(false);
+        setClubExerciseTypePolicy(null);
         return;
       }
 
@@ -71,6 +81,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
           setIsClubAdmin(userData.clubRole === "admin");
 
           if (userAccountType === "clubCoach" && userData.clubId) {
+            setClubId(userData.clubId);
             const clubQuery = query(
               collection(db, "clubs"),
               where("__name__", "==", userData.clubId)
@@ -79,10 +90,14 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
             if (!clubSnapshot.empty) {
               const clubData = clubSnapshot.docs[0].data();
               setClubName(clubData.name || null);
+              setClubExerciseTypePolicy(clubData.exerciseTypePolicy || "coach-choice");
               if (clubData.status === "suspended") {
                 setAccountStatus("suspended");
               }
             }
+          } else {
+            setClubId(null);
+            setClubExerciseTypePolicy(null);
           }
         } else {
           setAccountType("free");
@@ -108,6 +123,16 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   const entitlements: Entitlements =
     isSuspended || accountType === "free" ? FREE_ENTITLEMENTS : PREMIUM_ENTITLEMENTS;
 
+  const canChooseExerciseType = 
+    accountType !== "clubCoach" || 
+    clubExerciseTypePolicy === "coach-choice" || 
+    clubExerciseTypePolicy === null;
+
+  const enforcedExerciseType: ExerciseType | null = 
+    accountType === "clubCoach" && clubExerciseTypePolicy === "eyeq-only" ? "eyeq" :
+    accountType === "clubCoach" && clubExerciseTypePolicy === "plastic-only" ? "plastic" :
+    null;
+
   return (
     <EntitlementContext.Provider
       value={{
@@ -115,12 +140,16 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         accountStatus,
         entitlements,
         clubName,
+        clubId,
         isLoading,
         isAuthenticated,
         isSuspended,
         isSuperAdmin,
         isClubAdmin,
         userEmail,
+        clubExerciseTypePolicy,
+        canChooseExerciseType,
+        enforcedExerciseType,
       }}
     >
       {children}

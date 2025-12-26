@@ -2,6 +2,8 @@ export type AccountType = "free" | "clubCoach" | "individualPremium";
 
 export type AccountStatus = "active" | "suspended";
 
+export type ExerciseTypePolicy = "eyeq-only" | "plastic-only" | "coach-choice";
+
 export interface UserProfile {
   uid: string;
   email: string;
@@ -27,6 +29,7 @@ export interface Club {
   status?: AccountStatus;
   suspendedAt?: Date;
   suspendedReason?: string;
+  exerciseTypePolicy?: ExerciseTypePolicy;
 }
 
 export interface ClubMember {

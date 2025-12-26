@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import PlanSyncProvider from "./components/PlanSyncProvider";
 import { FavoritesProvider } from "./components/FavoritesProvider";
 import { EntitlementProvider } from "./components/EntitlementProvider";
+import { ExerciseTypeProvider } from "./components/ExerciseTypeProvider";
 import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
@@ -19,12 +20,14 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-background text-foreground min-h-screen flex flex-col">
         <EntitlementProvider>
-          <FavoritesProvider>
-            <PlanSyncProvider>
-              <main className="w-full flex-1">{children}</main>
-              <Footer />
-            </PlanSyncProvider>
-          </FavoritesProvider>
+          <ExerciseTypeProvider>
+            <FavoritesProvider>
+              <PlanSyncProvider>
+                <main className="w-full flex-1">{children}</main>
+                <Footer />
+              </PlanSyncProvider>
+            </FavoritesProvider>
+          </ExerciseTypeProvider>
         </EntitlementProvider>
       </body>
     </html>
