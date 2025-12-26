@@ -109,6 +109,7 @@ function convertExercise(oldExercise) {
     practiceFormat: extractPracticeFormat(oldExercise["Tags"] || oldExercise.tags),
     overview: oldExercise["Overview"] || oldExercise.overview || "",
     description: cleanDescription(oldExercise["Description"] || oldExercise.description || ""),
+    exerciseBreakdownDesc: oldExercise["exerciseBreakdownDesc"] || oldExercise.exerciseBreakdownDesc || "",
     image: oldExercise["Image"] || oldExercise.image || ""
   };
 }

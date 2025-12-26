@@ -23,6 +23,7 @@ export default function AdminPage() {
     const [difficulty, setDifficulty] = useState("General / Unspecified");
     const [practiceFormat, setPracticeFormat] = useState("General / Mixed");
     const [overview, setOverview] = useState("");
+    const [exerciseBreakdownDesc, setExerciseBreakdownDesc] = useState("");
 
     const descriptionTemplate = `    Overview
     -
@@ -78,6 +79,7 @@ export default function AdminPage() {
         setDifficulty("General / Unspecified");
         setPracticeFormat("General / Mixed");
         setOverview("");
+        setExerciseBreakdownDesc("");
         setDescription(descriptionTemplate);
         setImageFile(null);
         setPreviewImage(null);
@@ -117,6 +119,7 @@ export default function AdminPage() {
                     practiceFormat,
                     overview,
                     description,
+                    exerciseBreakdownDesc,
                     image: imageBase64,
                 },
                 { merge: true }
@@ -157,6 +160,7 @@ export default function AdminPage() {
         setDifficulty(exercise.difficulty || "General / Unspecified");
         setPracticeFormat(exercise.practiceFormat || "General / Mixed");
         setOverview(exercise.overview || "");
+        setExerciseBreakdownDesc(exercise.exerciseBreakdownDesc || "");
         setDescription(exercise.description);
         setImageFile(null); // Do not pre-fill image
         setPreviewImage(exercise.image || null);
@@ -265,6 +269,19 @@ export default function AdminPage() {
                             />
                         </div>
                         
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Stats Page Summary
+                            </label>
+                            <textarea
+                                placeholder="One-line summary for the stats page breakdown (e.g., 'A passing drill in a square with color cue scanning.')"
+                                value={exerciseBreakdownDesc}
+                                onChange={(e) => setExerciseBreakdownDesc(e.target.value)}
+                                className="w-full border px-3 py-2"
+                                rows={2}
+                            />
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Description

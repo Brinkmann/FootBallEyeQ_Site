@@ -47,6 +47,7 @@ export default function StatsPage() {
             practiceFormat: data.practiceFormat || "General / Mixed",
             overview: data.overview || "",
             description: data.description || "",
+            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
             image: data.image || "",
           };
         });
@@ -362,8 +363,10 @@ export default function StatsPage() {
                         </div>
                       </div>
                       
-                      {ex.overview && (
-                        <p className="text-sm text-foreground opacity-70 mb-3">{truncateOverview(ex.overview)}</p>
+                      {(ex.exerciseBreakdownDesc || ex.overview) && (
+                        <p className="text-sm text-foreground opacity-70 mb-3">
+                          {ex.exerciseBreakdownDesc || truncateOverview(ex.overview)}
+                        </p>
                       )}
 
                       <div className="flex flex-wrap gap-2 mb-3">

@@ -108,6 +108,7 @@ export default function CatalogPage() {
             practiceFormat: data.practiceFormat || "General / Mixed",
             overview: data.overview || "",
             description: data.description || "",
+            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
             image: data.image || null,
           };
         });
