@@ -52,6 +52,7 @@ export default function NavBar() {
   }, []);
 
   const [learnOpen, setLearnOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   let tabs = [...coreTabs];
   
@@ -71,7 +72,7 @@ export default function NavBar() {
           <span>Football EyeQ</span>
         </Link>
         {userName ? (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="flex items-center gap-2">
               {isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
@@ -83,18 +84,18 @@ export default function NavBar() {
                   href="/upgrade"
                   className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded hover:bg-primary-light hover:text-primary transition"
                 >
-                  Free Plan
+                  Free
                 </Link>
               ) : !isSuperAdmin && accountType === "clubCoach" ? (
-                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">
+                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded truncate max-w-[80px] sm:max-w-none">
                   {clubName || "Club"}
                 </span>
               ) : !isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded">
-                  Premium
+                  Pro
                 </span>
               )}
-              <span className="text-gray-700 text-sm">{userName}</span>
+              <span className="hidden sm:inline text-gray-700 text-sm">{userName}</span>
             </div>
             <Link href="/profile">
               <div className="w-8 h-8 bg-[#e63946] rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
@@ -103,7 +104,7 @@ export default function NavBar() {
             </Link>
             <button
               onClick={() => signOut(auth)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
             >
               Log out
             </button>
@@ -178,55 +179,128 @@ export default function NavBar() {
       )}
 
       <nav className="flex space-x-1 border-b border-gray-200">
-        {tabs.map((tab) => {
-          const isActive = pathname === tab.href;
-          return (
-            <Link
-              key={tab.label}
-              href={tab.href}
-              className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
-                isActive
+        {/* Mobile: Only show first 2 tabs (Drill Catalogue, Session Planner) */}
+        <div className="flex sm:hidden">
+          {tabs.slice(0, 2).map((tab) => {
+            const isActive = pathname === tab.href;
+            return (
+              <Link
+                key={tab.label}
+                href={tab.href}
+                className={`px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
+                  isActive
+                    ? "border-[#e63946] text-[#e63946]"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {tab.label === "Drill Catalogue" ? "Catalogue" : tab.label === "Session Planner" ? "Planner" : tab.label}
+              </Link>
+            );
+          })}
+          
+          {/* Mobile "More" menu */}
+          <div className="relative">
+            <button
+              onClick={() => setMoreOpen(!moreOpen)}
+              onBlur={() => setTimeout(() => setMoreOpen(false), 150)}
+              className={`px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
+                tabs.slice(2).some(t => pathname === t.href) || learnLinks.some(l => pathname === l.href)
                   ? "border-[#e63946] text-[#e63946]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              {tab.label}
-            </Link>
-          );
-        })}
-        
-        <div className="relative">
-          <button
-            onClick={() => setLearnOpen(!learnOpen)}
-            onBlur={() => setTimeout(() => setLearnOpen(false), 150)}
-            className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
-              learnLinks.some(l => pathname === l.href)
-                ? "border-[#e63946] text-[#e63946]"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Learn
-            <svg className={`w-4 h-4 transition-transform ${learnOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {learnOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
-              {learnLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`block px-4 py-2 text-sm transition ${
-                    pathname === link.href
-                      ? "text-[#e63946] bg-red-50"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          )}
+              More
+              <svg className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {moreOpen && (
+              <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+                {tabs.slice(2).map((tab) => (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    className={`block px-4 py-2 text-sm transition ${
+                      pathname === tab.href
+                        ? "text-[#e63946] bg-red-50"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {tab.label}
+                  </Link>
+                ))}
+                <div className="border-t border-gray-100 my-1"></div>
+                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">Learn</div>
+                {learnLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`block px-4 py-2 text-sm transition ${
+                      pathname === link.href
+                        ? "text-[#e63946] bg-red-50"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop: Show all tabs */}
+        <div className="hidden sm:flex space-x-1">
+          {tabs.map((tab) => {
+            const isActive = pathname === tab.href;
+            return (
+              <Link
+                key={tab.label}
+                href={tab.href}
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
+                  isActive
+                    ? "border-[#e63946] text-[#e63946]"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+          
+          <div className="relative">
+            <button
+              onClick={() => setLearnOpen(!learnOpen)}
+              onBlur={() => setTimeout(() => setLearnOpen(false), 150)}
+              className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
+                learnLinks.some(l => pathname === l.href)
+                  ? "border-[#e63946] text-[#e63946]"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Learn
+              <svg className={`w-4 h-4 transition-transform ${learnOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {learnOpen && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+                {learnLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`block px-4 py-2 text-sm transition ${
+                      pathname === link.href
+                        ? "text-[#e63946] bg-red-50"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
     </div>
