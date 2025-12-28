@@ -45,7 +45,7 @@ export default function WelcomeModal({ type, userName, clubName }: WelcomeModalP
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">1.</span>
-                <span>Browse the Drill Catalog - 100+ training exercises</span>
+                <span>Browse the Drill Catalogue - 100+ training exercises</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">2.</span>
