@@ -179,7 +179,21 @@ export default function CatalogPage() {
       filtered = filtered.filter((ex) => favorites.has(ex.id));
     }
 
-    return filtered;
+    // Sort by ID, with favorites first if user has any
+    const parseId = (id: string) => {
+      const num = parseInt(id, 10);
+      return isNaN(num) ? 0 : num;
+    };
+
+    // Partition into favorites and non-favorites, then sort each by ID
+    const hasFavorites = favorites.size > 0 && !showFavoritesOnly;
+    if (hasFavorites) {
+      const favs = filtered.filter(ex => favorites.has(ex.id)).sort((a, b) => parseId(a.id) - parseId(b.id));
+      const nonFavs = filtered.filter(ex => !favorites.has(ex.id)).sort((a, b) => parseId(a.id) - parseId(b.id));
+      return [...favs, ...nonFavs];
+    } else {
+      return filtered.sort((a, b) => parseId(a.id) - parseId(b.id));
+    }
   }, [
     searchQuery,
     selectedAgeGroup,
