@@ -1,8 +1,8 @@
 "use client";
 import { useEffect } from "react";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
@@ -16,13 +16,23 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
-    
+    let isMounted = true;
+
+    (async () => {
+      const AOS = (await import("aos")).default;
+      if (!isMounted) return;
+
+      AOS.init({ duration: 800, once: true });
+    })();
+
     const unsubscribe = auth.onAuthStateChanged((currentUser: User | null) => {
       setUser(currentUser);
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   return (
@@ -30,7 +40,7 @@ export default function HomePage() {
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
         <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-          <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-8 w-auto" />
+          <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={32} height={32} priority />
           <span>Football EyeQ</span>
         </div>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
@@ -126,10 +136,12 @@ export default function HomePage() {
             </div>
           </div>
           <div data-aos="fade-left" className="flex justify-center">
-            <img 
-              src={heroImage.src} 
-              alt="Game Intelligence - Football EyeQ" 
-              className="rounded-2xl shadow-xl max-w-full h-auto"
+            <Image
+              src={heroImage}
+              alt="Game Intelligence - Football EyeQ"
+              className="rounded-2xl shadow-xl h-auto"
+              priority
+              sizes="(min-width: 1024px) 540px, 100vw"
             />
           </div>
         </div>
@@ -185,10 +197,11 @@ export default function HomePage() {
       {/* See-Think-Do Visual Strip */}
       <section className="py-16 px-6 bg-[#F0EFEA]">
         <div className="max-w-5xl mx-auto" data-aos="zoom-in">
-          <img 
-            src={seeThinkDoImage.src} 
-            alt="See Think Do - Player Development" 
-            className="w-full rounded-2xl shadow-lg"
+          <Image
+            src={seeThinkDoImage}
+            alt="See Think Do - Player Development"
+            className="w-full rounded-2xl shadow-lg h-auto"
+            sizes="(min-width: 1024px) 960px, 100vw"
           />
         </div>
       </section>
@@ -270,10 +283,11 @@ export default function HomePage() {
       <section className="py-20 px-6 bg-[#F0EFEA]">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div data-aos="fade-right">
-            <img 
-              src={ecosystemImage.src} 
-              alt="Plan Train Enjoy Ecosystem" 
-              className="rounded-2xl shadow-lg"
+            <Image
+              src={ecosystemImage}
+              alt="Plan Train Enjoy Ecosystem"
+              className="rounded-2xl shadow-lg h-auto"
+              sizes="(min-width: 1024px) 540px, 100vw"
             />
           </div>
           <div data-aos="fade-left">
@@ -314,10 +328,11 @@ export default function HomePage() {
             </Link>
           </div>
           <div data-aos="fade-left" className="order-1 md:order-2">
-            <img 
-              src={playersConesImage.src} 
-              alt="Players with Smart LED Cones" 
-              className="rounded-2xl shadow-lg"
+            <Image
+              src={playersConesImage}
+              alt="Players with Smart LED Cones"
+              className="rounded-2xl shadow-lg h-auto"
+              sizes="(min-width: 1024px) 540px, 100vw"
             />
           </div>
         </div>
@@ -355,7 +370,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center space-x-2 text-white font-bold text-lg mb-4">
-                <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-6 w-auto" />
+                <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={24} height={24} />
                 <span>Football EyeQ</span>
               </div>
               <p className="text-sm">
