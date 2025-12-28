@@ -51,7 +51,6 @@ export default function NavBar() {
     return () => unsubscribe();
   }, []);
 
-  const [learnOpen, setLearnOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
   let tabs = [...coreTabs];
@@ -268,10 +267,9 @@ export default function NavBar() {
             );
           })}
           
-          <div className="relative">
+          <div className="relative group">
             <button
-              onClick={() => setLearnOpen(!learnOpen)}
-              onBlur={() => setTimeout(() => setLearnOpen(false), 150)}
+              type="button"
               className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
                 learnLinks.some(l => pathname === l.href)
                   ? "border-[#e63946] text-[#e63946]"
@@ -279,27 +277,25 @@ export default function NavBar() {
               }`}
             >
               Learn
-              <svg className={`w-4 h-4 transition-transform ${learnOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            {learnOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
-                {learnLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`block px-4 py-2 text-sm transition ${
-                      pathname === link.href
-                        ? "text-[#e63946] bg-red-50"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
+            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all">
+              {learnLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`block px-4 py-2 text-sm transition ${
+                    pathname === link.href
+                      ? "text-[#e63946] bg-red-50"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
