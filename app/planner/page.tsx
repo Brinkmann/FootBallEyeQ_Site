@@ -8,22 +8,25 @@ import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 import { useEntitlements } from "../components/EntitlementProvider";
+import { useExerciseType } from "../components/ExerciseTypeProvider";
+import { ExerciseType } from "../types/exercise";
 
 export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
   const { entitlements, accountType, isAuthenticated } = useEntitlements();
+  const { selectedExerciseType } = useExerciseType();
 
   // Fetch exercises catalog from Firestore
-  const [catalog, setCatalog] = useState<{ id: number; title: string }[]>([]);
+  const [catalog, setCatalog] = useState<{ id: number; title: string; exerciseType: ExerciseType }[]>([]);
 
   useEffect(() => {
     (async () => {
       try {
         const snap = await getDocs(collection(db, "exercises"));
         const list = snap.docs.map((d) => {
-          const data = d.data() as { id?: number; title?: string };
+          const data = d.data() as { id?: number; title?: string; exerciseType?: ExerciseType };
           const id =
             typeof data.id === "number"
               ? data.id
@@ -31,7 +34,8 @@ export default function SeasonPlanningPage() {
               ? 0
               : Number(d.id);
           const title = data.title ?? d.id;
-          return { id, title };
+          const exerciseType = data.exerciseType || "eyeq";
+          return { id, title, exerciseType };
         });
         setCatalog(list);
       } catch (error) {
@@ -40,16 +44,44 @@ export default function SeasonPlanningPage() {
     })();
   }, []);
 
-  // Build name → id map for SessionCodeButton
+  // Build name → id map for SessionCodeButton (filtered by exercise type)
   const ID_BY_NAME = useMemo(() => {
     const m: Record<string, number> = {};
     for (const ex of catalog) {
-      if (typeof ex.id === "number" && !Number.isNaN(ex.id)) {
+      if (typeof ex.id === "number" && !Number.isNaN(ex.id) && ex.exerciseType === selectedExerciseType) {
         m[ex.title] = ex.id;
       }
     }
     return m;
-  }, [catalog]);
+  }, [catalog, selectedExerciseType]);
+
+  // Build a set of exercise titles that match the selected type
+  const validExerciseTitles = useMemo(() => {
+    const set = new Set<string>();
+    for (const ex of catalog) {
+      if (ex.exerciseType === selectedExerciseType) {
+        set.add(ex.title);
+      }
+    }
+    return set;
+  }, [catalog, selectedExerciseType]);
+
+  // Filter weeks' exercises to only show those matching the selected type
+  // Keep track of original indices for correct removal
+  const filteredWeeks = useMemo(() => {
+    return weeks.map(week => {
+      const filteredExercises: { name: string; originalIndex: number }[] = [];
+      week.exercises.forEach((name, idx) => {
+        if (validExerciseTitles.has(name)) {
+          filteredExercises.push({ name, originalIndex: idx });
+        }
+      });
+      return {
+        ...week,
+        filteredExercises
+      };
+    });
+  }, [weeks, validExerciseTitles]);
 
 
   return (
@@ -72,7 +104,7 @@ export default function SeasonPlanningPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {weeks.map((week) => {
+          {filteredWeeks.map((week) => {
             const isLocked = week.week > entitlements.maxSessions;
             
             if (isLocked) {
@@ -101,7 +133,7 @@ export default function SeasonPlanningPage() {
                   <h4 className="font-bold text-foreground">Session {week.week}</h4>
 
                   <SessionCodeButton
-                    exercises={week.exercises}
+                    exercises={week.filteredExercises.map(e => e.name)}
                     idByName={ID_BY_NAME}
                     weekLabel={`Session ${week.week}`}
                     buttonText="Generate Code"
@@ -109,24 +141,24 @@ export default function SeasonPlanningPage() {
                 </div>
 
                 <p className="text-sm text-gray-500 mb-3">
-                  {week.exercises.length}/{maxExercisesPerWeek} exercises
+                  {week.filteredExercises.length}/{maxExercisesPerWeek} exercises
                 </p>
 
                 <div className="space-y-2 mb-4">
                   {Array.from({ length: maxExercisesPerWeek }).map((_, i) => {
-                    const name = week.exercises[i];
+                    const exercise = week.filteredExercises[i];
                     return (
                       <div
                         key={i}
                         className={`border p-2 text-sm rounded flex items-center justify-between ${
-                          name ? "bg-primary-light text-primary-dark border-divider" : "text-gray-400 border-divider"
+                          exercise ? "bg-primary-light text-primary-dark border-divider" : "text-gray-400 border-divider"
                         }`}
                       >
-                        <span>{name || "Empty slot"}</span>
-                        {name && (
+                        <span>{exercise?.name || "Empty slot"}</span>
+                        {exercise && (
                           <button
                             className="text-xs text-primary hover:underline"
-                            onClick={() => removeFromWeek(week.week, i)}
+                            onClick={() => removeFromWeek(week.week, exercise.originalIndex)}
                           >
                             Remove
                           </button>

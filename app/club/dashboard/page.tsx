@@ -14,8 +14,10 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import { ExerciseTypePolicy } from "../../types/account";
 
 interface ClubMember {
   id: string;
@@ -44,6 +46,8 @@ export default function ClubDashboardPage() {
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
+  const [exerciseTypePolicy, setExerciseTypePolicy] = useState<ExerciseTypePolicy>("coach-choice");
+  const [policyLoading, setPolicyLoading] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -79,7 +83,9 @@ export default function ClubDashboardPage() {
         );
         const clubSnap = await getDocs(clubQuery);
         if (!clubSnap.empty) {
-          setClubName(clubSnap.docs[0].data().name || "Your Club");
+          const clubData = clubSnap.docs[0].data();
+          setClubName(clubData.name || "Your Club");
+          setExerciseTypePolicy(clubData.exerciseTypePolicy || "coach-choice");
         }
 
         const membersSnap = await getDocs(
@@ -171,6 +177,24 @@ export default function ClubDashboardPage() {
       setInvites(invites.filter((i) => i.id !== inviteId));
     } catch (error) {
       console.error("Failed to delete invite:", error);
+    }
+  };
+
+  const handlePolicyChange = async (newPolicy: ExerciseTypePolicy) => {
+    if (!clubId || policyLoading) return;
+    setPolicyLoading(true);
+    const oldPolicy = exerciseTypePolicy;
+    setExerciseTypePolicy(newPolicy);
+
+    try {
+      await updateDoc(doc(db, "clubs", clubId), {
+        exerciseTypePolicy: newPolicy,
+      });
+    } catch (error) {
+      console.error("Failed to update exercise policy:", error);
+      setExerciseTypePolicy(oldPolicy);
+    } finally {
+      setPolicyLoading(false);
     }
   };
 
@@ -323,6 +347,78 @@ export default function ClubDashboardPage() {
                 ))}
               </>
             )}
+          </div>
+        </div>
+
+        <div className="mt-6 bg-card border border-divider rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-2">Exercise Access Mode</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Choose which type of exercises your coaches can access. EyeQ exercises use smart LED cones, while Plastic exercises use traditional cones.
+          </p>
+          
+          <div className="space-y-3">
+            <label 
+              className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition ${
+                exerciseTypePolicy === "eyeq-only" 
+                  ? "border-[#e63946] bg-red-50" 
+                  : "border-divider hover:border-gray-300"
+              } ${policyLoading ? "opacity-50 cursor-wait" : ""}`}
+            >
+              <input
+                type="radio"
+                name="exercisePolicy"
+                checked={exerciseTypePolicy === "eyeq-only"}
+                onChange={() => handlePolicyChange("eyeq-only")}
+                disabled={policyLoading}
+                className="mt-1 accent-[#e63946]"
+              />
+              <div>
+                <p className="font-medium text-foreground">EyeQ Only</p>
+                <p className="text-sm text-gray-500">Coaches only see smart LED cone exercises</p>
+              </div>
+            </label>
+
+            <label 
+              className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition ${
+                exerciseTypePolicy === "plastic-only" 
+                  ? "border-[#e63946] bg-red-50" 
+                  : "border-divider hover:border-gray-300"
+              } ${policyLoading ? "opacity-50 cursor-wait" : ""}`}
+            >
+              <input
+                type="radio"
+                name="exercisePolicy"
+                checked={exerciseTypePolicy === "plastic-only"}
+                onChange={() => handlePolicyChange("plastic-only")}
+                disabled={policyLoading}
+                className="mt-1 accent-[#e63946]"
+              />
+              <div>
+                <p className="font-medium text-foreground">Plastic Cones Only</p>
+                <p className="text-sm text-gray-500">Coaches only see traditional cone exercises</p>
+              </div>
+            </label>
+
+            <label 
+              className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition ${
+                exerciseTypePolicy === "coach-choice" 
+                  ? "border-[#e63946] bg-red-50" 
+                  : "border-divider hover:border-gray-300"
+              } ${policyLoading ? "opacity-50 cursor-wait" : ""}`}
+            >
+              <input
+                type="radio"
+                name="exercisePolicy"
+                checked={exerciseTypePolicy === "coach-choice"}
+                onChange={() => handlePolicyChange("coach-choice")}
+                disabled={policyLoading}
+                className="mt-1 accent-[#e63946]"
+              />
+              <div>
+                <p className="font-medium text-foreground">Coach Choice</p>
+                <p className="text-sm text-gray-500">Each coach can toggle between EyeQ and Plastic exercises</p>
+              </div>
+            </label>
           </div>
         </div>
 

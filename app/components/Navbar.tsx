@@ -6,6 +6,7 @@ import { auth, db } from "@/Firebase/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
+import { useExerciseType } from "./ExerciseTypeProvider";
 
 const coreTabs = [
   { label: "Drill Catalogue", href: "/catalog" },
@@ -23,7 +24,8 @@ const learnLinks = [
 export default function NavBar() {
   const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
-  const { accountType, clubName, isSuperAdmin, isClubAdmin, isAuthenticated } = useEntitlements();
+  const { accountType, clubName, isSuperAdmin, isClubAdmin, isAuthenticated, enforcedExerciseType } = useEntitlements();
+  const { selectedExerciseType, setSelectedExerciseType, canChoose } = useExerciseType();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -125,15 +127,53 @@ export default function NavBar() {
       </header>
 
       {userName && (
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Welcome back, {userName}</h2>
-          <p className="text-gray-600 text-sm">
-            {isSuperAdmin 
-              ? "Platform administration and management" 
-              : isClubAdmin 
-                ? "Manage your club and coaching team" 
-                : "Plan your training sessions and manage your exercise library"}
-          </p>
+        <div className="mb-4 flex items-start justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Welcome back, {userName}</h2>
+            <p className="text-gray-600 text-sm">
+              {isSuperAdmin 
+                ? "Platform administration and management" 
+                : isClubAdmin 
+                  ? "Manage your club and coaching team" 
+                  : "Plan your training sessions and manage your exercise library"}
+            </p>
+          </div>
+          
+          {canChoose ? (
+            <div className="flex items-center gap-1 bg-gray-100 rounded-full p-1">
+              <button
+                onClick={() => setSelectedExerciseType("eyeq")}
+                className={`px-3 py-1 text-xs font-medium rounded-full transition ${
+                  selectedExerciseType === "eyeq"
+                    ? "bg-[#e63946] text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                EyeQ
+              </button>
+              <button
+                onClick={() => setSelectedExerciseType("plastic")}
+                className={`px-3 py-1 text-xs font-medium rounded-full transition ${
+                  selectedExerciseType === "plastic"
+                    ? "bg-[#e63946] text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Plastic
+              </button>
+            </div>
+          ) : enforcedExerciseType && (
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 text-xs font-medium bg-gray-200 text-gray-700 rounded-full">
+                {enforcedExerciseType === "eyeq" ? "EyeQ Cones" : "Plastic Cones"}
+              </span>
+              <span className="text-xs text-gray-400" title="Set by your club">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+              </span>
+            </div>
+          )}
         </div>
       )}
 

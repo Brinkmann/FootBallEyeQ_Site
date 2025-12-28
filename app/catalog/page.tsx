@@ -10,6 +10,7 @@ import SmartSearch from "../components/SmartSearch";
 import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
 import { useFavoritesContext } from "../components/FavoritesProvider";
+import { useExerciseType } from "../components/ExerciseTypeProvider";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -17,6 +18,7 @@ export default function CatalogPage() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   
   const { favorites, isAuthenticated } = useFavoritesContext();
+  const { selectedExerciseType } = useExerciseType();
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -110,6 +112,7 @@ export default function CatalogPage() {
             description: data.description || "",
             exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
             image: data.image || null,
+            exerciseType: data.exerciseType || "eyeq",
           };
         });
 
@@ -125,7 +128,7 @@ export default function CatalogPage() {
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
   const filteredExercises = useMemo(() => {
-    let filtered = [...exercises];
+    let filtered = exercises.filter(ex => ex.exerciseType === selectedExerciseType);
 
     if (searchQuery.trim()) {
       const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(term => term.length > 0);
@@ -188,6 +191,7 @@ export default function CatalogPage() {
     exercises,
     showFavoritesOnly,
     favorites,
+    selectedExerciseType,
   ]);
 
   const resetFilters = () => {
