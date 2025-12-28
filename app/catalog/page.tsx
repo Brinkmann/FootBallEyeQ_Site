@@ -97,6 +97,11 @@ export default function CatalogPage() {
         const exercisesCol = collection(db, "exercises");
         const snapshot = await getDocs(exercisesCol);
 
+        const getExerciseNumber = (title: string): number => {
+          const match = title.match(/^(\d+)/);
+          return match ? parseInt(match[1], 10) : 9999;
+        };
+
         const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -116,6 +121,9 @@ export default function CatalogPage() {
           };
         });
 
+        // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
+        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+        
         setExercises(exercisesList);
       } catch (error) {
         console.error("Error fetching exercises:", error);
@@ -179,23 +187,15 @@ export default function CatalogPage() {
       filtered = filtered.filter((ex) => favorites.has(ex.id));
     }
 
-    // Sort by exercise number extracted from title (e.g., "002 - Dribbling" -> 2)
-    // Favorites come first if user has any
-    const getExerciseNumber = (title: string): number => {
-      const match = title.match(/^(\d+)/);
-      return match ? parseInt(match[1], 10) : 9999;
-    };
-
+    // Favorites come first (both groups maintain the original sorted order from fetch)
     const hasFavorites = favorites.size > 0 && !showFavoritesOnly;
-    let sorted: typeof filtered;
     if (hasFavorites) {
-      const favs = [...filtered.filter(ex => favorites.has(ex.id))].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-      const nonFavs = [...filtered.filter(ex => !favorites.has(ex.id))].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-      sorted = [...favs, ...nonFavs];
-    } else {
-      sorted = [...filtered].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+      const favs = filtered.filter(ex => favorites.has(ex.id));
+      const nonFavs = filtered.filter(ex => !favorites.has(ex.id));
+      return [...favs, ...nonFavs];
     }
-    return sorted;
+    
+    return filtered;
   }, [
     searchQuery,
     selectedAgeGroup,
