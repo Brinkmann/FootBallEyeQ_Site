@@ -1,11 +1,8 @@
 import { Metadata } from "next";
+import type { OpenGraphType } from "next/dist/lib/metadata/types/opengraph-types";
 
 export const siteUrl = "https://football-eyeq.com";
 export const defaultOgImage = `${siteUrl}/brand/logo-full.png`;
-
-type OpenGraphType = NonNullable<Metadata["openGraph"]> extends { type?: infer T }
-  ? T
-  : string;
 
 interface BaseMetadataProps {
   title: string;
