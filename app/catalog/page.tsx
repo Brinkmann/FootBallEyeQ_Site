@@ -16,6 +16,7 @@ export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
   
   const { favorites, isAuthenticated } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
@@ -133,6 +134,14 @@ export default function CatalogPage() {
     fetchExercises();
   }, []);
 
+  // Capture initial favorites snapshot once when page loads (after favorites are available)
+  // This prevents reordering when user favorites/unfavorites during the session
+  useEffect(() => {
+    if (initialFavorites === null && exercises.length > 0) {
+      setInitialFavorites(new Set(favorites));
+    }
+  }, [exercises.length, favorites, initialFavorites]);
+
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
   const filteredExercises = useMemo(() => {
@@ -187,11 +196,13 @@ export default function CatalogPage() {
       filtered = filtered.filter((ex) => favorites.has(ex.id));
     }
 
-    // Favorites come first (both groups maintain the original sorted order from fetch)
-    const hasFavorites = favorites.size > 0 && !showFavoritesOnly;
+    // Use initialFavorites (snapshot from page load) for ordering
+    // This prevents exercises from jumping around when user favorites/unfavorites
+    const orderingFavorites = initialFavorites ?? favorites;
+    const hasFavorites = orderingFavorites.size > 0 && !showFavoritesOnly;
     if (hasFavorites) {
-      const favs = filtered.filter(ex => favorites.has(ex.id));
-      const nonFavs = filtered.filter(ex => !favorites.has(ex.id));
+      const favs = filtered.filter(ex => orderingFavorites.has(ex.id));
+      const nonFavs = filtered.filter(ex => !orderingFavorites.has(ex.id));
       return [...favs, ...nonFavs];
     }
     
@@ -208,6 +219,7 @@ export default function CatalogPage() {
     showFavoritesOnly,
     favorites,
     selectedExerciseType,
+    initialFavorites,
   ]);
 
   const resetFilters = () => {
