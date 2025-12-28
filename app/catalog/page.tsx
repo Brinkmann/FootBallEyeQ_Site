@@ -16,8 +16,9 @@ export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
   
-  const { favorites, isAuthenticated } = useFavoritesContext();
+  const { favorites, isAuthenticated, loading: favoritesLoading } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
 
   const defaultAgeGroup = "All Age Groups";
@@ -97,6 +98,11 @@ export default function CatalogPage() {
         const exercisesCol = collection(db, "exercises");
         const snapshot = await getDocs(exercisesCol);
 
+        const getExerciseNumber = (title: string): number => {
+          const match = title.match(/^(\d+)/);
+          return match ? parseInt(match[1], 10) : 9999;
+        };
+
         const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -116,6 +122,9 @@ export default function CatalogPage() {
           };
         });
 
+        // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
+        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+        
         setExercises(exercisesList);
       } catch (error) {
         console.error("Error fetching exercises:", error);
@@ -124,6 +133,14 @@ export default function CatalogPage() {
 
     fetchExercises();
   }, []);
+
+  // Capture initial favorites snapshot once when page loads (after both exercises AND favorites are loaded)
+  // This prevents reordering when user favorites/unfavorites during the session
+  useEffect(() => {
+    if (initialFavorites === null && exercises.length > 0 && !favoritesLoading) {
+      setInitialFavorites(new Set(favorites));
+    }
+  }, [exercises.length, favorites, initialFavorites, favoritesLoading]);
 
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
@@ -179,6 +196,16 @@ export default function CatalogPage() {
       filtered = filtered.filter((ex) => favorites.has(ex.id));
     }
 
+    // Use initialFavorites (snapshot from page load) for ordering
+    // This prevents exercises from jumping around when user favorites/unfavorites
+    const orderingFavorites = initialFavorites ?? favorites;
+    const hasFavorites = orderingFavorites.size > 0 && !showFavoritesOnly;
+    if (hasFavorites) {
+      const favs = filtered.filter(ex => orderingFavorites.has(ex.id));
+      const nonFavs = filtered.filter(ex => !orderingFavorites.has(ex.id));
+      return [...favs, ...nonFavs];
+    }
+    
     return filtered;
   }, [
     searchQuery,
@@ -192,6 +219,7 @@ export default function CatalogPage() {
     showFavoritesOnly,
     favorites,
     selectedExerciseType,
+    initialFavorites,
   ]);
 
   const resetFilters = () => {
