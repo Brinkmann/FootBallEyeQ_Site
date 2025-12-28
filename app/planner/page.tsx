@@ -27,13 +27,10 @@ export default function SeasonPlanningPage() {
         const snap = await getDocs(collection(db, "exercises"));
         const list = snap.docs.map((d) => {
           const data = d.data() as { id?: number; title?: string; exerciseType?: ExerciseType };
-          const id =
-            typeof data.id === "number"
-              ? data.id
-              : Number.isNaN(Number(d.id))
-              ? 0
-              : Number(d.id);
           const title = data.title ?? d.id;
+          // Extract numeric ID from title prefix (e.g., "002 - Title" → 2)
+          const titleMatch = typeof title === "string" ? title.match(/^(\d+)\s*-/) : null;
+          const id = titleMatch ? parseInt(titleMatch[1], 10) : 0;
           const exerciseType = data.exerciseType || "eyeq";
           return { id, title, exerciseType };
         });
