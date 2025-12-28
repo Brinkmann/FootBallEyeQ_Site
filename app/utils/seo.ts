@@ -3,7 +3,9 @@ import { Metadata } from "next";
 export const siteUrl = "https://football-eyeq.com";
 export const defaultOgImage = `${siteUrl}/brand/logo-full.png`;
 
-type OpenGraphType = NonNullable<Metadata["openGraph"]>["type"];
+type OpenGraphType = NonNullable<Metadata["openGraph"]> extends { type?: infer T }
+  ? T
+  : undefined;
 
 interface BaseMetadataProps {
   title: string;
