@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react"; // React QR generator
 import { encodeSessionCode } from "../utils/sessionCode";
+import { useAnalytics } from "./AnalyticsProvider";
 
 type Props = {
   exercises: string[];
@@ -43,6 +44,7 @@ export default function SessionCodeButton({
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
+  const { trackEvent } = useAnalytics();
 
   const canGenerate = exercises.length >= 1;
 
@@ -82,6 +84,10 @@ export default function SessionCodeButton({
     if (!code) return;
     try {
       await navigator.clipboard.writeText(code);
+      await trackEvent("share", {
+        label: "session_code",
+        exerciseCount: exercises.length,
+      });
     } catch {
       // ignore
     }

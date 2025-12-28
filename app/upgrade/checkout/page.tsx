@@ -3,8 +3,18 @@
 import Link from "next/link";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import NavBar from "@/app/components/Navbar";
+import { useAnalytics } from "@/app/components/AnalyticsProvider";
 
 export default function CheckoutPage() {
+  const { trackEvent } = useAnalytics();
+
+  const handlePurchaseIntent = async () => {
+    await trackEvent("purchase", {
+      plan: "pro_monthly",
+      entryPoint: "upgrade_checkout",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
@@ -56,6 +66,7 @@ export default function CheckoutPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/signup"
+              onClick={handlePurchaseIntent}
               className="flex-1 text-center bg-[#e63946] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#c5303c] transition"
             >
               Complete Checkout
