@@ -18,7 +18,7 @@ export default function CatalogPage() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
   
-  const { favorites, isAuthenticated } = useFavoritesContext();
+  const { favorites, isAuthenticated, loading: favoritesLoading } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
 
   const defaultAgeGroup = "All Age Groups";
@@ -134,13 +134,13 @@ export default function CatalogPage() {
     fetchExercises();
   }, []);
 
-  // Capture initial favorites snapshot once when page loads (after favorites are available)
+  // Capture initial favorites snapshot once when page loads (after both exercises AND favorites are loaded)
   // This prevents reordering when user favorites/unfavorites during the session
   useEffect(() => {
-    if (initialFavorites === null && exercises.length > 0) {
+    if (initialFavorites === null && exercises.length > 0 && !favoritesLoading) {
       setInitialFavorites(new Set(favorites));
     }
-  }, [exercises.length, favorites, initialFavorites]);
+  }, [exercises.length, favorites, initialFavorites, favoritesLoading]);
 
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
