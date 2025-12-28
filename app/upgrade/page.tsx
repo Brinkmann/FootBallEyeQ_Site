@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import NavBar from "../components/Navbar";
 import { useEntitlements } from "../components/EntitlementProvider";
 import { auth, db } from "@/Firebase/firebaseConfig";
@@ -112,6 +113,23 @@ export default function UpgradePage() {
         <p className="text-gray-600 mb-8">
           Unlock the full power of Football EyeQ with a premium account.
         </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 mb-10">
+          <Link
+            href="/upgrade/checkout"
+            className="flex-1 text-center bg-[#e63946] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#c5303c] transition"
+          >
+            View Checkout
+          </Link>
+          {!isAuthenticated && (
+            <Link
+              href="/signup"
+              className="flex-1 text-center border border-divider px-4 py-3 rounded-lg font-semibold text-foreground hover:border-[#e63946] hover:text-[#e63946] transition"
+            >
+              Create a Free Account
+            </Link>
+          )}
+        </div>
 
         {accountType !== "free" && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">

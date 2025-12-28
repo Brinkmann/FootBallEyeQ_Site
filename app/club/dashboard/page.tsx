@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import NavBar from "../../components/Navbar";
+import Breadcrumbs from "../../components/Breadcrumbs";
 import WelcomeModal from "../../components/WelcomeModal";
 import { auth, db } from "@/Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
@@ -202,6 +203,7 @@ export default function ClubDashboardPage() {
     return (
       <div className="min-h-screen bg-background">
         <NavBar />
+        <Breadcrumbs />
         <div className="flex items-center justify-center h-64">
           <p className="text-gray-500">Loading...</p>
         </div>
@@ -216,6 +218,7 @@ export default function ClubDashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
+      <Breadcrumbs />
       <WelcomeModal type="clubAdmin" clubName={clubName} />
 
       <div className="max-w-4xl mx-auto p-6">

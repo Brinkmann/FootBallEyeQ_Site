@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import NavBar from "../../components/Navbar";
+import Breadcrumbs from "../../components/Breadcrumbs";
 import { usePlanStore } from "../../store/usePlanStore";
 import { useFavoritesContext } from "../../components/FavoritesProvider";
 import { useEntitlements } from "../../components/EntitlementProvider";
@@ -210,6 +211,7 @@ export default function StatsPage() {
     return (
       <div className="min-h-screen bg-background">
         <NavBar />
+        <Breadcrumbs />
         <div className="px-4 sm:px-6 py-6">
           <div className="max-w-xl mx-auto text-center py-16">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -244,6 +246,7 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
+      <Breadcrumbs />
 
       <div className="px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">

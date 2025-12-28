@@ -6,6 +6,7 @@ import { register } from "@/Firebase/auth";
 import { db } from "@/Firebase/firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import Link from "next/link";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 
 type Step = 1 | 2;
 
@@ -79,17 +80,19 @@ export default function ClubSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="max-w-xl w-full">
-        <div className="text-center mb-6">
-          <Link href="/signup" className="inline-flex items-center gap-1 text-gray-500 hover:text-primary text-sm mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Back to signup options
-          </Link>
-          <img src="/brand/logo-full.png" alt="Football EyeQ" className="h-12 mx-auto mb-4" />
-        </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Breadcrumbs />
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="max-w-xl w-full">
+          <div className="text-center mb-6">
+            <Link href="/signup" className="inline-flex items-center gap-1 text-gray-500 hover:text-primary text-sm mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+              Back to signup options
+            </Link>
+            <img src="/brand/logo-full.png" alt="Football EyeQ" className="h-12 mx-auto mb-4" />
+          </div>
 
         <div className="flex justify-center mb-6">
           <div className="flex items-center gap-2">
@@ -261,6 +264,7 @@ export default function ClubSignupPage() {
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>After registration, you&apos;ll be taken to your club dashboard where you can invite coaches.</p>
         </div>
+      </div>
       </div>
     </div>
   );

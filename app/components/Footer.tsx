@@ -1,36 +1,23 @@
 "use client";
 import Link from "next/link";
+import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
 
 const footerColumns = [
   {
     title: "Training Tools",
-    links: [
-      { label: "Drill Catalogue", href: "/catalog" },
-      { label: "Session Planner", href: "/planner" },
-      { label: "Tag Guide", href: "/explanation" },
-    ],
+    links: coreLinks,
   },
   {
     title: "Learn",
-    links: [
-      { label: "Why Scanning", href: "/why-scanning" },
-      { label: "How It Works", href: "/how-it-works" },
-      { label: "Ecosystem", href: "/ecosystem" },
-      { label: "Use Cases", href: "/use-cases" },
-    ],
+    links: learnLinks,
   },
   {
     title: "About",
-    links: [
-      { label: "Testimonials", href: "/testimonials" },
-      { label: "Resources", href: "/resources" },
-    ],
+    links: aboutLinks,
   },
   {
     title: "Support",
-    links: [
-      { label: "Contact", href: "/contact" },
-    ],
+    links: [...supportLinks, pricingLink],
   },
 ];
 
