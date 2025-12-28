@@ -53,7 +53,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4" role="main">
       <div className="max-w-md w-full">
         <div className="text-center mb-6">
           <img src="/brand/logo-full.png" alt="Football EyeQ" className="h-14 mx-auto mb-4" />
@@ -71,46 +71,59 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">First Name</label>
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="signup-first-name">
+                  First Name
+                </label>
                 <input
+                  id="signup-first-name"
                   type="text"
                   placeholder="First Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  autoComplete="given-name"
                   className="w-full p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Last Name</label>
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="signup-last-name">
+                  Last Name
+                </label>
                 <input
+                  id="signup-last-name"
                   type="text"
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
+                  autoComplete="family-name"
                   className="w-full p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Email</label>
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="signup-email">
+                Email
+              </label>
               <input
+                id="signup-email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 className="w-full p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="signup-organization">
                 Organization <span className="text-gray-400 font-normal">(optional)</span>
               </label>
               <input
+                id="signup-organization"
                 type="text"
                 placeholder="Your club or team"
                 value={organization}
@@ -120,14 +133,18 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Password</label>
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="signup-password">
+                Password
+              </label>
               <input
+                id="signup-password"
                 type="password"
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                autoComplete="new-password"
                 className="w-full p-3 rounded-lg border border-divider bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
