@@ -46,10 +46,14 @@ export default function AuditAnalyticsPage() {
           limit(50)
         );
         const snapshot = await getDocs(auditQuery);
-        const data: AuditEvent[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as AuditEvent),
-        }));
+        const data: AuditEvent[] = snapshot.docs.map((doc) => {
+          const { id: _ignoredId, ...rest } = doc.data() as AuditEvent;
+          void _ignoredId;
+          return {
+            id: doc.id,
+            ...rest,
+          };
+        });
         setEvents(data);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to load analytics events";
