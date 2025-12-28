@@ -117,3 +117,14 @@ body {
 .focus\:ring-primary-light:focus {
   --tw-ring-color: var(--primary-light-bg);
 }
+
+/* Consistent, high-contrast focus outlines for keyboard navigation */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+}
