@@ -150,14 +150,14 @@ export default function SeasonPlanningPage() {
                     return (
                       <div
                         key={i}
-                        className={`border p-2 text-sm rounded flex items-center justify-between ${
+                        className={`border p-2 text-sm rounded flex items-center gap-2 ${
                           exercise ? "bg-primary-light text-primary-dark border-divider" : "text-gray-400 border-divider"
                         }`}
                       >
-                        <span>{exercise?.name || "Empty slot"}</span>
+                        <span className="truncate flex-1 min-w-0">{exercise?.name || "Empty slot"}</span>
                         {exercise && (
                           <button
-                            className="text-xs text-primary hover:underline"
+                            className="text-xs text-primary hover:underline flex-shrink-0"
                             onClick={() => removeFromWeek(week.week, exercise.originalIndex)}
                           >
                             Remove
