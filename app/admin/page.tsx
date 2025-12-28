@@ -215,6 +215,10 @@ Coaching Points
     setLoading(false);
   };
 
+  const scrollToExerciseForm = () => {
+    document.getElementById("exercise-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const resetExerciseForm = () => {
     setCustomId("");
     setTitle("");
@@ -551,7 +555,7 @@ Coaching Points
               <h2 className="text-lg font-bold mb-4">
                 {editingId ? "Edit Exercise" : "Add New Exercise"}
               </h2>
-              <form onSubmit={handleExerciseSubmit} className="space-y-4">
+              <form id="exercise-form" onSubmit={handleExerciseSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -772,7 +776,27 @@ Coaching Points
                 <h2 className="text-lg font-bold">Existing Exercises</h2>
               </div>
               {exercises.length === 0 ? (
-                <p className="p-6 text-gray-500">No exercises found.</p>
+                <div className="p-6 text-center space-y-3 text-gray-600">
+                  <div className="text-4xl">📝</div>
+                  <p className="font-medium text-gray-800">No exercises yet</p>
+                  <p className="text-sm">
+                    Add your first drill or refresh if you think the catalog should already be populated.
+                  </p>
+                  <div className="flex gap-3 justify-center flex-wrap">
+                    <button
+                      onClick={scrollToExerciseForm}
+                      className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover"
+                    >
+                      Add a drill
+                    </button>
+                    <button
+                      onClick={fetchAllData}
+                      className="px-3 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50"
+                    >
+                      Refresh data
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <div className="divide-y">
                   {exercises.map((exercise) => (
@@ -901,7 +925,27 @@ Coaching Points
                 {clubs.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                      No clubs registered yet
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="text-3xl">🏟️</div>
+                        <p className="text-gray-800 font-medium">No clubs registered yet</p>
+                        <p className="text-sm text-gray-600 max-w-lg">
+                          Invite partners or refresh the list if you were expecting existing clubs to appear.
+                        </p>
+                        <div className="flex gap-3 justify-center flex-wrap">
+                          <button
+                            onClick={fetchAllData}
+                            className="px-3 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50"
+                          >
+                            Refresh list
+                          </button>
+                          <a
+                            href="/contact"
+                            className="px-3 py-2 text-primary hover:underline"
+                          >
+                            Share a club invite
+                          </a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 )}
@@ -1008,7 +1052,27 @@ Coaching Points
                 {coaches.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                      No coaches registered yet
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="text-3xl">🎯</div>
+                        <p className="text-gray-800 font-medium">No coaches registered yet</p>
+                        <p className="text-sm text-gray-600 max-w-lg">
+                          Invite coaches to join or refresh the roster if you already shared access links.
+                        </p>
+                        <div className="flex gap-3 justify-center flex-wrap">
+                          <button
+                            onClick={fetchAllData}
+                            className="px-3 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50"
+                          >
+                            Refresh roster
+                          </button>
+                          <a
+                            href="mailto:support@eyeqfootball.com"
+                            className="px-3 py-2 text-primary hover:underline"
+                          >
+                            Request onboarding help
+                          </a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 )}

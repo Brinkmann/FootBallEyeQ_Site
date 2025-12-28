@@ -17,6 +17,8 @@ export default function CatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   
   const { favorites, isAuthenticated, loading: favoritesLoading } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
@@ -92,47 +94,52 @@ export default function CatalogPage() {
     "General / Mixed",
   ];
 
-  useEffect(() => {
-    async function fetchExercises() {
-      try {
-        const exercisesCol = collection(db, "exercises");
-        const snapshot = await getDocs(exercisesCol);
+  const fetchExercises = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    try {
+      const exercisesCol = collection(db, "exercises");
+      const snapshot = await getDocs(exercisesCol);
 
-        const getExerciseNumber = (title: string): number => {
-          const match = title.match(/^(\d+)/);
-          return match ? parseInt(match[1], 10) : 9999;
+      const getExerciseNumber = (title: string): number => {
+        const match = title.match(/^(\d+)/);
+        return match ? parseInt(match[1], 10) : 9999;
+      };
+
+      const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title || "No title",
+          ageGroup: data.ageGroup || "N/A",
+          decisionTheme: data.decisionTheme || "N/A",
+          playerInvolvement: data.playerInvolvement || "N/A",
+          gameMoment: data.gameMoment || "N/A",
+          difficulty: data.difficulty || "Unknown",
+          practiceFormat: data.practiceFormat || "General / Mixed",
+          overview: data.overview || "",
+          description: data.description || "",
+          exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
+          image: data.image || null,
+          exerciseType: data.exerciseType || "eyeq",
         };
+      });
 
-        const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title || "No title",
-            ageGroup: data.ageGroup || "N/A",
-            decisionTheme: data.decisionTheme || "N/A",
-            playerInvolvement: data.playerInvolvement || "N/A",
-            gameMoment: data.gameMoment || "N/A",
-            difficulty: data.difficulty || "Unknown",
-            practiceFormat: data.practiceFormat || "General / Mixed",
-            overview: data.overview || "",
-            description: data.description || "",
-            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
-            image: data.image || null,
-            exerciseType: data.exerciseType || "eyeq",
-          };
-        });
+      // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
+      exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
 
-        // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
-        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-        
-        setExercises(exercisesList);
-      } catch (error) {
-        console.error("Error fetching exercises:", error);
-      }
+      setExercises(exercisesList);
+    } catch (error) {
+      console.error("Error fetching exercises:", error);
+      setLoadError("We couldn't load drills right now. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-    fetchExercises();
   }, []);
+
+  useEffect(() => {
+    fetchExercises();
+  }, [fetchExercises]);
 
   // Capture initial favorites snapshot once when page loads (after both exercises AND favorites are loaded)
   // This prevents reordering when user favorites/unfavorites during the session
@@ -457,25 +464,69 @@ export default function CatalogPage() {
             </div>
           </div>
 
-          <ActiveFilters 
+          <ActiveFilters
             filters={activeFilters}
             onClearAll={resetFilters}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredExercises.length === 0 ? (
+            {isLoading ? (
+              <div className="col-span-full text-center py-12">
+                <div className="flex justify-center mb-3">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                </div>
+                <p className="text-foreground">Loading drills...</p>
+                <p className="text-sm text-foreground opacity-60">Hang tight while we fetch the latest catalog.</p>
+              </div>
+            ) : loadError ? (
+              <div className="col-span-full bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                <div className="text-6xl mb-4">🚧</div>
+                <h3 className="text-lg font-semibold text-red-800 mb-2">We hit a snag loading drills</h3>
+                <p className="text-red-700 opacity-80 mb-4">
+                  {loadError}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={fetchExercises}
+                    className="px-4 py-2 bg-primary text-button rounded-lg hover:bg-primary-hover transition-colors"
+                  >
+                    Retry loading drills
+                  </button>
+                  <a
+                    href="/contact"
+                    className="px-4 py-2 border border-red-200 text-red-800 rounded-lg hover:bg-white/70"
+                  >
+                    Contact support
+                  </a>
+                </div>
+              </div>
+            ) : filteredExercises.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">No drills found</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No drills match your search</h3>
                 <p className="text-foreground opacity-60 mb-4">
-                  Try adjusting your filters or search terms
+                  Adjust your filters or try broader keywords. You can also start over with the full catalog.
                 </p>
-                <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 bg-primary text-button rounded-lg hover:bg-primary-hover transition-colors"
-                >
-                  Clear all filters
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={resetFilters}
+                    className="px-4 py-2 bg-primary text-button rounded-lg hover:bg-primary-hover transition-colors"
+                  >
+                    Clear all filters
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="px-4 py-2 border border-gray-200 text-foreground rounded-lg hover:bg-card"
+                  >
+                    View all drills
+                  </button>
+                </div>
+                <ul className="mt-6 text-sm text-left max-w-xl mx-auto text-foreground opacity-80 space-y-2">
+                  <li>• Remove multiple filters to widen results.</li>
+                  <li>• Search for a skill (e.g., &quot;dribble&quot;, &quot;finishing&quot;).</li>
+                  <li>• Switch to another practice format to explore alternatives.</li>
+                </ul>
               </div>
             ) : (
               filteredExercises.map((exercise) => (
