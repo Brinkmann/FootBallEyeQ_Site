@@ -35,12 +35,6 @@ export async function POST(request: NextRequest) {
     const toEmail = process.env.CONTACT_EMAIL_TO;
     const fromEmail = process.env.CONTACT_EMAIL_FROM;
 
-    console.log('Environment variables:', {
-      hasApiKey: !!process.env.RESEND_API_KEY,
-      toEmail,
-      fromEmail
-    });
-
     if (!toEmail || !fromEmail) {
       console.error('Missing CONTACT_EMAIL_TO or CONTACT_EMAIL_FROM environment variables');
       return NextResponse.json(
@@ -48,8 +42,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    console.log('Sending email via Resend...');
 
     // Create HTML email template
     const htmlEmail = `

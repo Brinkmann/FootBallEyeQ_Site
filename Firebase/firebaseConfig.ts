@@ -22,6 +22,9 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+const analyticsEnabled =
+  typeof window !== "undefined" &&
+  Boolean(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID);
+export const analytics = analyticsEnabled ? getAnalytics(app) : null;
 
 export default app;
