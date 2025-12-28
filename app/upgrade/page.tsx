@@ -114,6 +114,22 @@ export default function UpgradePage() {
           Unlock the full power of Football EyeQ with a premium account.
         </p>
 
+        <div className="bg-card border border-divider rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-sm text-gray-500">Current pricing</p>
+              <h2 className="text-xl font-bold text-foreground">Pro Access</h2>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-extrabold text-foreground">$29</p>
+              <p className="text-sm text-gray-500">per month for 1 coach</p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 mt-3">
+            Includes the full session planner, analytics, unlimited favorites, and club sharing tools. Cancel anytime.
+          </p>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-3 mb-10">
           <Link
             href="/upgrade/checkout"
