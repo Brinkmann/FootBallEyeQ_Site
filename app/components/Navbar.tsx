@@ -7,24 +7,14 @@ import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
 import { useExerciseType } from "./ExerciseTypeProvider";
+import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
 
-const coreTabs = [
-  { label: "Drill Catalogue", href: "/catalog" },
-  { label: "Session Planner", href: "/planner" },
-  { label: "Tag Guide", href: "/explanation" },
-];
-
-const learnLinks = [
-  { label: "Why Scanning", href: "/why-scanning" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Ecosystem", href: "/ecosystem" },
-  { label: "Use Cases", href: "/use-cases" },
-];
+const extraLinks = [...aboutLinks, ...supportLinks, pricingLink];
 
 export default function NavBar() {
   const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
-  const { accountType, clubName, isSuperAdmin, isClubAdmin, isAuthenticated, enforcedExerciseType } = useEntitlements();
+  const { accountType, clubName, isSuperAdmin, isClubAdmin, enforcedExerciseType } = useEntitlements();
   const { selectedExerciseType, setSelectedExerciseType, canChoose } = useExerciseType();
 
   useEffect(() => {
@@ -53,7 +43,7 @@ export default function NavBar() {
 
   const [moreOpen, setMoreOpen] = useState(false);
 
-  let tabs = [...coreTabs];
+  let tabs = [...coreLinks];
   
   if (isClubAdmin) {
     tabs = [...tabs, { label: "My Club", href: "/club/dashboard" }];
@@ -203,7 +193,9 @@ export default function NavBar() {
               onClick={() => setMoreOpen(!moreOpen)}
               onBlur={() => setTimeout(() => setMoreOpen(false), 150)}
               className={`px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition flex items-center gap-1 ${
-                tabs.slice(2).some(t => pathname === t.href) || learnLinks.some(l => pathname === l.href)
+                tabs.slice(2).some(t => pathname === t.href) ||
+                learnLinks.some(l => pathname === l.href) ||
+                extraLinks.some(link => pathname === link.href)
                   ? "border-[#e63946] text-[#e63946]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
@@ -231,6 +223,21 @@ export default function NavBar() {
                 <div className="border-t border-gray-100 my-1"></div>
                 <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">Learn</div>
                 {learnLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`block px-4 py-2 text-sm transition ${
+                      pathname === link.href
+                        ? "text-[#e63946] bg-red-50"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div className="border-t border-gray-100 my-1"></div>
+                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">More</div>
+                {extraLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -297,6 +304,23 @@ export default function NavBar() {
               ))}
             </div>
           </div>
+
+          {extraLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
+                  isActive
+                    ? "border-[#e63946] text-[#e63946]"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </div>

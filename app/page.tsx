@@ -6,6 +6,7 @@ import Link from "next/link";
 import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
+import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./components/navigation";
 import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765753298897.png";
 import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_2f9rfc2f9rfc2f9r_1765758694890.png";
 import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo1_1765753298901.png";
@@ -33,20 +34,38 @@ export default function HomePage() {
           <span>Football EyeQ</span>
         </div>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
-          <Link href="/catalog" className="hover:text-[#A10115] transition font-semibold">Drill Catalogue</Link>
-          <Link href="/planner" className="hover:text-[#A10115] transition font-semibold">Session Planner</Link>
+          {coreLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition font-semibold">
+              {link.label}
+            </Link>
+          ))}
           <div className="relative group">
             <span className="hover:text-[#A10115] transition cursor-pointer">Learn ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <Link href="/why-scanning" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Why Scanning</Link>
-              <Link href="/how-it-works" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">How It Works</Link>
-              <Link href="/ecosystem" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Ecosystem</Link>
-              <Link href="/use-cases" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]">Use Cases</Link>
+              {learnLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
-          <Link href="/resources" className="hover:text-[#A10115] transition">Resources</Link>
-          <Link href="/testimonials" className="hover:text-[#A10115] transition">Testimonials</Link>
-          <Link href="/contact" className="hover:text-[#A10115] transition">Contact</Link>
+          {aboutLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
+              {link.label}
+            </Link>
+          ))}
+          {supportLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
+              {link.label}
+            </Link>
+          ))}
+          <Link href={pricingLink.href} className="hover:text-[#A10115] transition font-semibold">
+            {pricingLink.label}
+          </Link>
         </nav>
         {!user && (
           <div className="space-x-3">
