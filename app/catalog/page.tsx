@@ -179,21 +179,23 @@ export default function CatalogPage() {
       filtered = filtered.filter((ex) => favorites.has(ex.id));
     }
 
-    // Sort by ID, with favorites first if user has any
-    const parseId = (id: string) => {
-      const num = parseInt(id, 10);
-      return isNaN(num) ? 0 : num;
+    // Sort by exercise number extracted from title (e.g., "002 - Dribbling" -> 2)
+    // Favorites come first if user has any
+    const getExerciseNumber = (title: string): number => {
+      const match = title.match(/^(\d+)/);
+      return match ? parseInt(match[1], 10) : 9999;
     };
 
-    // Partition into favorites and non-favorites, then sort each by ID
     const hasFavorites = favorites.size > 0 && !showFavoritesOnly;
+    let sorted: typeof filtered;
     if (hasFavorites) {
-      const favs = filtered.filter(ex => favorites.has(ex.id)).sort((a, b) => parseId(a.id) - parseId(b.id));
-      const nonFavs = filtered.filter(ex => !favorites.has(ex.id)).sort((a, b) => parseId(a.id) - parseId(b.id));
-      return [...favs, ...nonFavs];
+      const favs = [...filtered.filter(ex => favorites.has(ex.id))].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+      const nonFavs = [...filtered.filter(ex => !favorites.has(ex.id))].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+      sorted = [...favs, ...nonFavs];
     } else {
-      return filtered.sort((a, b) => parseId(a.id) - parseId(b.id));
+      sorted = [...filtered].sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
     }
+    return sorted;
   }, [
     searchQuery,
     selectedAgeGroup,
