@@ -14,3 +14,8 @@
 - Firebase SDKs are loaded for authentication, Firestore access, and optional analytics. Analytics initialization is gated by the presence of `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` and only runs in the browser.
 - Resend is used in the `/api/contact` endpoint solely for transactional email delivery and now operates without emitting user details to logs.
 - AOS is included for client-side animations and does not transmit data off-site.
+
+## How to Verify (no UI changes required)
+- These changes are middleware/configuration only; there is no new frontend surface to click through.
+- To confirm HTTPS redirection and headers locally, run `npm run dev` and issue `curl -I http://localhost:3000` — the response should include a `307`/`308` redirect and `strict-transport-security` plus `content-security-policy: upgrade-insecure-requests` when served over HTTPS.
+- In the browser DevTools network panel, confirm that requests load without mixed-content warnings and that the `collect`/analytics calls do not fire unless `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` is configured.
