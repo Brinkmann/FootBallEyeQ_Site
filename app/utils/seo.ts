@@ -5,7 +5,7 @@ export const defaultOgImage = `${siteUrl}/brand/logo-full.png`;
 
 type OpenGraphType = NonNullable<Metadata["openGraph"]> extends { type?: infer T }
   ? T
-  : undefined;
+  : string;
 
 interface BaseMetadataProps {
   title: string;
