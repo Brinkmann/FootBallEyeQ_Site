@@ -6,7 +6,7 @@ export const metadata = buildMetadata({
   title: "Smart Cones | Football EyeQ Training Hardware",
   description: "Control Football EyeQ smart cones to run visual scanning patterns that sharpen player reactions and awareness.",
   path: "/cones",
-  type: "product",
+  type: "website",
 });
 
 export default function ConesLayout({ children }: { children: ReactNode }) {

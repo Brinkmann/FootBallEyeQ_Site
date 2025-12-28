@@ -6,7 +6,7 @@ export const metadata = buildMetadata({
   title: "Upgrade to Football EyeQ Pro | Unlock Premium Training",
   description: "Upgrade to Football EyeQ Pro for full access to cognitive drills, session planning, and smart cone integrations.",
   path: "/upgrade",
-  type: "product",
+  type: "website",
 });
 
 export default function UpgradeLayout({ children }: { children: ReactNode }) {
