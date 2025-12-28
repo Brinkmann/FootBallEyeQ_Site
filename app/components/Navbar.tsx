@@ -71,7 +71,7 @@ export default function NavBar() {
           <span>Football EyeQ</span>
         </Link>
         {userName ? (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="flex items-center gap-2">
               {isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
@@ -83,18 +83,18 @@ export default function NavBar() {
                   href="/upgrade"
                   className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded hover:bg-primary-light hover:text-primary transition"
                 >
-                  Free Plan
+                  Free
                 </Link>
               ) : !isSuperAdmin && accountType === "clubCoach" ? (
-                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">
+                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded truncate max-w-[80px] sm:max-w-none">
                   {clubName || "Club"}
                 </span>
               ) : !isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded">
-                  Premium
+                  Pro
                 </span>
               )}
-              <span className="text-gray-700 text-sm">{userName}</span>
+              <span className="hidden sm:inline text-gray-700 text-sm">{userName}</span>
             </div>
             <Link href="/profile">
               <div className="w-8 h-8 bg-[#e63946] rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
@@ -103,7 +103,7 @@ export default function NavBar() {
             </Link>
             <button
               onClick={() => signOut(auth)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
             >
               Log out
             </button>
