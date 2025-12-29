@@ -12,6 +12,7 @@ import { useExerciseType } from "../../components/ExerciseTypeProvider";
 import { auth, db } from "../../../Firebase/firebaseConfig";
 import { collection, getDocs, onSnapshot, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Exercise } from "../../types/exercise";
+import { parseExerciseFromFirestore } from "../../lib/schemas";
 
 interface ExerciseWithStats extends Exercise {
   sessions: number[];
@@ -47,24 +48,9 @@ export default function StatsPage() {
     async function fetchExercises() {
       try {
         const snap = await getDocs(collection(db, "exercises"));
-        const list: Exercise[] = snap.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title || "No title",
-            ageGroup: data.ageGroup || "",
-            decisionTheme: data.decisionTheme || "",
-            playerInvolvement: data.playerInvolvement || "",
-            gameMoment: data.gameMoment || "",
-            difficulty: data.difficulty || "",
-            practiceFormat: data.practiceFormat || "General / Mixed",
-            overview: data.overview || "",
-            description: data.description || "",
-            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
-            image: data.image || "",
-            exerciseType: data.exerciseType || "eyeq",
-          };
-        });
+        const list = snap.docs
+          .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
+          .filter((ex): ex is Exercise => ex !== null);
         setExercises(list);
       } catch (error) {
         console.error("Error fetching exercises:", error);
@@ -135,6 +121,7 @@ export default function StatsPage() {
             practiceFormat: "General / Mixed",
             overview: "",
             description: "",
+            exerciseBreakdownDesc: "",
             image: "",
             exerciseType: selectedExerciseType,
           }),

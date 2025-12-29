@@ -12,7 +12,7 @@ export interface Exercise {
   practiceFormat: string;
   overview: string;
   description: string;
-  exerciseBreakdownDesc?: string;
+  exerciseBreakdownDesc: string;
   image: string;
   exerciseType: ExerciseType;
 }
