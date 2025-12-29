@@ -25,6 +25,9 @@ export default function CatalogPage() {
   const { selectedExerciseType } = useExerciseType();
   const [plasticBannerDismissed, setPlasticBannerDismissed] = useState(false);
   const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -238,6 +241,33 @@ export default function CatalogPage() {
     selectedExerciseType,
     initialFavorites,
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredExercises.length / itemsPerPage));
+  
+  const paginatedExercises = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredExercises.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredExercises, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchQuery,
+    selectedAgeGroup,
+    selectedDecisionTheme,
+    selectedPlayerInvolvement,
+    selectedGameMoment,
+    selectedDifficulty,
+    selectedPracticeFormat,
+    showFavoritesOnly,
+    selectedExerciseType,
+  ]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const resetFilters = () => {
     setSelectedAgeGroup(defaultAgeGroup);
@@ -595,11 +625,76 @@ export default function CatalogPage() {
                 </ul>
               </div>
             ) : (
-              filteredExercises.map((exercise) => (
+              paginatedExercises.map((exercise) => (
                 <ExerciseCard key={exercise.id} exercise={exercise} />
               ))
             )}
           </div>
+
+          {totalPages > 1 && !isLoading && filteredExercises.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 pb-4">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 rounded-lg border border-divider bg-card text-foreground 
+                             hover:bg-primary-light hover:border-primary disabled:opacity-50 
+                             disabled:cursor-not-allowed transition-colors"
+                  aria-label="Previous page"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum: number;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-colors
+                          ${currentPage === pageNum 
+                            ? "bg-primary text-button" 
+                            : "bg-card text-foreground border border-divider hover:bg-primary-light hover:border-primary"
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 rounded-lg border border-divider bg-card text-foreground 
+                             hover:bg-primary-light hover:border-primary disabled:opacity-50 
+                             disabled:cursor-not-allowed transition-colors"
+                  aria-label="Next page"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              
+              <p className="text-sm text-foreground opacity-70">
+                Page {currentPage} of {totalPages} ({filteredExercises.length} drills)
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
