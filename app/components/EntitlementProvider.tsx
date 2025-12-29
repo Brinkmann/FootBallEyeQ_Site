@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { auth, db } from "@/Firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import {
   AccountType,
@@ -31,6 +31,7 @@ interface EntitlementContextType {
   clubExerciseTypePolicy: ExerciseTypePolicy | null;
   canChooseExerciseType: boolean;
   enforcedExerciseType: ExerciseType | null;
+  refreshEntitlements: () => Promise<void>;
 }
 
 const EntitlementContext = createContext<EntitlementContextType | null>(null);
@@ -45,6 +46,64 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isClubAdmin, setIsClubAdmin] = useState(false);
   const [clubExerciseTypePolicy, setClubExerciseTypePolicy] = useState<ExerciseTypePolicy | null>(null);
+
+  const fetchEntitlements = useCallback(async (user: User) => {
+    setIsLoading(true);
+    try {
+      const signupsQuery = query(
+        collection(db, "signups"),
+        where("uid", "==", user.uid)
+      );
+      const snapshot = await getDocs(signupsQuery);
+
+      if (!snapshot.empty) {
+        const userData = snapshot.docs[0].data();
+        const userAccountType = (userData.accountType as AccountType) || "free";
+        const userAccountStatus = (userData.accountStatus as AccountStatus) || "active";
+        setAccountType(userAccountType);
+        setAccountStatus(userAccountStatus);
+        setIsClubAdmin(userData.clubRole === "admin");
+
+        if (userAccountType === "clubCoach" && userData.clubId) {
+          setClubId(userData.clubId);
+          const clubQuery = query(
+            collection(db, "clubs"),
+            where("__name__", "==", userData.clubId)
+          );
+          const clubSnapshot = await getDocs(clubQuery);
+          if (!clubSnapshot.empty) {
+            const clubData = clubSnapshot.docs[0].data();
+            setClubName(clubData.name || null);
+            setClubExerciseTypePolicy(clubData.exerciseTypePolicy || "coach-choice");
+            if (clubData.status === "suspended") {
+              setAccountStatus("suspended");
+            }
+          }
+        } else {
+          setClubId(null);
+          setClubExerciseTypePolicy(null);
+        }
+      } else {
+        setAccountType("free");
+        setAccountStatus("active");
+        setIsClubAdmin(false);
+      }
+    } catch (error) {
+      console.error("Failed to load user entitlements:", error);
+      setAccountType("free");
+      setAccountStatus("active");
+      setIsClubAdmin(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const refreshEntitlements = useCallback(async () => {
+    const user = auth.currentUser;
+    if (user) {
+      await fetchEntitlements(user);
+    }
+  }, [fetchEntitlements]);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
@@ -63,59 +122,11 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
 
       setIsAuthenticated(true);
       setUserEmail(user.email || null);
-      setIsLoading(true);
-
-      try {
-        const signupsQuery = query(
-          collection(db, "signups"),
-          where("uid", "==", user.uid)
-        );
-        const snapshot = await getDocs(signupsQuery);
-
-        if (!snapshot.empty) {
-          const userData = snapshot.docs[0].data();
-          const userAccountType = (userData.accountType as AccountType) || "free";
-          const userAccountStatus = (userData.accountStatus as AccountStatus) || "active";
-          setAccountType(userAccountType);
-          setAccountStatus(userAccountStatus);
-          setIsClubAdmin(userData.clubRole === "admin");
-
-          if (userAccountType === "clubCoach" && userData.clubId) {
-            setClubId(userData.clubId);
-            const clubQuery = query(
-              collection(db, "clubs"),
-              where("__name__", "==", userData.clubId)
-            );
-            const clubSnapshot = await getDocs(clubQuery);
-            if (!clubSnapshot.empty) {
-              const clubData = clubSnapshot.docs[0].data();
-              setClubName(clubData.name || null);
-              setClubExerciseTypePolicy(clubData.exerciseTypePolicy || "coach-choice");
-              if (clubData.status === "suspended") {
-                setAccountStatus("suspended");
-              }
-            }
-          } else {
-            setClubId(null);
-            setClubExerciseTypePolicy(null);
-          }
-        } else {
-          setAccountType("free");
-          setAccountStatus("active");
-          setIsClubAdmin(false);
-        }
-      } catch (error) {
-        console.error("Failed to load user entitlements:", error);
-        setAccountType("free");
-        setAccountStatus("active");
-        setIsClubAdmin(false);
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchEntitlements(user);
     });
 
     return () => unsubAuth();
-  }, []);
+  }, [fetchEntitlements]);
 
   const isSuspended = accountStatus === "suspended";
   const isSuperAdmin = userEmail === SUPER_ADMIN_EMAIL;
@@ -150,6 +161,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         clubExerciseTypePolicy,
         canChooseExerciseType,
         enforcedExerciseType,
+        refreshEntitlements,
       }}
     >
       {children}
