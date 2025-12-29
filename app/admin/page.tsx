@@ -499,9 +499,17 @@ Coaching Points
             <h1 className="text-xl font-bold">Platform Administration</h1>
             <p className="text-gray-400 text-sm">Manage exercises, clubs, and coaches</p>
           </div>
-          <Link href="/" className="text-gray-400 hover:text-white text-sm">
-            Back to Site
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/analytics"
+              className="text-gray-200 hover:text-white text-sm underline-offset-4 hover:underline"
+            >
+              Audit analytics
+            </Link>
+            <Link href="/" className="text-gray-400 hover:text-white text-sm">
+              Back to Site
+            </Link>
+          </div>
         </div>
       </div>
 

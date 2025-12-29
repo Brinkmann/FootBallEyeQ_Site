@@ -1,7 +1,7 @@
 // /firebase/firebaseConfig.ts
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
+import { Analytics, getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -13,7 +13,7 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -22,9 +22,21 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-const analyticsEnabled =
-  typeof window !== "undefined" &&
-  Boolean(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID);
-export const analytics = analyticsEnabled ? getAnalytics(app) : null;
+
+let analyticsInstance: Analytics | null = null;
+
+export function getAnalyticsInstance(): Analytics | null {
+  const analyticsEnabled =
+    typeof window !== "undefined" &&
+    Boolean(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID);
+
+  if (!analyticsEnabled) return null;
+
+  if (!analyticsInstance) {
+    analyticsInstance = getAnalytics(app);
+  }
+
+  return analyticsInstance;
+}
 
 export default app;

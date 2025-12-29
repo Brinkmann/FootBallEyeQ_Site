@@ -3,9 +3,10 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { register } from "@/Firebase/auth";
-import { db } from "../../Firebase/firebaseConfig"; 
+import { db } from "../../Firebase/firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import Link from "next/link";
+import { useAnalytics } from "@/app/components/AnalyticsProvider";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -17,6 +18,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { trackEvent } = useAnalytics();
 
   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,6 +39,11 @@ export default function SignupPage() {
         createdAt: serverTimestamp(),
       });
 
+      await trackEvent("signup", {
+        userId: userCredential.user.uid,
+        entryPoint: hasClubCode ? "club_code" : "direct",
+      });
+
       if (hasClubCode) {
         router.push("/upgrade?welcome=true");
       } else {
@@ -46,6 +53,10 @@ export default function SignupPage() {
       if (err instanceof Error) {
         console.error("Signup failed:", err.message);
         setError(err.message);
+        await trackEvent("error", {
+          label: "signup",
+          errorMessage: err.message,
+        });
       }
     } finally {
       setLoading(false);

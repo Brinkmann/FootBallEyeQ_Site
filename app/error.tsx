@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { useAnalytics } from "./components/AnalyticsProvider";
 
 export default function GlobalError({
   error,
@@ -10,9 +11,15 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { trackEvent } = useAnalytics();
+
   useEffect(() => {
     console.error(error);
-  }, [error]);
+    trackEvent("error", {
+      label: "global_error_boundary",
+      errorMessage: error.message,
+    });
+  }, [error, trackEvent]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-16">
