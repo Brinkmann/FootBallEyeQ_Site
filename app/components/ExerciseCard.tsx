@@ -29,12 +29,12 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   
-  const { isFavorite, toggleFavorite, isAuthenticated, isAtLimit, maxFavorites } = useFavoritesContext();
+  const { isFavorite, toggleFavorite, isAuthenticated, isAtLimitForType, maxFavorites } = useFavoritesContext();
   const favorited = isFavorite(exercise.id);
   const [showLimitMessage, setShowLimitMessage] = useState(false);
 
   const handleFavoriteClick = () => {
-    if (!favorited && isAtLimit) {
+    if (!favorited && isAtLimitForType(exercise.exerciseType)) {
       setShowLimitMessage(true);
       setTimeout(() => setShowLimitMessage(false), 3000);
       return;
