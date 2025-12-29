@@ -104,16 +104,19 @@ export default function StatsPage() {
     const exerciseMap: Record<string, number[]> = {};
     
     weeks.forEach((week) => {
-      week.exercises.forEach((name) => {
-        if (!exerciseMap[name]) {
-          exerciseMap[name] = [];
+      week.exercises.forEach((ex) => {
+        // Only include exercises matching the selected type
+        if (ex.type === selectedExerciseType) {
+          if (!exerciseMap[ex.name]) {
+            exerciseMap[ex.name] = [];
+          }
+          exerciseMap[ex.name].push(week.week);
         }
-        exerciseMap[name].push(week.week);
       });
     });
 
     return exerciseMap;
-  }, [weeks]);
+  }, [weeks, selectedExerciseType]);
 
   const exercisesWithStats: ExerciseWithStats[] = useMemo(() => {
     return Object.keys(usedExercises)
@@ -192,7 +195,7 @@ export default function StatsPage() {
     setIsSaving(true);
     const updatedWeeks = weeks.map((w) => ({
       ...w,
-      exercises: w.exercises.filter((e) => e !== name),
+      exercises: w.exercises.filter((e) => e.name !== name),
     }));
 
     try {

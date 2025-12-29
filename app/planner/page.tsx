@@ -55,25 +55,14 @@ export default function SeasonPlanningPage() {
     return m;
   }, [catalog, selectedExerciseType]);
 
-  // Build a set of exercise titles that match the selected type
-  const validExerciseTitles = useMemo(() => {
-    const set = new Set<string>();
-    for (const ex of catalog) {
-      if (ex.exerciseType === selectedExerciseType) {
-        set.add(ex.title);
-      }
-    }
-    return set;
-  }, [catalog, selectedExerciseType]);
-
   // Filter weeks' exercises to only show those matching the selected type
   // Keep track of original indices for correct removal
   const filteredWeeks = useMemo(() => {
     return weeks.map(week => {
       const filteredExercises: { name: string; originalIndex: number }[] = [];
-      week.exercises.forEach((name, idx) => {
-        if (validExerciseTitles.has(name)) {
-          filteredExercises.push({ name, originalIndex: idx });
+      week.exercises.forEach((ex, idx) => {
+        if (ex.type === selectedExerciseType) {
+          filteredExercises.push({ name: ex.name, originalIndex: idx });
         }
       });
       return {
@@ -81,7 +70,7 @@ export default function SeasonPlanningPage() {
         filteredExercises
       };
     });
-  }, [weeks, validExerciseTitles]);
+  }, [weeks, selectedExerciseType]);
 
 
   return (

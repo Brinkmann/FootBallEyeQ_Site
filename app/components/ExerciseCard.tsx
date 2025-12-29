@@ -78,7 +78,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
 
   // Handle adding exercise to a selected week
   const handlePick = (week: number) => {
-    const res = addToWeek(week, exercise.title);
+    const res = addToWeek(week, exercise.title, exercise.exerciseType);
     if (!res.ok) {
       const msg =
         res.reason === "duplicate"
