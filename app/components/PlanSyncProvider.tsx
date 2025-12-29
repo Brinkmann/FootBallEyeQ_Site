@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { usePlanStore } from "../store/usePlanStore";
+import { usePlanStore, PlannedExercise } from "../store/usePlanStore";
 import { auth, db } from "@/Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -39,19 +39,31 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
 
         const empty = Array.from({ length: 12 }, (_, i) => ({
           week: i + 1,
-          exercises: [] as string[],
+          exercises: [] as PlannedExercise[],
         }));
 
         if (snap.exists()) {
           const data = snap.data() as {
-            weeks?: { week: number; exercises: string[] }[];
+            weeks?: { week: number; exercises: (PlannedExercise | string)[] }[];
             maxPerWeek?: number;
           };
-          const loadedWeeks = Array.isArray(data.weeks) ? data.weeks : empty;
+          
+          // Normalize legacy string-based exercises to new {name, type} format
+          const normalizedWeeks = Array.isArray(data.weeks) 
+            ? data.weeks.map(w => ({
+                week: w.week,
+                exercises: w.exercises.map(ex => 
+                  typeof ex === "string" 
+                    ? { name: ex, type: "eyeq" as const }  // Legacy data defaults to eyeq
+                    : ex
+                ) as PlannedExercise[]
+              }))
+            : empty;
+          
           const loadedMax = typeof data.maxPerWeek === "number" ? data.maxPerWeek : 5;
           
-          setAll({ weeks: loadedWeeks, maxPerWeek: loadedMax });
-          lastSavedRef.current = JSON.stringify({ weeks: loadedWeeks, maxPerWeek: loadedMax });
+          setAll({ weeks: normalizedWeeks, maxPerWeek: loadedMax });
+          lastSavedRef.current = JSON.stringify({ weeks: normalizedWeeks, maxPerWeek: loadedMax });
         } else {
           await setDoc(ref, { weeks: empty, maxPerWeek: 5, updatedAt: serverTimestamp() });
           setAll({ weeks: empty, maxPerWeek: 5 });
