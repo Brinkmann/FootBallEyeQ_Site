@@ -27,13 +27,13 @@ export default function StatsPage() {
   const { isFavorite, toggleFavorite, isAuthenticated, isAtLimit, maxFavorites } = useFavoritesContext();
   const [showLimitMessage, setShowLimitMessage] = useState<string | null>(null);
 
-  const handleFavoriteClick = (exerciseId: string) => {
+  const handleFavoriteClick = (exerciseId: string, exerciseType: "eyeq" | "plastic") => {
     if (!isFavorite(exerciseId) && isAtLimit) {
       setShowLimitMessage(exerciseId);
       setTimeout(() => setShowLimitMessage(null), 3000);
       return;
     }
-    toggleFavorite(exerciseId);
+    toggleFavorite(exerciseId, exerciseType);
   };
   const { entitlements, isLoading: entitlementsLoading } = useEntitlements();
   const { selectedExerciseType } = useExerciseType();
@@ -375,7 +375,7 @@ export default function StatsPage() {
                           {isAuthenticated && (
                             <div className="relative">
                               <button
-                                onClick={() => handleFavoriteClick(ex.id)}
+                                onClick={() => handleFavoriteClick(ex.id, ex.exerciseType)}
                                 className="p-1 rounded-full hover:bg-primary-light transition-colors"
                               >
                                 {isFavorite(ex.id) ? (
