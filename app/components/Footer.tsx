@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
+import CookiePreferences from "./CookiePreferences";
 
 const footerColumns = [
   {
@@ -19,13 +20,20 @@ const footerColumns = [
     title: "Support",
     links: [...supportLinks, pricingLink],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
 ];
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {footerColumns.map((column) => (
             <div key={column.title}>
               <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
@@ -52,9 +60,12 @@ export default function Footer() {
             <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-6 w-auto opacity-80" />
             <span className="text-white font-semibold">Football EyeQ</span>
           </div>
-          <p className="text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} Football EyeQ. All rights reserved.
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center gap-3 text-gray-500 text-sm">
+            <CookiePreferences />
+            <p className="text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} Football EyeQ. All rights reserved.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
