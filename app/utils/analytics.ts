@@ -50,7 +50,7 @@ export async function logAuditEvent(
   const consentGranted = consent === "granted";
 
   if (consentGranted && analytics) {
-    logEvent(analytics, eventName, {
+    logEvent(analytics, eventName as string, {
       event_category: "audit",
       event_label: context?.label,
       plan: context?.plan,
