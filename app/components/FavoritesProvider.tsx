@@ -22,6 +22,7 @@ interface FavoritesContextType {
   isFavorite: (exerciseId: string) => boolean;
   isAuthenticated: boolean;
   loading: boolean;
+  hasHydrated: boolean;
   favoritesCount: number;
   maxFavorites: number;
   isAtLimit: boolean;
@@ -33,6 +34,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
   const [accountType, setAccountType] = useState<AccountType>("free");
 
   const maxFavorites = accountType === "free" ? FREE_ENTITLEMENTS.maxFavorites : PREMIUM_ENTITLEMENTS.maxFavorites;
@@ -46,6 +48,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         setFavorites(new Set());
         setAccountType("free");
         setLoading(false);
+        setHasHydrated(true);
         return;
       }
 
@@ -86,6 +89,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       });
       setFavorites(favs);
       setLoading(false);
+      setHasHydrated(true);
     });
 
     return () => unsubSnap();
@@ -127,6 +131,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         isFavorite,
         isAuthenticated: !!userId,
         loading,
+        hasHydrated,
         favoritesCount,
         maxFavorites,
         isAtLimit,

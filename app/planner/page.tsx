@@ -15,20 +15,21 @@ export default function SeasonPlanningPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxExercisesPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeFromWeek = usePlanStore((s) => s.removeFromWeek);
-  const { entitlements, accountType, isAuthenticated } = useEntitlements();
+  const hasHydrated = usePlanStore((s) => s.hasHydrated);
+  const { entitlements, accountType, isAuthenticated, isLoading: entitlementsLoading } = useEntitlements();
   const { selectedExerciseType } = useExerciseType();
 
-  // Fetch exercises catalog from Firestore
+  const [catalogLoading, setCatalogLoading] = useState(true);
   const [catalog, setCatalog] = useState<{ id: number; title: string; exerciseType: ExerciseType }[]>([]);
 
   useEffect(() => {
     (async () => {
+      setCatalogLoading(true);
       try {
         const snap = await getDocs(collection(db, "exercises"));
         const list = snap.docs.map((d) => {
           const data = d.data() as { id?: number; title?: string; exerciseType?: ExerciseType };
           const title = data.title ?? d.id;
-          // Extract numeric ID from title prefix (e.g., "002 - Title" → 2)
           const titleMatch = typeof title === "string" ? title.match(/^(\d+)\s*-/) : null;
           const id = titleMatch ? parseInt(titleMatch[1], 10) : 0;
           const exerciseType = data.exerciseType || "eyeq";
@@ -37,6 +38,8 @@ export default function SeasonPlanningPage() {
         setCatalog(list);
       } catch (error) {
         console.error("Failed to load exercise catalog for planner:", error);
+      } finally {
+        setCatalogLoading(false);
       }
     })();
   }, []);
@@ -100,6 +103,15 @@ export default function SeasonPlanningPage() {
           </Link>
         </div>
 
+        {(catalogLoading || !hasHydrated || entitlementsLoading) ? (
+          <div className="text-center py-12">
+            <div className="flex justify-center mb-3">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+            <p className="text-foreground">Loading your season plan...</p>
+            <p className="text-sm text-foreground opacity-60">Preparing your sessions and drills.</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredWeeks.map((week) => {
             const isLocked = week.week > entitlements.maxSessions;
@@ -142,32 +154,51 @@ export default function SeasonPlanningPage() {
                 </p>
 
                 <div className="space-y-2 mb-4">
-                  {Array.from({ length: maxExercisesPerWeek }).map((_, i) => {
-                    const exercise = week.filteredExercises[i];
-                    return (
-                      <div
-                        key={i}
-                        className={`border p-2 text-sm rounded flex items-center gap-2 ${
-                          exercise ? "bg-primary-light text-primary-dark border-divider" : "text-gray-400 border-divider"
-                        }`}
+                  {week.filteredExercises.length === 0 ? (
+                    <div className="border border-dashed border-divider rounded p-4 text-center">
+                      <p className="text-sm text-gray-400 mb-2">No drills added yet</p>
+                      <Link
+                        href="/catalog"
+                        className="text-xs text-primary hover:underline"
                       >
-                        <span className="truncate flex-1 min-w-0">{exercise?.name || "Empty slot"}</span>
-                        {exercise && (
+                        Browse the catalog to add drills
+                      </Link>
+                    </div>
+                  ) : (
+                    Array.from({ length: maxExercisesPerWeek }).map((_, i) => {
+                      const exercise = week.filteredExercises[i];
+                      if (!exercise && i >= week.filteredExercises.length) {
+                        return (
+                          <div
+                            key={i}
+                            className="border p-2 text-sm rounded flex items-center gap-2 text-gray-400 border-divider border-dashed"
+                          >
+                            <span className="truncate flex-1 min-w-0">Empty slot</span>
+                          </div>
+                        );
+                      }
+                      return exercise ? (
+                        <div
+                          key={i}
+                          className="border p-2 text-sm rounded flex items-center gap-2 bg-primary-light text-primary-dark border-divider"
+                        >
+                          <span className="truncate flex-1 min-w-0">{exercise.name}</span>
                           <button
                             className="text-xs text-primary hover:underline flex-shrink-0"
                             onClick={() => removeFromWeek(week.week, exercise.originalIndex)}
                           >
                             Remove
                           </button>
-                        )}
-                      </div>
-                    );
-                  })}
+                        </div>
+                      ) : null;
+                    })
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
+        )}
 
         {accountType === "free" && isAuthenticated && (
           <div className="mt-8 bg-primary-light border border-primary rounded-lg p-6 text-center">

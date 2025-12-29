@@ -20,7 +20,7 @@ export default function CatalogPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   
-  const { favorites, isAuthenticated, loading: favoritesLoading } = useFavoritesContext();
+  const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
 
   const defaultAgeGroup = "All Age Groups";
@@ -470,7 +470,7 @@ export default function CatalogPage() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading ? (
+            {(isLoading || !favoritesHydrated) ? (
               <div className="col-span-full text-center py-12">
                 <div className="flex justify-center mb-3">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>

@@ -10,6 +10,7 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
   const maxPerWeek = usePlanStore((s) => s.maxPerWeek);
   const setAll = usePlanStore((s) => s.setAll);
   const reset = usePlanStore((s) => s.reset);
+  const setHydrated = usePlanStore((s) => s.setHydrated);
 
   const loadedUserRef = useRef<string | null>(null);
   const isLoadingRef = useRef(false);
@@ -21,10 +22,12 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
         loadedUserRef.current = null;
         lastSavedRef.current = "";
         reset();
+        setHydrated();
         return;
       }
 
       if (loadedUserRef.current === user.uid) {
+        setHydrated();
         return;
       }
 
@@ -60,11 +63,12 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
         console.error("Failed to load planner:", error);
       } finally {
         isLoadingRef.current = false;
+        setHydrated();
       }
     });
 
     return () => unsub();
-  }, [setAll, reset]);
+  }, [setAll, reset, setHydrated]);
 
   useEffect(() => {
     if (!loadedUserRef.current || isLoadingRef.current) return;
