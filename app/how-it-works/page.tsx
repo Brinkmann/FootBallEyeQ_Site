@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 import Link from "next/link";
 import playersConesImage from "@/attached_assets/Gemini_Generated_Image_bwhz9zbwhz9zbwhz_1765753298898.png";
 import methodImage from "@/attached_assets/Gemini_Generated_Image_hhfqpghhfqpghhfq_1765753298898.png";
+import LazyMedia from "../components/LazyMedia";
 
 export default function HowItWorksPage() {
   useEffect(() => {
@@ -59,10 +60,11 @@ export default function HowItWorksPage() {
           
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div data-aos="fade-right">
-              <img 
-                src={methodImage.src} 
-                alt="Smart Training Revolution" 
-                className="rounded-2xl shadow-lg w-full"
+              <LazyMedia
+                src={methodImage.src}
+                alt="Smart Training Revolution"
+                className="rounded-2xl shadow-lg"
+                wrapperClassName="w-full"
               />
             </div>
             <div data-aos="fade-left">
@@ -103,10 +105,11 @@ export default function HowItWorksPage() {
           </p>
 
           <div className="max-w-3xl mx-auto mb-12" data-aos="zoom-in">
-            <img 
-              src={playersConesImage.src} 
-              alt="Players training with smart cones" 
-              className="rounded-2xl shadow-lg w-full"
+            <LazyMedia
+              src={playersConesImage.src}
+              alt="Players training with smart cones"
+              className="rounded-2xl shadow-lg"
+              wrapperClassName="w-full"
             />
           </div>
 
@@ -172,10 +175,11 @@ export default function HowItWorksPage() {
             </div>
           </div>
           <div data-aos="fade-left">
-            <img 
-              src={playersConesImage.src} 
-              alt="Execute On-Field Training" 
-              className="rounded-2xl shadow-lg w-full"
+            <LazyMedia
+              src={playersConesImage.src}
+              alt="Execute On-Field Training"
+              className="rounded-2xl shadow-lg"
+              wrapperClassName="w-full"
             />
           </div>
         </div>

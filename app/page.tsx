@@ -7,6 +7,8 @@ import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./components/navigation";
+import MediaCarousel from "./components/MediaCarousel";
+import TrainingVideo from "./components/TrainingVideo";
 import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765753298897.png";
 import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_2f9rfc2f9rfc2f9r_1765758694890.png";
 import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo1_1765753298901.png";
@@ -206,6 +208,37 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Video Demo */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+          <div data-aos="fade-right">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              See the <span className="text-[#D72C16]">training flow</span>
+            </h2>
+            <p className="text-lg text-gray-600 mb-6">
+              Watch how players scan, call the cue, and react. Controls, captions, and a poster image
+              keep the experience accessible on every device.
+            </p>
+            <ul className="space-y-3 text-gray-700">
+              {["Captions for every step", "On-screen controls for playback", "Poster for quick context", "Metadata-only preload for fast starts"].map((item) => (
+                <li key={item} className="flex items-center">
+                  <span className="w-5 h-5 bg-[#D72C16] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div data-aos="fade-left">
+            <TrainingVideo
+              source="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+              poster="/images/homepage2.png"
+              captionSrc="/captions/training-demo.vtt"
+              title="Training demo with captions"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Product Highlights - Drill Catalogue & Session Planner */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -333,6 +366,39 @@ export default function HomePage() {
               alt="Players with Smart LED Cones"
               className="rounded-2xl shadow-lg h-auto"
               sizes="(min-width: 1024px) 540px, 100vw"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Carousel */}
+      <section className="py-16 px-6 bg-[#F0EFEA]">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-aos="fade-up">
+            Training moments you can swipe through
+          </h2>
+          <p className="text-lg text-gray-600 mb-10" data-aos="fade-up" data-aos-delay="100">
+            Use arrow keys, indicators, or a quick swipe to browse the latest drills and on-field captures.
+          </p>
+          <div data-aos="fade-up" data-aos-delay="200">
+            <MediaCarousel
+              slides={[
+                {
+                  image: "/images/homepage1.png",
+                  title: "Dynamic warm-up patterns",
+                  description: "Players call the color cue, adjust their body shape, and burst into space."
+                },
+                {
+                  image: "/images/homepage2.png",
+                  title: "Scanning during possession",
+                  description: "Small-sided possession game that rewards quick recognition of the next target."
+                },
+                {
+                  image: "/images/homepage3.png",
+                  title: "Finishing under pressure",
+                  description: "Final-third combinations with late visual cues to shape decision making."
+                }
+              ]}
             />
           </div>
         </div>

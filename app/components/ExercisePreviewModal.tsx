@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
+import LazyMedia from "./LazyMedia";
 
 // Define the props our new component will accept
 interface Props {
@@ -99,10 +100,11 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
             {/* Image */}
             {exercise.image && (
               <div className="flex-shrink-0 md:w-1/3">
-                <img
+                <LazyMedia
                   src={exercise.image}
                   alt={exercise.title}
-                  className="w-full h-auto object-cover rounded-lg border border-divider"
+                  className="object-cover rounded-lg border border-divider"
+                  wrapperClassName="w-full"
                 />
               </div>
             )}
