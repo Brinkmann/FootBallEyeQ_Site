@@ -29,8 +29,18 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   
-  const { isFavorite, toggleFavorite, isAuthenticated } = useFavoritesContext();
+  const { isFavorite, toggleFavorite, isAuthenticated, isAtLimit, maxFavorites } = useFavoritesContext();
   const favorited = isFavorite(exercise.id);
+  const [showLimitMessage, setShowLimitMessage] = useState(false);
+
+  const handleFavoriteClick = () => {
+    if (!favorited && isAtLimit) {
+      setShowLimitMessage(true);
+      setTimeout(() => setShowLimitMessage(false), 3000);
+      return;
+    }
+    toggleFavorite(exercise.id);
+  };
 
   const addToWeek = usePlanStore((s) => s.addToWeek);
   const overview = exercise.overview ?? "";
@@ -90,11 +100,12 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
             {exercise.title}
           </h2>
           {isAuthenticated && (
-            <button
-              onClick={() => toggleFavorite(exercise.id)}
-              className="flex-shrink-0 p-1 -mt-1 rounded-full hover:bg-primary-light transition-colors"
-              aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-            >
+            <div className="relative">
+              <button
+                onClick={handleFavoriteClick}
+                className="flex-shrink-0 p-1 -mt-1 rounded-full hover:bg-primary-light transition-colors"
+                aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+              >
               {favorited ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +131,13 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
                   />
                 </svg>
               )}
-            </button>
+              </button>
+              {showLimitMessage && (
+                <div className="absolute right-0 top-full mt-1 z-50 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg">
+                  Favorites limit reached ({maxFavorites}). Upgrade for unlimited favorites.
+                </div>
+              )}
+            </div>
           )}
         </div>
 
