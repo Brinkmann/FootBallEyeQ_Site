@@ -39,7 +39,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
       setTimeout(() => setShowLimitMessage(false), 3000);
       return;
     }
-    toggleFavorite(exercise.id);
+    toggleFavorite(exercise.id, exercise.exerciseType);
   };
 
   const addToWeek = usePlanStore((s) => s.addToWeek);

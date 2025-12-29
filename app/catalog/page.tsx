@@ -21,7 +21,7 @@ export default function CatalogPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   
-  const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated } = useFavoritesContext();
+  const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated, favoritesCountForType } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
   const [plasticBannerDismissed, setPlasticBannerDismissed] = useState(false);
   const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
@@ -154,10 +154,12 @@ export default function CatalogPage() {
 
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
-  // Base count: exercises filtered by exerciseType only (before other filters/search)
-  const exerciseTypeBaseCount = useMemo(() => {
-    return exercises.filter(ex => ex.exerciseType === selectedExerciseType).length;
+  // Exercises filtered by exerciseType only (before other filters/search)
+  const exercisesForCurrentType = useMemo(() => {
+    return exercises.filter(ex => ex.exerciseType === selectedExerciseType);
   }, [exercises, selectedExerciseType]);
+
+  const exerciseTypeBaseCount = exercisesForCurrentType.length;
 
   const filteredExercises = useMemo(() => {
     let filtered = exercises.filter(ex => ex.exerciseType === selectedExerciseType);
@@ -514,11 +516,11 @@ export default function CatalogPage() {
                   >
                     <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                   </svg>
-                  <span className="hidden sm:inline">{favorites.size}</span>
+                  <span className="hidden sm:inline">{favoritesCountForType}</span>
                 </button>
               )}
               <FacetedFilters
-                exercises={exercises}
+                exercises={exercisesForCurrentType}
                 filters={facetedFiltersConfig}
                 selectedFilters={selectedFilters}
                 onFilterChange={handleFacetedFilterChange}
