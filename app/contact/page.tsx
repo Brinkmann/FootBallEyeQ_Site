@@ -3,13 +3,21 @@ import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
+import {
+  ContactFormPayload,
+  enqueueContact,
+  getQueuedContacts,
+  processQueuedContacts,
+  sendContactWithRetry,
+  useNetworkSimulation,
+} from "../utils/networkSimulation";
 
 export default function ContactPage() {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormPayload>({
     name: "",
     email: "",
     organization: "",
@@ -19,28 +27,58 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [queuedId, setQueuedId] = useState<string | null>(null);
+  const [syncingQueue, setSyncingQueue] = useState(false);
+  const [syncMessage, setSyncMessage] = useState("");
+  const {
+    simulateOffline,
+    setSimulateOffline,
+    simulateSlow,
+    setSimulateSlow,
+    effectiveOffline,
+    isOnline,
+  } = useNetworkSimulation();
+
+  useEffect(() => {
+    if (effectiveOffline) return;
+
+    const queued = getQueuedContacts();
+    if (!queued.length) return;
+
+    setSyncingQueue(true);
+    processQueuedContacts({ simulateSlow, retries: 2, baseDelay: 700 })
+      .then((result) => {
+        if (result.sent > 0) {
+          setSubmitted(true);
+          setQueuedId(null);
+          setSyncMessage(`Sent ${result.sent} queued message${result.sent > 1 ? "s" : ""} automatically.`);
+        }
+        if (result.failed > 0) {
+          setError(`Unable to deliver ${result.failed} queued request${result.failed > 1 ? "s" : ""} after multiple attempts.`);
+        }
+      })
+      .finally(() => setSyncingQueue(false));
+  }, [effectiveOffline, simulateSlow]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSyncMessage("");
+
+    if (effectiveOffline) {
+      const queued = enqueueContact(formData);
+      setQueuedId(queued.id);
+      setSubmitted(true);
+      setIsLoading(false);
+      setError("You appear to be offline. We queued this message and will send it once you are back online.");
+      return;
+    }
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
-      }
-
+      await sendContactWithRetry(formData, { simulateSlow, retries: 3, baseDelay: 650 });
       setSubmitted(true);
+      setQueuedId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send message. Please try again.');
     } finally {
@@ -98,13 +136,66 @@ export default function ContactPage() {
       <section className="py-16 px-6">
         <div className="max-w-2xl mx-auto">
           {!submitted ? (
-            <form 
+            <form
               onSubmit={handleSubmit}
               data-aos="fade-up"
               className="bg-white rounded-2xl shadow-lg p-8"
             >
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
-              
+
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <label className="flex items-center gap-3 text-sm font-medium text-gray-700 bg-[#F7F6F2] px-3 py-2 rounded-lg border border-gray-200">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4"
+                    checked={simulateSlow}
+                    onChange={(event) => setSimulateSlow(event.target.checked)}
+                  />
+                  Simulate slow network
+                </label>
+                <label className="flex items-center gap-3 text-sm font-medium text-gray-700 bg-[#F7F6F2] px-3 py-2 rounded-lg border border-gray-200">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4"
+                    checked={simulateOffline}
+                    onChange={(event) => setSimulateOffline(event.target.checked)}
+                  />
+                  Simulate offline & queue
+                </label>
+              </div>
+
+              <div className="mb-6 flex flex-wrap items-center gap-3 text-sm">
+                <span className={`px-3 py-1 rounded-full ${effectiveOffline ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"}`}>
+                  {effectiveOffline ? "Offline / queuing requests" : "Online"}
+                </span>
+                {simulateSlow && (
+                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700">Slow mode adds delay to requests</span>
+                )}
+                {syncingQueue && (
+                  <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700">
+                    <span className="h-4 w-4 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" aria-hidden />
+                    Syncing queued messages…
+                  </span>
+                )}
+                <span className="text-gray-500">Browser reports: {isOnline ? "online" : "offline"}</span>
+                {syncMessage && <span className="text-gray-600">{syncMessage}</span>}
+              </div>
+
+              {(isLoading || syncingQueue) && (
+                <div className="mb-6 bg-[#F7F6F2] border border-dashed border-gray-300 rounded-xl p-4">
+                  <div className="animate-pulse space-y-3">
+                    <div className="h-3 bg-gray-200 rounded" />
+                    <div className="h-3 bg-gray-200 rounded w-5/6" />
+                    <div className="h-3 bg-gray-200 rounded w-4/6" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-3">
+                    {effectiveOffline
+                      ? "Offline mode active. Messages are stored locally until you reconnect."
+                      : "Simulated network conditions are slowing down requests to show loading states."}
+                  </p>
+                </div>
+              )}
+
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -203,20 +294,31 @@ export default function ContactPage() {
                 disabled={isLoading}
                 className="w-full px-6 py-4 bg-[#A10115] text-white font-bold rounded-lg hover:bg-[#c5303c] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Sending...' : 'Send Message'}
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="h-4 w-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin" aria-hidden />
+                    Sending...
+                  </span>
+                ) : queuedId ? (
+                  "Queued for send"
+                ) : (
+                  "Send Message"
+                )}
               </button>
             </form>
           ) : (
-            <div 
+            <div
               data-aos="fade-up"
               className="bg-white rounded-2xl shadow-lg p-12 text-center"
             >
-              <div className="text-6xl mb-6">✅</div>
+              <div className="text-6xl mb-6">{queuedId ? "⏳" : "✅"}</div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Message Sent!
+                {queuedId ? "Message Queued" : "Message Sent!"}
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Thank you for reaching out. We&apos;ll get back to you as soon as possible.
+                {queuedId
+                  ? "We saved your message locally and will deliver it automatically once you are back online."
+                  : "Thank you for reaching out. We&apos;ll get back to you as soon as possible."}
               </p>
               <Link
                 href="/"
