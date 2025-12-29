@@ -226,11 +226,11 @@ export default function HomePage() {
                 <h3 className="text-2xl font-bold text-gray-900">Drill Catalogue</h3>
               </div>
               <p className="text-gray-600 mb-6">
-                Access 100+ cognitive football drills designed to develop scanning habits and game intelligence. 
+                Explore our growing library of cognitive football drills designed to develop scanning habits and game intelligence. 
                 Filter by age group, difficulty, game moment, and more.
               </p>
               <ul className="space-y-3 mb-8">
-                {["Smart filtering & search", "Detailed drill breakdowns", "Video demonstrations", "Cone setup diagrams"].map((feature, i) => (
+                {["Smart filtering & search", "Detailed drill breakdowns", "Cone setup diagrams"].map((feature, i) => (
                   <li key={i} className="flex items-center text-gray-700">
                     <span className="w-5 h-5 bg-[#A10115] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
                     {feature}
@@ -257,11 +257,11 @@ export default function HomePage() {
                 <h3 className="text-2xl font-bold text-gray-900">Session Planner</h3>
               </div>
               <p className="text-gray-600 mb-6">
-                Build complete training sessions with drag-and-drop simplicity. 
+                Build complete training sessions by adding drills directly from the catalogue. 
                 Plan your entire season and keep everything organized in one place.
               </p>
               <ul className="space-y-3 mb-8">
-                {["12-week season overview", "Drag & drop drill planning", "Save & share sessions", "Cloud sync across devices"].map((feature, i) => (
+                {["12-week season overview", "Add drills to any session", "Save & share sessions", "Cloud sync across devices"].map((feature, i) => (
                   <li key={i} className="flex items-center text-gray-700">
                     <span className="w-5 h-5 bg-[#D72C16] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
                     {feature}

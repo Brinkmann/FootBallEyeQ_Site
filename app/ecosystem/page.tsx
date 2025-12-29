@@ -74,7 +74,7 @@ export default function EcosystemPage() {
                 color: "#A10115",
                 desc: "Design training sessions using our comprehensive drill catalogue. Select exercises that target specific cognitive skills and match your team's development goals.",
                 features: [
-                  "Access 100+ cognitive drills",
+                  "Explore our growing drill library",
                   "Filter by age, difficulty, game moment",
                   "Build complete session plans",
                   "Save and reuse templates"
@@ -168,7 +168,7 @@ export default function EcosystemPage() {
                 <h3 className="text-xl font-bold text-gray-900">Session Planner</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Organize your training with our drag-and-drop planner. Plan sessions, track your season, stay organized.
+                Organize your training by adding drills directly to your sessions. Plan sessions, track your season, stay organized.
               </p>
               <Link href="/planner" className="text-[#D72C16] font-semibold hover:underline">
                 Start Planning →
