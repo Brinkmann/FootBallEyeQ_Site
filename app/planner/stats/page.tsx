@@ -24,11 +24,11 @@ export default function StatsPage() {
   const weeks = usePlanStore((s) => s.weeks);
   const maxPerWeek = usePlanStore((s) => s.maxPerWeek);
   const removeExerciseFromAll = usePlanStore((s) => s.removeExerciseFromAll);
-  const { isFavorite, toggleFavorite, isAuthenticated, isAtLimit, maxFavorites } = useFavoritesContext();
+  const { isFavorite, toggleFavorite, isAuthenticated, isAtLimitForType, maxFavorites } = useFavoritesContext();
   const [showLimitMessage, setShowLimitMessage] = useState<string | null>(null);
 
   const handleFavoriteClick = (exerciseId: string, exerciseType: "eyeq" | "plastic") => {
-    if (!isFavorite(exerciseId) && isAtLimit) {
+    if (!isFavorite(exerciseId) && isAtLimitForType(exerciseType)) {
       setShowLimitMessage(exerciseId);
       setTimeout(() => setShowLimitMessage(null), 3000);
       return;

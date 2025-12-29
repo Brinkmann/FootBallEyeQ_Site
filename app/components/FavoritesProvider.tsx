@@ -33,8 +33,9 @@ interface FavoritesContextType {
   hasHydrated: boolean;
   favoritesCount: number;
   favoritesCountForType: number;
+  getFavoritesCountForType: (type: ExerciseType) => number;
   maxFavorites: number;
-  isAtLimit: boolean;
+  isAtLimitForType: (type: ExerciseType) => boolean;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
@@ -75,10 +76,15 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     return favoritesByType.get(selectedExerciseType)?.size ?? 0;
   }, [favoritesByType, selectedExerciseType]);
 
-  const isAtLimit = useMemo(() => {
+  const getFavoritesCountForType = useCallback((type: ExerciseType) => {
+    return favoritesByType.get(type)?.size ?? 0;
+  }, [favoritesByType]);
+
+  const isAtLimitForType = useCallback((type: ExerciseType) => {
     if (accountType !== "free") return false;
-    return favoritesCountForType >= maxFavorites;
-  }, [accountType, favoritesCountForType, maxFavorites]);
+    const count = favoritesByType.get(type)?.size ?? 0;
+    return count >= maxFavorites;
+  }, [accountType, favoritesByType, maxFavorites]);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
@@ -179,8 +185,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         hasHydrated,
         favoritesCount,
         favoritesCountForType,
+        getFavoritesCountForType,
         maxFavorites,
-        isAtLimit,
+        isAtLimitForType,
       }}
     >
       {children}
