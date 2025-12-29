@@ -7,19 +7,22 @@ type SetAllPayload = { weeks: WeekPlan[]; maxPerWeek: number };
 type PlanState = {
   weeks: WeekPlan[];
   maxPerWeek: number;
+  hasHydrated: boolean;
   addToWeek: (week: number, name: string) => { ok: boolean; reason?: string };
   removeFromWeek: (week: number, index: number) => void;
   removeExerciseFromAll: (name: string) => void;
   reset: () => void;
   setAll: (payload: { weeks: WeekPlan[]; maxPerWeek: number }) => void;
+  setHydrated: () => void;
 };
 
 export const usePlanStore = create<PlanState>((set, get) => ({
   weeks: Array.from({ length: 12 }, (_, i) => ({
     week: i + 1,
-    exercises: [], // Removed the seeded "Precision Passing" exercise
+    exercises: [],
   })),
   maxPerWeek: 5,
+  hasHydrated: false,
 
   addToWeek: (week, name) => {
     const { weeks, maxPerWeek } = get();
@@ -66,4 +69,5 @@ export const usePlanStore = create<PlanState>((set, get) => ({
       maxPerWeek,
   }),
 
+  setHydrated: () => set({ hasHydrated: true }),
 }));
