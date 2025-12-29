@@ -8,11 +8,14 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
 import { useExerciseType } from "./ExerciseTypeProvider";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
+import { useTranslations } from "./LocalizationProvider";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const extraLinks = [...aboutLinks, ...supportLinks, pricingLink];
 
 export default function NavBar() {
   const pathname = usePathname();
+  const { t } = useTranslations();
   const [userName, setUserName] = useState<string | null>(null);
   const { accountType, clubName, isSuperAdmin, isClubAdmin, enforcedExerciseType } = useEntitlements();
   const { selectedExerciseType, setSelectedExerciseType, canChoose } = useExerciseType();
@@ -44,28 +47,31 @@ export default function NavBar() {
   const [moreOpen, setMoreOpen] = useState(false);
 
   let tabs = [...coreLinks];
-  
+
   if (isClubAdmin) {
-    tabs = [...tabs, { label: "My Club", href: "/club/dashboard" }];
+    tabs = [...tabs, { labelKey: "navbar.myClub", fallback: "My Club", href: "/club/dashboard" }];
   }
-  
+
   if (isSuperAdmin) {
-    tabs = [...tabs, { label: "Admin Hub", href: "/admin" }];
+    tabs = [...tabs, { labelKey: "navbar.adminHub", fallback: "Admin Hub", href: "/admin" }];
   }
+
+  const getLinkLabel = (link: { labelKey: string; fallback: string }) => t(link.labelKey, link.fallback);
 
   return (
     <div className="bg-white px-6 pt-4 shadow-sm">
       <header className="flex justify-between items-center mb-4">
         <Link href="/" className="flex items-center space-x-2 text-xl font-bold hover:opacity-80 transition text-gray-900 focus:outline-none">
-          <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-8 w-auto" />
-          <span>Football EyeQ</span>
+          <img src="/brand/logo-icon.png" alt={t("common.siteName")}
+            className="h-8 w-auto" />
+          <span>{t("common.siteName")}</span>
         </Link>
         {userName ? (
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="flex items-center gap-2">
               {isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
-                  Admin
+                  {t("common.admin")}
                 </span>
               )}
               {!isSuperAdmin && accountType === "free" ? (
@@ -73,15 +79,15 @@ export default function NavBar() {
                   href="/upgrade"
                   className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded hover:bg-primary-light hover:text-primary transition"
                 >
-                  Free
+                  {t("common.free")}
                 </Link>
               ) : !isSuperAdmin && accountType === "clubCoach" ? (
                 <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded truncate max-w-[80px] sm:max-w-none">
-                  {clubName || "Club"}
+                  {clubName || t("common.club")}
                 </span>
               ) : !isSuperAdmin && (
                 <span className="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded">
-                  Pro
+                  {t("common.pro")}
                 </span>
               )}
               <span className="hidden sm:inline text-gray-700 text-sm">{userName}</span>
@@ -95,8 +101,9 @@ export default function NavBar() {
               onClick={() => signOut(auth)}
               className="px-2 py-1 sm:px-3 sm:py-1.5 text-sm font-medium text-gray-600 hover:text-[#e63946] transition"
             >
-              Log out
+              {t("common.logout")}
             </button>
+            <LanguageSwitcher />
           </div>
         ) : (
           <div className="flex items-center space-x-3">
@@ -104,14 +111,15 @@ export default function NavBar() {
               href="/login"
               className="text-[#e63946] font-semibold hover:underline text-sm"
             >
-              Login
+              {t("common.login")}
             </Link>
             <Link
               href="/signup"
               className="px-4 py-2 bg-[#e63946] text-white font-semibold rounded-lg hover:bg-[#c5303c] transition text-sm"
             >
-              Sign Up
+              {t("common.signup")}
             </Link>
+            <LanguageSwitcher />
           </div>
         )}
       </header>
@@ -119,13 +127,13 @@ export default function NavBar() {
       {userName && (
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Welcome back, {userName}</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t("navbar.welcomeBack", "Welcome back, {name}", { name: userName })}</h2>
             <p className="text-gray-600 text-sm">
-              {isSuperAdmin 
-                ? "Platform administration and management" 
-                : isClubAdmin 
-                  ? "Manage your club and coaching team" 
-                  : "Plan your training sessions and manage your exercise library"}
+              {isSuperAdmin
+                ? t("navbar.superAdmin", "Platform administration and management")
+                : isClubAdmin
+                  ? t("navbar.clubAdmin", "Manage your club and coaching team")
+                  : t("navbar.defaultWelcome", "Plan your training sessions and manage your exercise library")}
             </p>
           </div>
           
@@ -139,7 +147,7 @@ export default function NavBar() {
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                EyeQ
+                {t("navbar.eyeq", "EyeQ")}
               </button>
               <button
                 onClick={() => setSelectedExerciseType("plastic")}
@@ -149,18 +157,21 @@ export default function NavBar() {
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                Plastic
+                {t("navbar.plastic", "Plastic")}
               </button>
             </div>
           ) : enforcedExerciseType && (
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 text-xs font-medium bg-gray-200 text-gray-700 rounded-full">
-                {enforcedExerciseType === "eyeq" ? "EyeQ Cones" : "Plastic Cones"}
+                {enforcedExerciseType === "eyeq"
+                  ? t("navbar.eyeqCones", "EyeQ Cones")
+                  : t("navbar.plasticCones", "Plastic Cones")}
               </span>
-              <span className="text-xs text-gray-400" title="Set by your club">
+              <span className="text-xs text-gray-400" title={t("navbar.clubSet", "Set by your club")}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
+                <span className="sr-only">{t("navbar.clubSet", "Set by your club")}</span>
               </span>
             </div>
           )}
@@ -172,9 +183,16 @@ export default function NavBar() {
         <div className="flex sm:hidden">
           {tabs.slice(0, 2).map((tab) => {
             const isActive = pathname === tab.href;
+            const label = getLinkLabel(tab);
+            const shortLabel =
+              tab.labelKey === "nav.drillCatalogue"
+                ? t("nav.catalogue", "Catalogue")
+                : tab.labelKey === "nav.sessionPlanner"
+                  ? t("nav.planner", "Planner")
+                  : label;
             return (
               <Link
-                key={tab.label}
+                key={tab.href}
                 href={tab.href}
                 className={`px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
                   isActive
@@ -182,7 +200,7 @@ export default function NavBar() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {tab.label === "Drill Catalogue" ? "Catalogue" : tab.label === "Session Planner" ? "Planner" : tab.label}
+                {shortLabel}
               </Link>
             );
           })}
@@ -200,7 +218,7 @@ export default function NavBar() {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              More
+              {t("common.more", "More")}
               <svg className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -217,11 +235,11 @@ export default function NavBar() {
                         : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    {tab.label}
+                    {getLinkLabel(tab)}
                   </Link>
                 ))}
                 <div className="border-t border-gray-100 my-1"></div>
-                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">Learn</div>
+                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">{t("nav.learn", "Learn")}</div>
                 {learnLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -232,11 +250,11 @@ export default function NavBar() {
                         : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    {link.label}
+                    {getLinkLabel(link)}
                   </Link>
                 ))}
                 <div className="border-t border-gray-100 my-1"></div>
-                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">More</div>
+                <div className="px-4 py-1 text-xs font-medium text-gray-400 uppercase">{t("common.more", "More")}</div>
                 {extraLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -247,7 +265,7 @@ export default function NavBar() {
                         : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    {link.label}
+                    {getLinkLabel(link)}
                   </Link>
                 ))}
               </div>
@@ -261,7 +279,7 @@ export default function NavBar() {
             const isActive = pathname === tab.href;
             return (
               <Link
-                key={tab.label}
+                key={tab.href}
                 href={tab.href}
                 className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition ${
                   isActive
@@ -269,7 +287,7 @@ export default function NavBar() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {tab.label}
+                {getLinkLabel(tab)}
               </Link>
             );
           })}
@@ -283,7 +301,7 @@ export default function NavBar() {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Learn
+              {t("nav.learn", "Learn")}
               <svg className="w-4 h-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -293,15 +311,15 @@ export default function NavBar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`block px-4 py-2 text-sm transition ${
-                    pathname === link.href
-                      ? "text-[#e63946] bg-red-50"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+                    className={`block px-4 py-2 text-sm transition ${
+                      pathname === link.href
+                        ? "text-[#e63946] bg-red-50"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {getLinkLabel(link)}
+                  </Link>
+                ))}
             </div>
           </div>
 
@@ -317,7 +335,7 @@ export default function NavBar() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {link.label}
+                {getLinkLabel(link)}
               </Link>
             );
           })}

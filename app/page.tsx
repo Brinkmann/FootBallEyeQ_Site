@@ -7,6 +7,7 @@ import { auth } from "@/Firebase/firebaseConfig";
 import { useState } from "react";
 import { User } from "firebase/auth";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./components/navigation";
+import { useTranslations } from "./components/LocalizationProvider";
 import heroImage from "@/attached_assets/Gemini_Generated_Image_4hnpph4hnpph4hnp_1765753298897.png";
 import seeThinkDoImage from "@/attached_assets/Gemini_Generated_Image_2f9rfc2f9rfc2f9r_1765758694890.png";
 import ecosystemImage from "@/attached_assets/Gemini_Generated_Image_uzmoi1uzmoi1uzmo1_1765753298901.png";
@@ -14,6 +15,8 @@ import playersConesImage from "@/attached_assets/Gemini_Generated_Image_bwhz9zbw
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
+  const { t } = useTranslations();
+  const getLinkLabel = (link: { labelKey: string; fallback: string }) => t(link.labelKey, link.fallback);
 
   useEffect(() => {
     let isMounted = true;
@@ -40,17 +43,18 @@ export default function HomePage() {
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
         <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-          <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={32} height={32} priority />
-          <span>Football EyeQ</span>
+          <Image src="/brand/logo-icon.png" alt={t("common.siteName")}
+            width={32} height={32} priority />
+          <span>{t("common.siteName")}</span>
         </div>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
           {coreLinks.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition font-semibold">
-              {link.label}
+              {getLinkLabel(link)}
             </Link>
           ))}
           <div className="relative group">
-            <span className="hover:text-[#A10115] transition cursor-pointer">Learn ▾</span>
+            <span className="hover:text-[#A10115] transition cursor-pointer">{t("nav.learn", "Learn")} ▾</span>
             <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
               {learnLinks.map((link) => (
                 <Link
@@ -58,35 +62,35 @@ export default function HomePage() {
                   href={link.href}
                   className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]"
                 >
-                  {link.label}
+                  {getLinkLabel(link)}
                 </Link>
               ))}
             </div>
           </div>
           {aboutLinks.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
-              {link.label}
+              {getLinkLabel(link)}
             </Link>
           ))}
           {supportLinks.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
-              {link.label}
+              {getLinkLabel(link)}
             </Link>
           ))}
           <Link href={pricingLink.href} className="hover:text-[#A10115] transition font-semibold">
-            {pricingLink.label}
+            {getLinkLabel(pricingLink)}
           </Link>
         </nav>
         {!user && (
           <div className="space-x-3">
             <Link href="/login">
               <button className="px-4 py-2 text-[#D72C16] font-semibold hover:text-[#A10115] transition">
-                Login
+                {t("common.login")}
               </button>
             </Link>
             <Link href="/signup">
               <button className="px-4 py-2 rounded-md bg-[#D72C16] text-white font-semibold hover:bg-[#b82010] transition">
-                Sign Up
+                {t("common.signup")}
               </button>
             </Link>
           </div>
@@ -102,7 +106,7 @@ export default function HomePage() {
               onClick={() => auth.signOut()}
               className="px-4 py-2 rounded-md bg-gray-600 text-white font-semibold hover:bg-gray-500 transition"
             >
-              Sign Out
+              {t("common.logout")}
             </button>
           </div>
         )}
