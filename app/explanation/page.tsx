@@ -17,7 +17,7 @@ const sections: Section[] = [
   {
     title: "Age Group Tag",
     intro:
-      "Age Group Tag: General / Unspecified; Foundation Phase (U7–U10); Youth Development Phase (U11–U14); Game Training Phase (U15–U18); Performance Phase (U19–Senior). Use this tag to find practices that suit the stage and typical ability level of your players.",
+      "Age Group Tag: General / Unspecified; Foundation Phase (U7-U10); Youth Development Phase (U11-U14); Game Training Phase (U15-U18); Performance Phase (U19-Senior). Use this tag to find practices that suit the stage and typical ability level of your players.",
     items: [
       {
         code: "1.0",
@@ -27,25 +27,25 @@ const sections: Section[] = [
       },
       {
         code: "1.1",
-        label: "Foundation Phase (U7–U10)",
+        label: "Foundation Phase (U7-U10)",
         description:
           "Choose this when you want fun, simple practices that build basic coordination, confidence on the ball and very simple scanning habits.",
       },
       {
         code: "1.2",
-        label: "Youth Development Phase (U11–U14)",
+        label: "Youth Development Phase (U11-U14)",
         description:
           "Choose this when you want more structured practices where players start to read cues, combine with team-mates and make simple tactical decisions.",
       },
       {
         code: "1.3",
-        label: "Game Training Phase (U15–U18)",
+        label: "Game Training Phase (U15-U18)",
         description:
           "Choose this when you want realistic game moments with more pressure, where players must apply tactics and scan before every decision.",
       },
       {
         code: "1.4",
-        label: "Performance Phase (U19–Senior)",
+        label: "Performance Phase (U19-Senior)",
         description:
           "Choose this when you work with advanced players who can handle complex, high-intensity practices with demanding scanning and decision-making.",
       },
@@ -85,7 +85,7 @@ const sections: Section[] = [
   {
     title: "Player Involvement Tag",
     intro:
-      "Player Involvement Tag: General / Unspecified; Individual; 1v1 / 2v2; Small Group (3–4 players); Team Unit (5+ players). Use this tag to match the number of players you want actively involved in each practice.",
+      "Player Involvement Tag: General / Unspecified; Individual; 1v1 / 2v2; Small Group (3-4 players); Team Unit (5+ players). Use this tag to match the number of players you want actively involved in each practice.",
     items: [
       {
         code: "3.0",
@@ -106,7 +106,7 @@ const sections: Section[] = [
       },
       {
         code: "3.3",
-        label: "Small Group (3–4)",
+        label: "Small Group (3-4)",
         description:
           "Choose this for quick combination play, rotations and shared decisions in tight areas.",
       },
@@ -139,7 +139,7 @@ const sections: Section[] = [
         code: "4.2",
         label: "Final Third Decision",
         description:
-          "Choose this when you want attacking practices around the box – last pass, through balls, finishing choices.",
+          "Choose this when you want attacking practices around the box - last pass, through balls, finishing choices.",
       },
       {
         code: "4.3",
@@ -248,7 +248,7 @@ const sections: Section[] = [
         code: "6.6",
         label: "Directional Small-Sided Game",
         description:
-          "Choose this for mini-matches with goals or target zones, where teams attack one way and defend the other – closest to the real game.",
+          "Choose this for mini-matches with goals or target zones, where teams attack one way and defend the other - closest to the real game.",
       },
     ],
   },
@@ -265,7 +265,7 @@ export default function ExplanationGuide() {
             Football EyeQ
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-            Football EyeQ – Tag Explanation Guide
+            Football EyeQ - Tag Explanation Guide
           </h1>
           <p className="text-lg text-slate-600 leading-relaxed">
             Use these tags to <strong>filter the exercise library</strong>. Each practice has
