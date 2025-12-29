@@ -141,12 +141,14 @@ export default function SeasonPlanningPage() {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-foreground">Session {week.week}</h4>
 
-                  <SessionCodeButton
-                    exercises={week.filteredExercises.map(e => e.name)}
-                    idByName={ID_BY_NAME}
-                    weekLabel={`Session ${week.week}`}
-                    buttonText="Generate Code"
-                  />
+                  {selectedExerciseType === "eyeq" && (
+                    <SessionCodeButton
+                      exercises={week.filteredExercises.map(e => e.name)}
+                      idByName={ID_BY_NAME}
+                      weekLabel={`Session ${week.week}`}
+                      buttonText="Generate Code"
+                    />
+                  )}
                 </div>
 
                 <p className="text-sm text-gray-500 mb-3">
