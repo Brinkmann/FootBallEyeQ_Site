@@ -5,10 +5,10 @@ import Link from "next/link";
 import NavBar from "../components/Navbar";
 import { useEntitlements } from "../components/EntitlementProvider";
 import { auth, db } from "@/Firebase/firebaseConfig";
-import { collection, query, where, getDocs, updateDoc, addDoc, doc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, addDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function UpgradePage() {
-  const { accountType, isAuthenticated, clubName } = useEntitlements();
+  const { accountType, isAuthenticated, clubName, refreshEntitlements } = useEntitlements();
   const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -77,6 +77,15 @@ export default function UpgradePage() {
           clubId: invite.clubId,
           clubRole: "coach",
         });
+      } else {
+        await setDoc(doc(db, "signups", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          accountType: "clubCoach",
+          clubId: invite.clubId,
+          clubRole: "coach",
+          createdAt: serverTimestamp(),
+        });
       }
 
       await addDoc(collection(db, `clubs/${invite.clubId}/members`), {
@@ -94,7 +103,8 @@ export default function UpgradePage() {
         usedAt: serverTimestamp(),
       });
 
-      setSuccess(`Successfully joined ${invite.clubName || "the club"}! Refresh the page to see your updated access.`);
+      await refreshEntitlements();
+      setSuccess(`Successfully joined ${invite.clubName || "the club"}! Your access has been updated.`);
       setInviteCode("");
     } catch (err) {
       console.error("Failed to join club:", err);
@@ -217,9 +227,14 @@ export default function UpgradePage() {
                   <button
                     type="submit"
                     disabled={loading || accountType !== "free"}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition disabled:opacity-50"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition disabled:opacity-50 flex items-center justify-center min-w-[60px]"
                   >
-                    {loading ? "..." : "Join"}
+                    {loading ? (
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : "Join"}
                   </button>
                 </div>
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
