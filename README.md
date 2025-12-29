@@ -743,6 +743,37 @@ npm run dev
 http://localhost:3000
 ```
 
+### Running E2E Tests (Playwright)
+The Playwright suite lives in `tests/e2e` and stubs Firebase calls, so no real project keys are required.
+
+1) **Install dependencies** (ensure your npm registry allows downloading `@playwright/test`):
+```bash
+npm install
+```
+
+2) **Install Playwright browsers and system deps** (one-time):
+```bash
+npx playwright install --with-deps
+```
+
+3) **Start the app** in a separate terminal (tests expect port `5000`):
+```bash
+npm run dev
+# or use an existing build: npm run start
+```
+
+4) **Run the suite** (respects `BASE_URL`, defaults to `http://localhost:5000`):
+```bash
+BASE_URL=http://localhost:5000 npm run test:e2e
+```
+
+5) **Debug options**:
+- Headful run: `npx playwright test --headed`
+- Inspector: `npx playwright test --debug`
+- Single test file: `npx playwright test tests/e2e/catalog-and-planner.spec.ts`
+
+If you encounter registry/firewall 403 errors when installing Playwright, point npm to the public registry (e.g., `npm config set registry https://registry.npmjs.org`) or install via a VPN/allowlist.
+
 ### Project Structure
 ```
 app/
