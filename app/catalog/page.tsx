@@ -151,6 +151,11 @@ export default function CatalogPage() {
 
   const normalizeDash = (str: string) => str.replace(/–/g, "-");
 
+  // Base count: exercises filtered by exerciseType only (before other filters/search)
+  const exerciseTypeBaseCount = useMemo(() => {
+    return exercises.filter(ex => ex.exerciseType === selectedExerciseType).length;
+  }, [exercises, selectedExerciseType]);
+
   const filteredExercises = useMemo(() => {
     let filtered = exercises.filter(ex => ex.exerciseType === selectedExerciseType);
 
@@ -426,7 +431,7 @@ export default function CatalogPage() {
                 onFilterSelect={handleFilterSelect}
                 placeholder="Search or type to filter..."
                 resultCount={filteredExercises.length}
-                totalCount={exercises.length}
+                totalCount={exerciseTypeBaseCount}
               />
             </div>
             <div className="flex-shrink-0 flex gap-2 pt-0">
