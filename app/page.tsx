@@ -36,27 +36,27 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F0EFEA] font-sans">
+    <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Top Bar */}
-      <header className="flex justify-between items-center px-8 py-4 bg-transparent">
-        <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
+      <header className="flex flex-wrap items-center justify-between gap-4 px-6 py-4 md:px-10">
+        <div className="flex items-center gap-2 text-lg font-bold text-foreground">
           <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={32} height={32} priority />
           <span>Football EyeQ</span>
         </div>
-        <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
+        <nav className="hidden items-center gap-5 text-sm font-medium text-foreground/80 md:flex">
           {coreLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition font-semibold">
+            <Link key={link.href} href={link.href} className="transition hover:text-primary">
               {link.label}
             </Link>
           ))}
           <div className="relative group">
-            <span className="hover:text-[#A10115] transition cursor-pointer">Learn ▾</span>
-            <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <span className="cursor-pointer transition hover:text-primary">Learn ▾</span>
+            <div className="absolute left-0 top-full z-50 mt-2 w-48 rounded-lg border border-divider bg-card p-2 text-left opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-1 group-hover:opacity-100">
               {learnLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-4 py-2 hover:bg-gray-50 hover:text-[#A10115]"
+                  className="block rounded-md px-4 py-2 text-foreground/80 transition hover:bg-primary-light hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -64,43 +64,43 @@ export default function HomePage() {
             </div>
           </div>
           {aboutLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
+            <Link key={link.href} href={link.href} className="transition hover:text-primary">
               {link.label}
             </Link>
           ))}
           {supportLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-[#A10115] transition">
+            <Link key={link.href} href={link.href} className="transition hover:text-primary">
               {link.label}
             </Link>
           ))}
-          <Link href={pricingLink.href} className="hover:text-[#A10115] transition font-semibold">
+          <Link href={pricingLink.href} className="font-semibold transition hover:text-primary">
             {pricingLink.label}
           </Link>
         </nav>
         {!user && (
-          <div className="space-x-3">
+          <div className="flex items-center gap-3">
             <Link href="/login">
-              <button className="px-4 py-2 text-[#D72C16] font-semibold hover:text-[#A10115] transition">
+              <button className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition hover:text-primary-hover">
                 Login
               </button>
             </Link>
             <Link href="/signup">
-              <button className="px-4 py-2 rounded-md bg-[#D72C16] text-white font-semibold hover:bg-[#b82010] transition">
+              <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-button transition hover:bg-primary-hover">
                 Sign Up
               </button>
             </Link>
           </div>
         )}
         {user && (
-          <div className="space-x-4 flex items-center">
+          <div className="flex items-center gap-4">
             <Link href="/profile">
-              <div className="w-8 h-8 bg-[#A10115] rounded-full flex items-center justify-center text-white text-sm">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm text-button">
                 🧑‍🏫
               </div>
             </Link>
             <button
               onClick={() => auth.signOut()}
-              className="px-4 py-2 rounded-md bg-gray-600 text-white font-semibold hover:bg-gray-500 transition"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-semibold text-background transition hover:bg-foreground/80"
             >
               Sign Out
             </button>
@@ -109,27 +109,27 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-16 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative px-6 py-16 md:px-10">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
           <div data-aos="fade-right">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
+            <h1 className="mb-6 text-4xl font-extrabold leading-tight text-foreground md:text-5xl">
               Train Smarter with<br />
-              <span className="text-[#A10115]">Game Intelligence</span>
+              <span className="text-primary">Game Intelligence</span>
             </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-lg">
-              Football EyeQ transforms training with cognitive drills that develop scanning, 
+            <p className="mb-8 max-w-xl text-lg text-foreground/70">
+              Football EyeQ transforms training with cognitive drills that develop scanning,
               decision-making, and game awareness. Build smarter players who see the game before it happens.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               <Link
                 href="/catalog"
-                className="px-6 py-3 bg-[#A10115] text-white font-semibold rounded-lg hover:bg-[#8a0110] transition shadow-lg"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-button shadow-lg transition hover:bg-primary-hover"
               >
                 Explore Drills
               </Link>
               <Link
                 href="/planner"
-                className="px-6 py-3 border-2 border-[#D72C16] text-[#D72C16] font-semibold rounded-lg hover:bg-[#D72C16] hover:text-white transition"
+                className="inline-flex items-center justify-center rounded-lg border-2 border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-button"
               >
                 Plan a Session
               </Link>
@@ -148,17 +148,17 @@ export default function HomePage() {
       </section>
 
       {/* Three Pillars Section */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-aos="fade-up">
+      <section className="bg-card px-6 py-20 md:px-10">
+        <div className="mx-auto mb-12 max-w-6xl text-center">
+          <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl" data-aos="fade-up">
             The Football EyeQ Method
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          <p className="mx-auto max-w-2xl text-lg text-foreground/70" data-aos="fade-up" data-aos-delay="100">
             Our approach combines cognitive training with smart technology to develop complete players
           </p>
         </div>
-        
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+
+        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
           {[
             {
               title: "See",
@@ -183,94 +183,102 @@ export default function HomePage() {
               key={i}
               data-aos="fade-up"
               data-aos-delay={i * 150}
-              className="p-8 bg-[#F0EFEA] rounded-xl border-2 border-gray-100 hover:border-opacity-50 transition text-center"
-              style={{ borderColor: pillar.color }}
+              className="text-center transition"
             >
-              <div className="text-5xl mb-4">{pillar.icon}</div>
-              <h3 className="text-2xl font-bold mb-3" style={{ color: pillar.color }}>{pillar.title}</h3>
-              <p className="text-gray-600">{pillar.desc}</p>
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-light text-3xl">
+                {pillar.icon}
+              </div>
+              <h3 className="mb-3 text-2xl font-bold text-primary">{pillar.title}</h3>
+              <p className="text-foreground/70">{pillar.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* See-Think-Do Visual Strip */}
-      <section className="py-16 px-6 bg-[#F0EFEA]">
-        <div className="max-w-5xl mx-auto" data-aos="zoom-in">
+      <section className="bg-background px-6 py-16 md:px-10">
+        <div className="mx-auto max-w-5xl" data-aos="zoom-in">
           <Image
             src={seeThinkDoImage}
             alt="See Think Do - Player Development"
-            className="w-full rounded-2xl shadow-lg h-auto"
+            className="h-auto w-full rounded-2xl shadow-lg"
             sizes="(min-width: 1024px) 960px, 100vw"
           />
         </div>
       </section>
 
       {/* Product Highlights - Drill Catalogue & Session Planner */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16" data-aos="fade-up">
+      <section className="bg-card px-6 py-20 md:px-10">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="mb-16 text-center text-3xl font-bold text-foreground md:text-4xl" data-aos="fade-up">
             Your Complete Training Platform
           </h2>
-          
-          <div className="grid md:grid-cols-2 gap-12">
+
+          <div className="grid gap-10 md:grid-cols-2">
             {/* Drill Catalogue Card */}
-            <div 
-              data-aos="fade-right" 
-              className="bg-gradient-to-br from-[#A10115]/10 to-[#A10115]/5 rounded-2xl p-8 border border-[#A10115]/20"
+            <div
+              data-aos="fade-right"
+              className="rounded-2xl border border-divider bg-gradient-to-br from-primary-light to-primary-light/40 p-8 shadow-sm"
             >
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-[#A10115] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
-                  📚
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Drill Catalogue</h3>
+              <div className="mb-6 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-2xl text-button">📚</div>
+                <h3 className="text-2xl font-bold text-foreground">Drill Catalogue</h3>
               </div>
-              <p className="text-gray-600 mb-6">
-                Access 100+ cognitive football drills designed to develop scanning habits and game intelligence. 
+              <p className="mb-6 text-foreground/70">
+                Access 100+ cognitive football drills designed to develop scanning habits and game intelligence.
                 Filter by age group, difficulty, game moment, and more.
               </p>
-              <ul className="space-y-3 mb-8">
-                {["Smart filtering & search", "Detailed drill breakdowns", "Video demonstrations", "Cone setup diagrams"].map((feature, i) => (
-                  <li key={i} className="flex items-center text-gray-700">
-                    <span className="w-5 h-5 bg-[#A10115] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
-                    {feature}
-                  </li>
-                ))}
+              <ul className="mb-8 space-y-3">
+                {["Smart filtering & search", "Detailed drill breakdowns", "Video demonstrations", "Cone setup diagrams"].map(
+                  (feature, i) => (
+                    <li key={i} className="flex items-start gap-3 text-foreground/90">
+                      <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-button">
+                        ✓
+                      </span>
+                      <span>{feature}</span>
+                    </li>
+                  ),
+                )}
               </ul>
               <Link
                 href="/catalog"
-                className="inline-block px-6 py-3 bg-[#A10115] text-white font-semibold rounded-lg hover:bg-[#8a0110] transition"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-button transition hover:bg-primary-hover"
               >
                 Browse Drills →
               </Link>
             </div>
 
             {/* Session Planner Card */}
-            <div 
-              data-aos="fade-left" 
-              className="bg-gradient-to-br from-[#D72C16]/10 to-[#D72C16]/5 rounded-2xl p-8 border border-[#D72C16]/20"
+            <div
+              data-aos="fade-left"
+              className="rounded-2xl border border-divider bg-gradient-to-br from-primary-light to-primary-light/40 p-8 shadow-sm"
             >
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-[#D72C16] rounded-xl flex items-center justify-center text-white text-2xl mr-4">
-                  📋
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Session Planner</h3>
+              <div className="mb-6 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-2xl text-button">📋</div>
+                <h3 className="text-2xl font-bold text-foreground">Session Planner</h3>
               </div>
-              <p className="text-gray-600 mb-6">
-                Build complete training sessions with drag-and-drop simplicity. 
+              <p className="mb-6 text-foreground/70">
+                Build complete training sessions with drag-and-drop simplicity.
                 Plan your entire season and keep everything organized in one place.
               </p>
-              <ul className="space-y-3 mb-8">
-                {["12-week season overview", "Drag & drop drill planning", "Save & share sessions", "Cloud sync across devices"].map((feature, i) => (
-                  <li key={i} className="flex items-center text-gray-700">
-                    <span className="w-5 h-5 bg-[#D72C16] rounded-full flex items-center justify-center text-white text-xs mr-3">✓</span>
-                    {feature}
+              <ul className="mb-8 space-y-3">
+                {[
+                  "12-week season overview",
+                  "Drag & drop drill planning",
+                  "Save & share sessions",
+                  "Cloud sync across devices",
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3 text-foreground/90">
+                    <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-button">
+                      ✓
+                    </span>
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
               <Link
                 href="/planner"
-                className="inline-block px-6 py-3 bg-[#D72C16] text-white font-semibold rounded-lg hover:bg-[#b82010] transition"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-button transition hover:bg-primary-hover"
               >
                 Start Planning →
               </Link>
@@ -280,28 +288,28 @@ export default function HomePage() {
       </section>
 
       {/* Ecosystem Preview */}
-      <section className="py-20 px-6 bg-[#F0EFEA]">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="bg-background px-6 py-20 md:px-10">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
           <div data-aos="fade-right">
             <Image
               src={ecosystemImage}
               alt="Plan Train Enjoy Ecosystem"
-              className="rounded-2xl shadow-lg h-auto"
+              className="h-auto rounded-2xl shadow-lg"
               sizes="(min-width: 1024px) 540px, 100vw"
             />
           </div>
           <div data-aos="fade-left">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Plan. Train. <span className="text-[#D72C16]">Enjoy.</span>
+            <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
+              Plan. Train. <span className="text-primary">Enjoy.</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-6">
-              Football EyeQ creates a complete ecosystem for developing smarter players. 
-              From session planning to on-field execution, every step is designed to make 
+            <p className="mb-6 text-lg text-foreground/70">
+              Football EyeQ creates a complete ecosystem for developing smarter players.
+              From session planning to on-field execution, every step is designed to make
               training more effective and enjoyable.
             </p>
             <Link
               href="/ecosystem"
-              className="inline-flex items-center text-[#D72C16] font-semibold hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary-hover"
             >
               Learn about our ecosystem →
             </Link>
@@ -310,19 +318,19 @@ export default function HomePage() {
       </section>
 
       {/* Smart Cones Preview */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="bg-card px-6 py-20 md:px-10">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
           <div data-aos="fade-right" className="order-2 md:order-1">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Smart LED Cones for <span className="text-[#D72C16]">Interactive Training</span>
+            <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">
+              Smart LED Cones for <span className="text-primary">Interactive Training</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-6">
-              Our smart cone technology brings drills to life with dynamic light sequences 
+            <p className="mb-6 text-lg text-foreground/70">
+              Our smart cone technology brings drills to life with dynamic light sequences
               that challenge players to scan, react, and execute in real-time.
             </p>
             <Link
               href="/how-it-works"
-              className="inline-flex items-center text-[#D72C16] font-semibold hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary-hover"
             >
               See how it works →
             </Link>
@@ -331,7 +339,7 @@ export default function HomePage() {
             <Image
               src={playersConesImage}
               alt="Players with Smart LED Cones"
-              className="rounded-2xl shadow-lg h-auto"
+              className="h-auto rounded-2xl shadow-lg"
               sizes="(min-width: 1024px) 540px, 100vw"
             />
           </div>
@@ -339,24 +347,24 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-[#A10115] to-[#8a0110]">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">
+      <section className="bg-gradient-to-r from-primary to-primary-hover px-6 py-20 text-button md:px-10">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="mb-6 text-3xl font-bold md:text-4xl" data-aos="fade-up">
             Ready to Transform Your Training?
           </h2>
-          <p className="text-xl opacity-90 mb-8" data-aos="fade-up" data-aos-delay="100">
+          <p className="mb-8 text-xl opacity-90" data-aos="fade-up" data-aos-delay="100">
             Join coaches who are developing smarter, more aware players with Football EyeQ.
           </p>
-          <div className="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+          <div className="flex flex-wrap justify-center gap-3" data-aos="fade-up" data-aos-delay="200">
             <Link
               href="/signup"
-              className="px-8 py-4 bg-white text-[#A10115] font-bold rounded-lg hover:bg-gray-100 transition shadow-lg"
+              className="inline-flex items-center justify-center rounded-lg bg-card px-7 py-3 text-sm font-bold text-primary transition hover:brightness-95"
             >
               Get Started Free
             </Link>
             <Link
               href="/contact"
-              className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-[#A10115] transition"
+              className="inline-flex items-center justify-center rounded-lg border-2 border-button px-7 py-3 text-sm font-bold text-button transition hover:bg-button hover:text-primary"
             >
               Contact Us
             </Link>
