@@ -11,6 +11,7 @@ import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
 import { useFavoritesContext } from "../components/FavoritesProvider";
 import { useExerciseType } from "../components/ExerciseTypeProvider";
+import Link from "next/link";
 
 export default function CatalogPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -22,6 +23,8 @@ export default function CatalogPage() {
   
   const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
+  const [plasticBannerDismissed, setPlasticBannerDismissed] = useState(false);
+  const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -417,8 +420,64 @@ export default function CatalogPage() {
 
       <div className="px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
+          {/* Plastic cone banner for logged-out users viewing EyeQ drills */}
+          {!isAuthenticated && selectedExerciseType === "eyeq" && !plasticBannerDismissed && (
+            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+              <p className="text-sm text-blue-800">
+                For plastic cone drills,{" "}
+                <Link href="/login" className="font-medium underline hover:text-blue-900">
+                  sign in
+                </Link>{" "}
+                to access our full library.
+              </p>
+              <button
+                onClick={() => setPlasticBannerDismissed(true)}
+                className="text-blue-600 hover:text-blue-800 p-1 flex-shrink-0"
+                aria-label="Dismiss"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           <div className="mb-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Drill Catalogue</h1>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Drill Catalogue</h1>
+              {selectedExerciseType === "eyeq" && (
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowEyeQTooltip(!showEyeQTooltip)}
+                    onMouseEnter={() => setShowEyeQTooltip(true)}
+                    onMouseLeave={() => setShowEyeQTooltip(false)}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 cursor-help"
+                    aria-describedby="eyeq-tooltip"
+                  >
+                    EyeQ Drills
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 opacity-60">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                    </svg>
+                  </button>
+                  {showEyeQTooltip && (
+                    <div 
+                      id="eyeq-tooltip"
+                      role="tooltip"
+                      className="absolute left-0 top-full mt-2 w-56 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-50"
+                    >
+                      These drills require EyeQ LED smart cones for the visual cues and decision triggers.
+                      <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {selectedExerciseType === "plastic" && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700 border border-orange-200">
+                  Plastic Cones
+                </span>
+              )}
+            </div>
             <p className="text-foreground opacity-60 text-sm">Find the perfect drill for your training session</p>
           </div>
 
