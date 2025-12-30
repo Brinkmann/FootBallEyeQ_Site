@@ -4,8 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import NavBar from "../components/Navbar";
 import { useEntitlements } from "../components/EntitlementProvider";
-import { auth, db } from "@/Firebase/firebaseConfig";
-import { collection, query, where, getDocs, updateDoc, addDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "@/Firebase/firebaseConfig";
 
 export default function UpgradePage() {
   const { accountType, isAuthenticated, clubName, refreshEntitlements } = useEntitlements();
@@ -23,34 +22,6 @@ export default function UpgradePage() {
     setSuccess("");
 
     try {
-      const inviteQuery = query(
-        collection(db, "clubInvites"),
-        where("code", "==", inviteCode.trim().toUpperCase())
-      );
-      const inviteSnap = await getDocs(inviteQuery);
-
-      if (inviteSnap.empty) {
-        setError("Invalid invite code. Please check and try again.");
-        setLoading(false);
-        return;
-      }
-
-      const invite = inviteSnap.docs[0].data();
-      const now = new Date();
-      const expiresAt = invite.expiresAt?.toDate();
-
-      if (expiresAt && expiresAt < now) {
-        setError("This invite code has expired.");
-        setLoading(false);
-        return;
-      }
-
-      if (invite.usedBy) {
-        setError("This invite code has already been used.");
-        setLoading(false);
-        return;
-      }
-
       const user = auth.currentUser;
       if (!user) {
         setError("Please log in to join a club.");
@@ -58,53 +29,27 @@ export default function UpgradePage() {
         return;
       }
 
-      if (invite.email && user.email?.toLowerCase() !== invite.email.toLowerCase()) {
-        setError(`This code was created for a different email address. Please log in with the email your club admin used when generating your invite.`);
+      const idToken = await user.getIdToken();
+
+      const response = await fetch("/api/redeem-invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ inviteCode: inviteCode.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
         setLoading(false);
         return;
       }
 
-      const signupsQuery = query(
-        collection(db, "signups"),
-        where("uid", "==", user.uid)
-      );
-      const signupsSnap = await getDocs(signupsQuery);
-
-      if (!signupsSnap.empty) {
-        const userDoc = signupsSnap.docs[0];
-        await updateDoc(userDoc.ref, {
-          accountType: "clubCoach",
-          clubId: invite.clubId,
-          clubRole: "coach",
-        });
-      } else {
-        await setDoc(doc(db, "signups", user.uid), {
-          uid: user.uid,
-          email: user.email,
-          accountType: "clubCoach",
-          clubId: invite.clubId,
-          clubRole: "coach",
-          createdAt: serverTimestamp(),
-        });
-      }
-
-      await addDoc(collection(db, `clubs/${invite.clubId}/members`), {
-        userId: user.uid,
-        coachUid: user.uid,
-        email: user.email,
-        role: "coach",
-        status: "active",
-        joinedAt: serverTimestamp(),
-      });
-
-      const inviteDocRef = doc(db, "clubInvites", inviteSnap.docs[0].id);
-      await updateDoc(inviteDocRef, {
-        usedBy: user.uid,
-        usedAt: serverTimestamp(),
-      });
-
       await refreshEntitlements();
-      setSuccess(`Successfully joined ${invite.clubName || "the club"}! Your access has been updated.`);
+      setSuccess(data.message || `Successfully joined ${data.clubName || "the club"}! Your access has been updated.`);
       setInviteCode("");
     } catch (err) {
       console.error("Failed to join club:", err);
