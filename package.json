@@ -6,7 +6,8 @@
     "dev": "next dev -H 0.0.0.0 -p 5000",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 5000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "aos": "^2.3.4",
@@ -27,6 +28,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
