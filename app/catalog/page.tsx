@@ -101,44 +101,52 @@ export default function CatalogPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const res = await fetch("/api/exercises");
-      if (res.ok) {
-        const data = await res.json();
-        if (data.exercises && data.exercises.length > 0) {
-          setExercises(data.exercises);
-          return;
+      let loaded = false;
+      
+      try {
+        const res = await fetch("/api/exercises");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.exercises && data.exercises.length > 0) {
+            setExercises(data.exercises);
+            loaded = true;
+          }
         }
+      } catch (apiError) {
+        console.warn("Server API failed, falling back to client SDK:", apiError);
       }
       
-      const exercisesCol = collection(db, "exercises");
-      const snapshot = await getDocs(exercisesCol);
+      if (!loaded) {
+        const exercisesCol = collection(db, "exercises");
+        const snapshot = await getDocs(exercisesCol);
 
-      const getExerciseNumber = (title: string): number => {
-        const match = title.match(/^(\d+)/);
-        return match ? parseInt(match[1], 10) : 9999;
-      };
-
-      const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title || "No title",
-          ageGroup: data.ageGroup || "N/A",
-          decisionTheme: data.decisionTheme || "N/A",
-          playerInvolvement: data.playerInvolvement || "N/A",
-          gameMoment: data.gameMoment || "N/A",
-          difficulty: data.difficulty || "Unknown",
-          practiceFormat: data.practiceFormat || "General / Mixed",
-          overview: data.overview || "",
-          description: data.description || "",
-          exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
-          image: data.image || null,
-          exerciseType: data.exerciseType || "eyeq",
+        const getExerciseNumber = (title: string): number => {
+          const match = title.match(/^(\d+)/);
+          return match ? parseInt(match[1], 10) : 9999;
         };
-      });
 
-      exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-      setExercises(exercisesList);
+        const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title || "No title",
+            ageGroup: data.ageGroup || "N/A",
+            decisionTheme: data.decisionTheme || "N/A",
+            playerInvolvement: data.playerInvolvement || "N/A",
+            gameMoment: data.gameMoment || "N/A",
+            difficulty: data.difficulty || "Unknown",
+            practiceFormat: data.practiceFormat || "General / Mixed",
+            overview: data.overview || "",
+            description: data.description || "",
+            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
+            image: data.image || null,
+            exerciseType: data.exerciseType || "eyeq",
+          };
+        });
+
+        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+        setExercises(exercisesList);
+      }
     } catch (error) {
       console.error("Error fetching exercises:", error);
       setLoadError("We couldn't load drills right now. Please check your connection and try again.");
