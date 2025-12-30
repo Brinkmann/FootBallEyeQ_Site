@@ -3,8 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { register } from "@/Firebase/auth";
-import { db } from "@/Firebase/firebaseConfig";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "@/Firebase/firebaseConfig";
 import Link from "next/link";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 
@@ -34,39 +33,37 @@ export default function ClubSignupPage() {
     setLoading(true);
 
     try {
-      const userCredential = await register(contactEmail, password);
+      await register(contactEmail, password);
 
-      const clubDoc = await addDoc(collection(db, "clubs"), {
-        name: clubName,
-        contactEmail: contactEmail,
-        subscriptionStatus: "trial",
-        status: "active",
-        createdAt: serverTimestamp(),
-        createdBy: userCredential.user.uid,
+      const user = auth.currentUser;
+      if (!user) {
+        setError("Failed to authenticate. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+
+      const response = await fetch("/api/create-club", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          clubName: clubName.trim(),
+          firstName: adminFirstName,
+          lastName: adminLastName,
+        }),
       });
 
-      await addDoc(collection(db, "signups"), {
-        uid: userCredential.user.uid,
-        fname: adminFirstName,
-        lname: adminLastName,
-        email: contactEmail,
-        admin: false,
-        organization: clubName,
-        accountType: "clubCoach",
-        accountStatus: "active",
-        clubId: clubDoc.id,
-        clubRole: "admin",
-        createdAt: serverTimestamp(),
-      });
+      const data = await response.json();
 
-      await addDoc(collection(db, `clubs/${clubDoc.id}/members`), {
-        userId: userCredential.user.uid,
-        coachUid: userCredential.user.uid,
-        email: contactEmail,
-        role: "admin",
-        status: "active",
-        joinedAt: serverTimestamp(),
-      });
+      if (!response.ok) {
+        setError(data.error || "Failed to create club. Please try again.");
+        setLoading(false);
+        return;
+      }
 
       router.push("/club/dashboard?welcome=true");
     } catch (err: unknown) {

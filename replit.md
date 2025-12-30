@@ -30,6 +30,33 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Navigation:** Navbar includes Drill Catalogue, Session Planner, Tag Guide, and a "Learn" dropdown. Role-specific tabs for "My Club" (club admins) and "Admin Hub" (super admin).
 - **Post-Signup Onboarding:** Contextual welcome modals and redirects guide users based on their account type.
 
+## Firestore Security Rules
+The `firestore.rules` file contains comprehensive security rules for all collections:
+
+**Collections & Access Control:**
+- **exercises**: Read by authenticated users, write by super admin only
+- **signups**: Users can read own profile; clubId/accountType changes require server-side APIs
+- **favorites**: Users can only access their own favorites
+- **clubs**: Authenticated users can read; creation via server API only; club admins manage their own
+- **clubs/{clubId}/members**: Club members can read; write via server API or club admin only
+- **clubInvites**: Authenticated users can read; club admins create/manage
+- **reviews**: Authenticated users can create; users can edit/delete their own
+- **auditEvents**: Authenticated users can create; only super admin can read
+- **sessionPlans**: Users can only access their own plans
+
+**Super Admin:** Determined by email (obrinkmann@gmail.com) - has full access to all collections.
+
+**Server-Side APIs (for secure operations):**
+- `/api/create-club` - Creates a new club with the user as admin (POST, requires Bearer token)
+- `/api/redeem-invite` - Redeems an invite code to join a club (POST, requires Bearer token)
+- `/api/exercises` - Fetches exercises server-side with caching (GET)
+
+**Deploying Rules:**
+```bash
+firebase login
+firebase deploy --only firestore:rules
+```
+
 ## External Dependencies
 - **Firebase:** Used for user authentication, Firestore database for data persistence (drills, user profiles, plans, favorites), and potentially for cloud functions in future enhancements.
 - **Next.js:** The core React framework for building the application.
@@ -38,3 +65,9 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Tailwind CSS:** A utility-first CSS framework for styling.
 - **Zustand:** A small, fast, and scalable bear-bones state-management solution.
 - **Vercel:** Platform for frontend deployment.
+
+## Firebase Admin SDK (Server-Side)
+Required environment variables for server-side API routes:
+- `FIREBASE_PROJECT_ID` - Firebase project ID
+- `FIREBASE_CLIENT_EMAIL` - Service account email
+- `FIREBASE_PRIVATE_KEY` - Service account private key (supports various formats)
