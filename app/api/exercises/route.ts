@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/app/utils/firebaseAdmin";
-import { Exercise } from "@/app/types/exercise";
+import { parseExerciseFromFirestore, ValidatedExercise } from "@/app/lib/schemas";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -10,33 +10,29 @@ function getExerciseNumber(title: string): number {
   return match ? parseInt(match[1], 10) : 9999;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const db = getAdminDb();
-    const snapshot = await db.collection("exercises").get();
+    const { searchParams } = new URL(request.url);
+    const exerciseType = searchParams.get("type");
 
-    const exercises: Exercise[] = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title || "No title",
-        ageGroup: data.ageGroup || "N/A",
-        decisionTheme: data.decisionTheme || "N/A",
-        playerInvolvement: data.playerInvolvement || "N/A",
-        gameMoment: data.gameMoment || "N/A",
-        difficulty: data.difficulty || "Unknown",
-        practiceFormat: data.practiceFormat || "General / Mixed",
-        overview: data.overview || "",
-        description: data.description || "",
-        exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
-        image: data.image || null,
-        exerciseType: data.exerciseType || "eyeq",
-      };
-    });
+    const db = getAdminDb();
+    let query = db.collection("exercises");
+    
+    if (exerciseType && (exerciseType === "eyeq" || exerciseType === "plastic")) {
+      query = query.where("exerciseType", "==", exerciseType) as typeof query;
+    }
+    
+    const snapshot = await query.get();
+
+    const exercises: ValidatedExercise[] = snapshot.docs
+      .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
+      .filter((ex): ex is ValidatedExercise => ex !== null);
 
     exercises.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
 
-    return NextResponse.json({ exercises }, {
+    return NextResponse.json({ 
+      exercises
+    }, {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
       },

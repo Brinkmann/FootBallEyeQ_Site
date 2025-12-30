@@ -21,9 +21,10 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Exercise Type System (EyeQ vs Plastic):** Drills are categorized as 'eyeq' (smart LED cones) or 'plastic' (traditional cones). Clubs can set policies to restrict drill types, and coaches can filter accordingly.
 - **Favorites System:** Allows coaches to mark drills as favorites, stored per user in Firestore with real-time synchronization.
 - **Smart Filtering System:** The Drill Catalogue features `SmartSearch` with autocomplete and `FacetedFilters` (bottom sheet on mobile, side panel on desktop) displaying live drill counts.
-- **Global State Synchronization:** `PlanSyncProvider` is used for global state synchronization with Firebase.
+- **Global State Synchronization:** `PlanSyncProvider` handles Firebase synchronization with offline detection, pending save tracking, and exponential backoff retry (up to 3 retries). `SyncStatusIndicator` shows sync status (idle/syncing/offline/error) on the planner page.
 - **Exercise Schema:** Exercises are structured with fields like `id`, `title`, `ageGroup`, `decisionTheme`, `difficulty`, `practiceFormat`, `overview`, `description`, `image`, and `exerciseType`.
 - **Server-Side Authorization:** Protected routes use server-side layouts with Firebase Admin SDK session verification. Session cookies are created on login and cleared on logout via API routes.
+- **Runtime Data Validation:** Zod schemas validate Firestore documents at runtime (exercises, user profiles, club data). Invalid documents are filtered out with console warnings for data quality monitoring.
 
 **Feature Specifications:**
 - **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.

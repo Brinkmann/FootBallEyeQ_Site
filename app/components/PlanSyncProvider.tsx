@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { usePlanStore, PlannedExercise } from "../store/usePlanStore";
 import { auth, db } from "@/Firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,10 +11,16 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
   const setAll = usePlanStore((s) => s.setAll);
   const reset = usePlanStore((s) => s.reset);
   const setHydrated = usePlanStore((s) => s.setHydrated);
+  const setSyncStatus = usePlanStore((s) => s.setSyncStatus);
+  const setOnline = usePlanStore((s) => s.setOnline);
+  const setPendingSave = usePlanStore((s) => s.setPendingSave);
+  const pendingSave = usePlanStore((s) => s.pendingSave);
+  const isOnline = usePlanStore((s) => s.isOnline);
 
   const loadedUserRef = useRef<string | null>(null);
   const isLoadingRef = useRef(false);
   const lastSavedRef = useRef<string>("");
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -83,6 +89,59 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
   }, [setAll, reset, setHydrated]);
 
   useEffect(() => {
+    const handleOnline = () => {
+      setOnline(true);
+    };
+    const handleOffline = () => {
+      setOnline(false);
+    };
+
+    if (typeof window !== "undefined") {
+      setOnline(navigator.onLine);
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+      }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
+  }, [setOnline]);
+
+  const saveToFirestore = useCallback(async (weeksData: typeof weeks, maxPerWeekData: number, retryCount = 0) => {
+    const user = auth.currentUser;
+    if (!user) return false;
+
+    const ref = doc(db, "planners", user.uid);
+    try {
+      setSyncStatus("syncing");
+      await setDoc(ref, { weeks: weeksData, maxPerWeek: maxPerWeekData, updatedAt: serverTimestamp() }, { merge: true });
+      setSyncStatus("idle");
+      setPendingSave(false);
+      return true;
+    } catch (error) {
+      console.error("Failed to save planner:", error);
+      setSyncStatus("error");
+      setPendingSave(true);
+      
+      if (retryCount < 3) {
+        const delay = Math.pow(2, retryCount) * 1000;
+        retryTimeoutRef.current = setTimeout(() => {
+          if (navigator.onLine) {
+            saveToFirestore(weeksData, maxPerWeekData, retryCount + 1);
+          }
+        }, delay);
+      }
+      return false;
+    }
+  }, [setSyncStatus, setPendingSave]);
+
+  useEffect(() => {
     if (!loadedUserRef.current || isLoadingRef.current) return;
 
     const user = auth.currentUser;
@@ -92,14 +151,21 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
     if (currentData === lastSavedRef.current) return;
 
     lastSavedRef.current = currentData;
-    const ref = doc(db, "planners", user.uid);
     
-    setDoc(ref, { weeks, maxPerWeek, updatedAt: serverTimestamp() }, { merge: true }).catch(
-      (error) => {
-        console.error("Failed to save planner:", error);
-      }
-    );
-  }, [weeks, maxPerWeek]);
+    if (!isOnline) {
+      setPendingSave(true);
+      setSyncStatus("offline");
+      return;
+    }
+
+    saveToFirestore(weeks, maxPerWeek);
+  }, [weeks, maxPerWeek, isOnline, saveToFirestore, setPendingSave, setSyncStatus]);
+
+  useEffect(() => {
+    if (isOnline && pendingSave && loadedUserRef.current) {
+      saveToFirestore(weeks, maxPerWeek);
+    }
+  }, [isOnline, pendingSave, weeks, maxPerWeek, saveToFirestore]);
 
   return <>{children}</>;
 }

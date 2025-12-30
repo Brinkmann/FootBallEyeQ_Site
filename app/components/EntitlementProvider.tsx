@@ -13,6 +13,7 @@ import {
   ExerciseTypePolicy,
 } from "../types/account";
 import { ExerciseType } from "../types/exercise";
+import { AccountTypeSchema, AccountStatusSchema, ClubRoleSchema, ExerciseTypePolicySchema } from "../lib/schemas";
 
 const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
 
@@ -58,14 +59,22 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
 
       if (!snapshot.empty) {
         const userData = snapshot.docs[0].data();
-        const userAccountType = (userData.accountType as AccountType) || "free";
-        const userAccountStatus = (userData.accountStatus as AccountStatus) || "active";
+        
+        const accountTypeParsed = AccountTypeSchema.safeParse(userData.accountType);
+        const userAccountType = accountTypeParsed.success ? accountTypeParsed.data : "free";
+        
+        const accountStatusParsed = AccountStatusSchema.safeParse(userData.accountStatus);
+        const userAccountStatus = accountStatusParsed.success ? accountStatusParsed.data : "active";
+        
+        const clubRoleParsed = ClubRoleSchema.safeParse(userData.clubRole);
+        const isAdmin = clubRoleParsed.success && clubRoleParsed.data === "admin";
+        
         setAccountType(userAccountType);
         setAccountStatus(userAccountStatus);
-        setIsClubAdmin(userData.clubRole === "admin");
+        setIsClubAdmin(isAdmin);
 
         if (userAccountType === "clubCoach" && userData.clubId) {
-          setClubId(userData.clubId);
+          setClubId(userData.clubId as string);
           const clubQuery = query(
             collection(db, "clubs"),
             where("__name__", "==", userData.clubId)
@@ -73,9 +82,13 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
           const clubSnapshot = await getDocs(clubQuery);
           if (!clubSnapshot.empty) {
             const clubData = clubSnapshot.docs[0].data();
-            setClubName(clubData.name || null);
-            setClubExerciseTypePolicy(clubData.exerciseTypePolicy || "coach-choice");
-            if (clubData.status === "suspended") {
+            setClubName(typeof clubData.name === "string" ? clubData.name : null);
+            
+            const policyParsed = ExerciseTypePolicySchema.safeParse(clubData.exerciseTypePolicy);
+            setClubExerciseTypePolicy(policyParsed.success ? policyParsed.data : "coach-choice");
+            
+            const clubStatusParsed = AccountStatusSchema.safeParse(clubData.status);
+            if (clubStatusParsed.success && clubStatusParsed.data === "suspended") {
               setAccountStatus("suspended");
             }
           }
