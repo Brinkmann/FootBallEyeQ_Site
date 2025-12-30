@@ -107,7 +107,7 @@ export default function SmartSearch({
 
     debounceRef.current = setTimeout(() => {
       onChange(newValue);
-    }, 200);
+    }, 300);
   };
 
   const handleSuggestionClick = (suggestion: FilterSuggestion) => {
