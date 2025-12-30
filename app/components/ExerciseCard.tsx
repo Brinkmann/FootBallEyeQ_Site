@@ -85,6 +85,8 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
           ? "This exercise is already in that session."
           : res.reason === "full"
           ? "That session already has 5 exercises."
+          : res.reason === "type-mismatch"
+          ? "That session already has drills of a different type. Each session can only contain one type (EyeQ or plastic)."
           : "Could not add to that session.";
       alert(msg);
       return;
