@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/app/utils/firebaseAdmin";
 import { parseExerciseFromFirestore, ValidatedExercise } from "@/app/lib/schemas";
 
@@ -10,10 +10,19 @@ function getExerciseNumber(title: string): number {
   return match ? parseInt(match[1], 10) : 9999;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const exerciseType = searchParams.get("type");
+
     const db = getAdminDb();
-    const snapshot = await db.collection("exercises").get();
+    let query = db.collection("exercises");
+    
+    if (exerciseType && (exerciseType === "eyeq" || exerciseType === "plastic")) {
+      query = query.where("exerciseType", "==", exerciseType) as typeof query;
+    }
+    
+    const snapshot = await query.get();
 
     const exercises: ValidatedExercise[] = snapshot.docs
       .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
@@ -21,7 +30,9 @@ export async function GET() {
 
     exercises.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
 
-    return NextResponse.json({ exercises }, {
+    return NextResponse.json({ 
+      exercises
+    }, {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
       },

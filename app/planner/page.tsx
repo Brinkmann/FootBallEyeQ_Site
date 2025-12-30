@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "../components/Navbar";
 import SessionCodeButton from "../components/SessionCodeButton";
 import WelcomeModal from "../components/WelcomeModal";
+import SyncStatusIndicator from "../components/SyncStatusIndicator";
 import { usePlanStore } from "../store/usePlanStore";
 import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
@@ -80,7 +81,10 @@ export default function SeasonPlanningPage() {
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-foreground">12-Session Season Plan</h3>
+          <div className="flex items-center gap-4">
+            <h3 className="text-lg font-semibold text-foreground">12-Session Season Plan</h3>
+            <SyncStatusIndicator />
+          </div>
           <Link
             href="/planner/stats"
             className="px-4 py-2 text-sm font-medium rounded-lg border border-divider text-foreground hover:bg-primary-light hover:border-primary transition-colors flex items-center gap-2"

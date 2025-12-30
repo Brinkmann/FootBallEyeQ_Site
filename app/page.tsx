@@ -40,7 +40,7 @@ export default function HomePage() {
       {/* Top Bar */}
       <header className="flex justify-between items-center px-8 py-4 bg-transparent">
         <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-          <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={32} height={32} priority />
+          <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-8 w-auto" />
           <span>Football EyeQ</span>
         </div>
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-gray-700">
@@ -370,7 +370,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center space-x-2 text-white font-bold text-lg mb-4">
-                <Image src="/brand/logo-icon.png" alt="Football EyeQ" width={24} height={24} />
+                <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-6 w-auto" />
                 <span>Football EyeQ</span>
               </div>
               <p className="text-sm">

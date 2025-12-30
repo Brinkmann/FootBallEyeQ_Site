@@ -6,16 +6,24 @@ export type PlannedExercise = { name: string; type: ExerciseType };
 type WeekPlan = { week: number; exercises: PlannedExercise[] };
 type SetAllPayload = { weeks: WeekPlan[]; maxPerWeek: number };
 
+export type SyncStatus = "idle" | "syncing" | "offline" | "error";
+
 type PlanState = {
   weeks: WeekPlan[];
   maxPerWeek: number;
   hasHydrated: boolean;
+  syncStatus: SyncStatus;
+  isOnline: boolean;
+  pendingSave: boolean;
   addToWeek: (week: number, name: string, type: ExerciseType) => { ok: boolean; reason?: string };
   removeFromWeek: (week: number, index: number) => void;
   removeExerciseFromAll: (name: string) => void;
   reset: () => void;
   setAll: (payload: { weeks: WeekPlan[]; maxPerWeek: number }) => void;
   setHydrated: () => void;
+  setSyncStatus: (status: SyncStatus) => void;
+  setOnline: (online: boolean) => void;
+  setPendingSave: (pending: boolean) => void;
 };
 
 export const usePlanStore = create<PlanState>((set, get) => ({
@@ -25,6 +33,9 @@ export const usePlanStore = create<PlanState>((set, get) => ({
   })),
   maxPerWeek: 5,
   hasHydrated: false,
+  syncStatus: "idle",
+  isOnline: true,
+  pendingSave: false,
 
   addToWeek: (week, name, type) => {
     const { weeks, maxPerWeek } = get();
@@ -86,4 +97,7 @@ export const usePlanStore = create<PlanState>((set, get) => ({
   }),
 
   setHydrated: () => set({ hasHydrated: true }),
+  setSyncStatus: (status) => set({ syncStatus: status }),
+  setOnline: (online) => set({ isOnline: online, syncStatus: online ? "idle" : "offline" }),
+  setPendingSave: (pending) => set({ pendingSave: pending }),
 }));
