@@ -101,6 +101,15 @@ export default function CatalogPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
+      const res = await fetch("/api/exercises");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.exercises && data.exercises.length > 0) {
+          setExercises(data.exercises);
+          return;
+        }
+      }
+      
       const exercisesCol = collection(db, "exercises");
       const snapshot = await getDocs(exercisesCol);
 
@@ -128,9 +137,7 @@ export default function CatalogPage() {
         };
       });
 
-      // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
       exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-
       setExercises(exercisesList);
     } catch (error) {
       console.error("Error fetching exercises:", error);
