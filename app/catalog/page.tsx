@@ -6,6 +6,7 @@ import NavBar from "../components/Navbar";
 import { db } from "../../Firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { Exercise } from "../types/exercise";
+import { parseExerciseFromFirestore } from "../lib/schemas";
 import SmartSearch from "../components/SmartSearch";
 import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
@@ -112,24 +113,9 @@ export default function CatalogPage() {
         return match ? parseInt(match[1], 10) : 9999;
       };
 
-      const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title || "No title",
-          ageGroup: data.ageGroup || "N/A",
-          decisionTheme: data.decisionTheme || "N/A",
-          playerInvolvement: data.playerInvolvement || "N/A",
-          gameMoment: data.gameMoment || "N/A",
-          difficulty: data.difficulty || "Unknown",
-          practiceFormat: data.practiceFormat || "General / Mixed",
-          overview: data.overview || "",
-          description: data.description || "",
-          exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
-          image: data.image || null,
-          exerciseType: data.exerciseType || "eyeq",
-        };
-      });
+      const exercisesList = snapshot.docs
+        .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
+        .filter((ex): ex is Exercise => ex !== null);
 
       // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
       exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
