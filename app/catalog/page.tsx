@@ -105,9 +105,26 @@ export default function CatalogPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const exercisesCol = collection(db, "exercises");
-      const snapshot = await getDocs(exercisesCol);
+      let loaded = false;
+      
+      try {
+        const res = await fetch("/api/exercises");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.exercises && data.exercises.length > 0) {
+            setExercises(data.exercises);
+            loaded = true;
+          }
+        }
+      } catch (apiError) {
+        console.warn("Server API failed, falling back to client SDK:", apiError);
+      }
+      
+      if (!loaded) {
+        const exercisesCol = collection(db, "exercises");
+        const snapshot = await getDocs(exercisesCol);
 
+<<<<<<< HEAD
       const getExerciseNumber = (title: string): number => {
         const match = title.match(/^(\d+)/);
         return match ? parseInt(match[1], 10) : 9999;
@@ -116,11 +133,35 @@ export default function CatalogPage() {
       const exercisesList = snapshot.docs
         .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
         .filter((ex): ex is Exercise => ex !== null);
+=======
+        const getExerciseNumber = (title: string): number => {
+          const match = title.match(/^(\d+)/);
+          return match ? parseInt(match[1], 10) : 9999;
+        };
+>>>>>>> origin/Server-backed-Catalog
 
-      // Sort exercises by number in title (e.g., "002 - Dribbling" -> 2)
-      exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+        const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title || "No title",
+            ageGroup: data.ageGroup || "N/A",
+            decisionTheme: data.decisionTheme || "N/A",
+            playerInvolvement: data.playerInvolvement || "N/A",
+            gameMoment: data.gameMoment || "N/A",
+            difficulty: data.difficulty || "Unknown",
+            practiceFormat: data.practiceFormat || "General / Mixed",
+            overview: data.overview || "",
+            description: data.description || "",
+            exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
+            image: data.image || null,
+            exerciseType: data.exerciseType || "eyeq",
+          };
+        });
 
-      setExercises(exercisesList);
+        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
+        setExercises(exercisesList);
+      }
     } catch (error) {
       console.error("Error fetching exercises:", error);
       setLoadError("We couldn't load drills right now. Please check your connection and try again.");
