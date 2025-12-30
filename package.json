@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 5000",
     "lint": "next lint",
+    "test": "npx tsx --test tests/**/*.test.ts",
+    "test:api": "npx tsx --test tests/api/*.test.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -24,6 +26,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "resend": "^6.6.0",
+    "tsx": "^4.21.0",
     "zod": "^4.2.1",
     "zustand": "^5.0.8"
   },
