@@ -23,6 +23,7 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Smart Filtering System:** The Drill Catalogue features `SmartSearch` with autocomplete and `FacetedFilters` (bottom sheet on mobile, side panel on desktop) displaying live drill counts.
 - **Global State Synchronization:** `PlanSyncProvider` is used for global state synchronization with Firebase.
 - **Exercise Schema:** Exercises are structured with fields like `id`, `title`, `ageGroup`, `decisionTheme`, `difficulty`, `practiceFormat`, `overview`, `description`, `image`, and `exerciseType`.
+- **Server-Side Authorization:** Protected routes use server-side layouts with Firebase Admin SDK session verification. Session cookies are created on login and cleared on logout via API routes.
 
 **Feature Specifications:**
 - **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.

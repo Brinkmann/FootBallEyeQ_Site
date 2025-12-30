@@ -1,0 +1,253 @@
+Summary
+- I reviewed the repository structure and inspected a representative set of files (key components, catalog page, layout, Zustand store). Results may be incomplete because the code listings returned were limited; view the full app directory in GitHub here: https://github.com/Brinkmann/FootBallEyeQ_Site/tree/main/app.
+- Below is a comprehensive architectural overview, a prioritized high-value audit (security, data, UX, performance, accessibility, developer experience), and a task list with concrete places in the codebase to review or change.
+
+Architectural overview — high level
+- Purpose: Cognitive football training platform — drill catalogue, session planner, club/coach frontend, and smart LED cone (EyeQ) integration.
+- Framework: Next.js (app directory), TypeScript, Tailwind CSS (classes used). Firebase for backend (Firestore + likely Auth), Zustand for client state.
+- Major concerns observed: client-side fetching of the catalog, multiple client providers wrapping the app layout, a single large ExerciseCard component, and local state hydration logic for favorites and planner.
+
+Project structure (major directories & files)
+- Root
+  - README.md, QA_REPORT.md, SECURITY_REVIEW.md, .env.local.example — good signals that docs exist.
+  - middleware.ts — app-level request handling (review for auth/redirects/CSP).
+  - next.config.ts, tsconfig.json, eslint.config.mjs, postcss.config.mjs
+- Firebase
+  - Firebase/firebaseConfig (exists — centralizes Firebase initialization; ensure secrets not committed).
+- app (Next.js app router)
+  - layout.tsx — root layout wraps children with providers: AnalyticsProvider, EntitlementProvider, ExerciseTypeProvider, FavoritesProvider, PlanSyncProvider. Footer included.
+  - page.tsx (root landing)
+  - page-like directories (each should contain page.tsx or route handlers): catalog, planner, club, admin, super-admin, profile, login, signup, planner, about, contact, privacy, terms, how-it-works, use-cases, explanation, testimonials, resources, cones, upgrade, why-scanning, etc.
+  - components — reusable UI components (see list below)
+  - store — Zustand stores (usePlanStore.ts)
+  - types — types used across app (exercise, etc.)
+  - api — server-side endpoints (app/api) — inspect for auth logic & inputs
+  - utils — utility helpers
+- public & attached_assets — images/static files
+- scripts — build/dev tooling scripts
+
+Key React components and responsibilities (found in app/components)
+- Navbar.tsx — global navigation, user/account controls, likely contains auth flows and menu.
+- Footer.tsx — site footer and links.
+- ExerciseCard.tsx — detailed drill display, actions (favorite, preview), large & complex (≈10k+ LOC).
+- ExercisePreviewModal.tsx / ExerciseReviewModal.tsx — drill preview and review UI.
+- SmartSearch.tsx — search/autocomplete and inline filter suggestions.
+- FacetedFilters.tsx / ActiveFilters.tsx — filter sidebar and UI.
+- FavoritesProvider.tsx — manages favorites state & hydration.
+- EntitlementProvider.tsx — manages account tiers and permission gating.
+- PlanSyncProvider.tsx — syncs local planner (zustand) with server-side store (Firestore).
+- AnalyticsProvider.tsx / AnalyticsConsentBanner.tsx / CookiePreferences.tsx — analytics and cookie consent UX.
+- PlanSyncProvider, SessionCodeButton, SessionWrapper — planner & live session features.
+- ExerciseTypeProvider.tsx — manages selectedExerciseType (eyeq vs plastic).
+- WelcomeModal.tsx — first-run UX.
+
+Pages & routes (what I found and responsibilities)
+- / (root) — marketing/landing experience (app/page.tsx is large)
+- /catalog — Drill Catalogue page (client-side fetch from Firestore, filtering, search)
+- /planner — session planner (Zustand state, PlanSyncProvider syncs)
+- /profile — user profile
+- /login, /signup — auth flows
+- /admin, /super-admin — admin-level tooling & site management
+- /contact, /privacy, /terms, /about — support/legal/marketing
+- /cones — likely cone device management/integration
+- /how-it-works, /use-cases, /why-scanning, /explanation — product pages and guidance
+Note: confirm server routes in app/api — they control session codes, plan synchronization, cone control, etc.
+
+State management
+- Zustand stores:
+  - usePlanStore.ts — manages 12-week planner; tracks weeks, maxPerWeek, hydration flag, add/remove/reset/setAll; enforces per-week same-type limits.
+  - Other stores may exist (not listed here) for UI-only state; FavoritesProvider uses context + hydration and likely persists favorites to Firestore or localStorage.
+- Providers orchestrate global state and side effects:
+  - PlanSyncProvider syncs Zustand with Firestore in background (bidirectional).
+  - FavoritesProvider hydrates user favorites and exposes set/ toggle functions.
+  - EntitlementProvider maps auth user + billing tier to permissions.
+  - ExerciseTypeProvider toggles catalogs (eyeq vs plastic).
+
+Data layer — Firebase usage & data models (what is explicit)
+- Firestore collection seen: "exercises" (used in app/catalog/page.tsx).
+- Exercise model (inferred from catalog mapping):
+  - id: string (doc.id)
+  - title: string (may include numeric prefix used for sorting)
+  - ageGroup, decisionTheme, playerInvolvement, gameMoment, difficulty, practiceFormat
+  - overview, description, exerciseBreakdownDesc, image (nullable), exerciseType ("eyeq" | "plastic")
+- Other likely collections you should confirm exist:
+  - users (profiles, entitlement tier, clubId)
+  - favorites (or favorites per user)
+  - plans / sessionPlans
+  - clubs, coaches
+  - sessions (live session codes, cone states)
+  - cones/device registration, logs
+- Important: there are places with doc.data() usage without strong runtime validation — add schema parsing (see recommendations).
+
+Authentication & Authorization
+- EntitlementProvider implies Firebase Auth (or token-based) is used plus server-side entitlement checks (account tiers).
+- middleware.ts exists — likely used for protecting routes or redirecting unauthorized users.
+- Authorization patterns seen: UI gating on selectedExerciseType (e.g., plastic vs eyeq) and isAuthenticated checks (catalog shows a plastic banner if not signed in).
+- Recommendations: enforce server-side checks for critical actions (plan sync, cone control, session creation), not only UI gating.
+
+Shared components & patterns
+- Many reusable components (cards, modals, filters, navbar).
+- Tailwind CSS utility classes used across.
+- Providers wrap the root layout — good for composition.
+- Some components are very large (ExerciseCard, Navbar) and combine numerous responsibilities.
+
+Utils & helpers
+- app/utils directory present (contents not enumerated here). Common utility functions observed inline (e.g., normalizeDash).
+- Consider centralizing normalization, formatting, and string utilities for reuse.
+
+API routes
+- app/api exists — inspect for endpoints that:
+  - create session codes,
+  - sync plans,
+  - provide server-side exercise data or analytics,
+  - manage cone/device commands.
+- Important to review these for authentication, input validation & permission checks.
+
+Concrete QA checklist (what I would run through)
+1. Security & data protection
+   - Confirm no secrets are committed (check Firebase config, .env.local.example vs actual env).
+   - Ensure Firestore rules enforce per-user access and role checks (plans, favorites, cones).
+   - Verify server endpoints validate auth tokens and entitlement before performing actions.
+   - CSP, secure headers via middleware.ts.
+2. Data integrity & validation
+   - Validate Firestore doc shapes with runtime schemas (zod/io-ts) before use.
+   - Avoid assuming fields exist (catalog page uses defaults — good, but prefer typed parsing).
+3. Network & data fetching
+   - Avoid fetching potentially large collections client-side; add server-side pagination / query limits and selective fields.
+   - Add error handling & retry/backoff patterns.
+4. Performance
+   - Replace client-side full collection fetch of exercises with paginated queries or SSR fetch.
+   - Virtualize long lists, or lazy-load ExerciseCard components/images.
+   - Move heavy components into lazy-loaded chunks.
+   - Use image optimization (next/image) and compressed assets in public.
+5. UX & accessibility
+   - Keyboard access and focus management for tooltip and modal components (role=tooltip present but ensure keyboard focus shows it).
+   - Semantic HTML and ARIA attributes for interactive controls, modals and lists.
+   - Provide clear loading states and skeletons instead of spinners for perceived performance.
+   - Persist cookie/banner dismissals via cookie/localStorage.
+6. Consistency & visual polish
+   - Ensure consistent border/radius/spacing tokens (Tailwind classes appear consistent but check large files where inline logic chooses classes).
+   - Unify error/success feedback components.
+7. State & sync robustness
+   - PlanSyncProvider: ensure sync conflicts handled (merge strategy), offline queueing, reconcilation if multiple devices.
+   - FavoritesProvider: hydrate only once but allow explicit refresh.
+8. Device (cones) integration
+   - Add robust network/connection state, retries, logging, and explicit error messages if devices are unreachable.
+   - Security for device commands — server-side auth and device permission checks.
+9. Testing & observability
+   - Add unit tests for stores/providers and critical logic (plan add/remove limits).
+   - Add integration/E2E tests (e.g., Playwright) for catalog & planner flows.
+   - Add error monitoring (Sentry) and server telemetry for cone commands & plan syncs.
+10. Developer experience
+    - Linting, type-check CI, and test runs on push/PR.
+    - Consider Storybook for UI components.
+
+High-value recommended improvements (prioritized)
+P0 — Security & correctness (must-have)
+- Add runtime schema validation for any Firestore documents you read (zod). Why: prevents crashes and incorrect data mapping. Where: app/catalog/page.tsx doc.data() mapping and any other direct doc.data() usage.
+- Review and tighten Firestore security rules; require server-side checks for sensitive operations (cone control, plan writing, admin actions).
+- Ensure API endpoints require verified Firebase tokens. Where: app/api and middleware.ts.
+
+P1 — Data fetching & performance (high ROI)
+- Change catalog to server-side fetch / paginated Firestore query (or use incremental static regeneration) instead of fetching entire exercises collection client-side. Where: app/catalog/page.tsx — move getDocs logic to a server route or server component and return a paginated list.
+- Add server-side search indexing / query capabilities or use Algolia/Typesense for fast multi-field search (improves UX and scales).
+- Virtualize drill list or add pagination (React-window / react-virtual) to keep UI snappy.
+- Optimize ExerciseCard: split into smaller components, lazy-load heavy subcomponents (e.g., video or images).
+
+P2 — UX, accessibility & reliability
+- Improve keyboard accessibility for tooltips/modals; ensure aria attributes, focus traps, and ESC behavior for modals (ExercisePreviewModal, WelcomeModal).
+- Persist banner/modal dismiss choices in localStorage or cookies so user dismissals persist across pages.
+- Debounce search input in SmartSearch and show immediate local suggestions; implement server-side search for broad queries.
+- Improve empty & error states: allow reporting errors, quick retry, and offline notices.
+
+P3 — Planner & sync robustness
+- Make PlanSyncProvider robust:
+  - Conflict resolution: detect local vs remote changes, offer merge UI or last-writer-wins with logs.
+  - Offline queuing: persist plan changes locally (localStorage/IndexedDB) and re-sync on reconnect.
+  - Rate-limit writes to Firestore (batch updates) to reduce cost and document contention.
+- Add server-side backups/versions for plans so users can restore older versions.
+
+P4 — Developer productivity & observability
+- Add unit and E2E tests for catalog filtering, favorites flow, planner add/remove restrictions.
+- Add CI (GitHub Actions) to run lint, typecheck, tests, and preview deploy.
+- Add Sentry or equivalent, and structured logs for PlanSync and cone commands.
+
+Concrete code-level suggestions (where to change)
+- app/catalog/page.tsx
+  - Don’t fetch full collection client-side. Move to server fetch or use API with pagination + search params.
+  - Use typed parsing of snapshot.docs.map(data => parseExercise(data)) with zod.
+  - Debounce searchQuery updates before applying filtering.
+- app/store/usePlanStore.ts
+  - Add version or lastUpdated timestamp fields to store to help sync/merge.
+  - Consider adding persistence middleware (zustand/middleware) to store plan locally before PlanSync.
+- app/components/ExerciseCard.tsx (very large)
+  - Break into: ExerciseCardHeader, ExerciseCardBody, ExerciseCardActions.
+  - Use lazy loading for images and media; prefer next/image.
+- app/components/PlanSyncProvider.tsx
+  - Add exponential backoff for failed syncs, conflict detection UI, and atomic writes.
+- app/components/FavoritesProvider.tsx & PlanSyncProvider
+  - Ensure hydration order and show progressive UI (skeleton) until hydrated to avoid flicker.
+- middleware.ts
+  - Verify Content-Security-Policy, Strict-Transport-Security, and auth redirects are configured.
+
+Cone (EyeQ) device integration — special notes
+- Critical: device control must be server-mediated, authenticated, and logged. Never allow arbitrary client-side socket access to devices.
+- Add device ping/health endpoints, queueing of commands and retries with idempotency tokens.
+- Expose a diagnositc page for devices with clear error messages.
+
+Accessibility & internationalization
+- Ensure all buttons have accessible names (catalog: aria-labels mostly exist but audit).
+- Provide semantic headings structure on pages; ensure color contrast for badges (primary/secondary).
+- Consider i18n readiness if targeting non-English coaches/players.
+
+Monitoring & metrics
+- Track feature adoption: session planner use, favorites, search queries failing to return results.
+- Track failed syncs and device command errors (important for real-world devices).
+
+Missing or low-evidence areas to inspect (you should confirm)
+- Firestore rules file presence
+- app/api endpoints content and authentication
+- Firebase config secrets not leaked (check git history)
+- Tests and CI (none observed in listing)
+- Exact entitlement/stripe/billing integration (EntitlementProvider exists; if billing present, ensure secure server-side webhooks processing)
+
+Actionable prioritized task list (ready to assign)
+1. (P0) Audit Firestore security rules & API endpoint auth — block if insufficient. Files: Firebase project console and app/api/* and middleware.ts. (High)
+2. (P0) Add runtime validation for Firestore doc parsing (zod) and replace doc.data() => any mappings in catalog and anywhere else. Files: app/catalog/page.tsx, any place using doc.data(). (High)
+3. (P1) Replace client-side full getDocs of exercises with server-side paginated fetch or search index. Files: app/catalog/page.tsx, app/api/search (add). (High)
+4. (P1) Refactor ExerciseCard (split, lazy-load media, use next/image). Files: app/components/ExerciseCard.tsx. (High)
+5. (P2) Harden PlanSyncProvider: add conflict detection, offline queue, and retry/backoff. Files: app/components/PlanSyncProvider.tsx; app/store/usePlanStore.ts. (High)
+6. (P2) Accessibility pass: keyboard, aria roles, focus trapping for modals; add automated axe tests. Files: components/*.tsx. (Medium)
+7. (P3) Add E2E tests for catalog->favorite->planner flow. Add CI pipeline that runs the tests. (Medium)
+8. (P3) Add Sentry and structured logging for PlanSync and cone commands. (Medium)
+9. (P4) Add docs for device integration endpoints & required security model. (Low)
+
+Risk & impact mapping
+- Security issues (bad Firestore rules or unauthenticated API) = Critical (data leak / device control).
+- Full client-side fetch of the catalog = Medium (cost, slow UX, OOM on mobile).
+- Poor PlanSync conflict handling = High (data loss / bad user experience).
+- Large monolithic components = Low/Medium (hard to maintain, slower load).
+
+Small but high-value UX fixes
+- Persist plastic banner dismiss state across pages (localStorage/cookies).
+- Snapshot initialFavorites in a useEffect is good; ensure it persists if user reloads and wants stable ordering.
+- Provide a “low-bandwidth mode” that disables images or uses placeholders for mobile.
+- Add keyboard shortcut hints for power users (e.g., add to planner).
+
+Developer & release recommendations
+- Add GitHub Actions to run lint, typecheck, unit tests, and deploy preview.
+- Add a CHANGELOG and release process for backend changes (Firestore rules, cloud functions).
+- Document device integration API and a security checklist for new features.
+
+Next immediate checks I recommend you run (quick wins)
+1. Inspect Firebase config in repo & history to ensure credentials not leaked.
+2. Review Firestore rules and app/api handlers for authorization checks.
+3. Convert catalog fetch to server-side (or add limit + pagination) — quick perf + cost improvement.
+4. Add zod schemas for Exercise and plan objects and use them at all Firestore boundaries.
+
+If you want, I can:
+- Produce a prioritized action plan broken into 2–4-week sprints with estimated dev effort per task.
+- Generate concrete code snippets (zod schema for Exercise, example SSR Firestore query with pagination, debounced search hook).
+- Open and analyze any specific files you want (EntitlementProvider, PlanSyncProvider, app/api endpoints, middleware.ts, Firebase/firebaseConfig).
+
+Would you like the sprint task breakdown and estimates, or do you want me to inspect specific files (EntitlementProvider, PlanSyncProvider, app/api/*, or middleware.ts) next?
