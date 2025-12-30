@@ -1,0 +1,196 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && request.auth.token.email == 'obrinkmann@gmail.com';
+    }
+    
+    function userSignupExists() {
+      return exists(/databases/$(database)/documents/signups/$(request.auth.uid));
+    }
+    
+    function getUserSignupData() {
+      return get(/databases/$(database)/documents/signups/$(request.auth.uid)).data;
+    }
+    
+    function isClubAdmin() {
+      return isAuthenticated() && 
+        userSignupExists() &&
+        getUserSignupData().accountType == 'club_admin';
+    }
+    
+    function belongsToClub(clubId) {
+      return isAuthenticated() &&
+        userSignupExists() &&
+        getUserSignupData().clubId == clubId;
+    }
+    
+    function isClubAdminOf(clubId) {
+      return isClubAdmin() && belongsToClub(clubId);
+    }
+
+    // ============================================
+    // EXERCISES COLLECTION
+    // Read: All authenticated users
+    // Write: Only super admin
+    // ============================================
+    match /exercises/{exerciseId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+
+    // ============================================
+    // SIGNUPS COLLECTION (User Profiles)
+    // Read: Own profile or super admin
+    // Create: Basic profiles only (no clubId, no admin types)
+    // Update: Own profile, but no clubId/accountType changes (use server APIs)
+    // Delete: Super admin only
+    // Note: Club membership is set via server-side APIs only
+    // ============================================
+    match /signups/{signupId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.uid == request.auth.uid || isSuperAdmin());
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.accountType == 'free' &&
+        !('clubId' in request.resource.data);
+      
+      allow update: if isAuthenticated() && 
+        (resource.data.uid == request.auth.uid || isSuperAdmin()) &&
+        (isSuperAdmin() || 
+          (request.resource.data.accountType == resource.data.accountType &&
+           request.resource.data.get('clubId', null) == resource.data.get('clubId', null)));
+      
+      allow delete: if isSuperAdmin();
+    }
+
+    // ============================================
+    // FAVORITES COLLECTION
+    // Users can only access their own favorites
+    // ============================================
+    match /favorites/{favoriteId} {
+      allow read: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid;
+      
+      allow delete: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================
+    // CLUBS COLLECTION
+    // Read: All authenticated users (for discovery)
+    // Create: Super admin only (clubs created via server API)
+    // Update: Club admin of that club or super admin
+    // Delete: Super admin only
+    // ============================================
+    match /clubs/{clubId} {
+      allow read: if isAuthenticated();
+      allow create: if isSuperAdmin();
+      allow update: if isClubAdminOf(clubId) || isSuperAdmin();
+      allow delete: if isSuperAdmin();
+
+      // ============================================
+      // CLUB MEMBERS SUB-COLLECTION
+      // Read: Club members and super admin
+      // Write: Club admin or super admin only (members added via server API)
+      // ============================================
+      match /members/{memberId} {
+        allow read: if belongsToClub(clubId) || isSuperAdmin();
+        allow create: if isClubAdminOf(clubId) || isSuperAdmin();
+        allow update: if isClubAdminOf(clubId) || isSuperAdmin();
+        allow delete: if isClubAdminOf(clubId) || isSuperAdmin();
+      }
+    }
+
+    // ============================================
+    // CLUB INVITES COLLECTION
+    // Read: Authenticated users (to validate codes)
+    // Create/Update/Delete: Club admins for their club or super admin
+    // ============================================
+    match /clubInvites/{inviteId} {
+      allow read: if isAuthenticated();
+      
+      allow create: if isSuperAdmin() ||
+        (isClubAdmin() && 
+         request.resource.data.clubId != null &&
+         belongsToClub(request.resource.data.clubId));
+      
+      allow update: if isSuperAdmin() ||
+        (isClubAdmin() && belongsToClub(resource.data.clubId));
+      
+      allow delete: if isSuperAdmin() ||
+        (isClubAdmin() && belongsToClub(resource.data.clubId));
+    }
+
+    // ============================================
+    // REVIEWS COLLECTION
+    // Read: All authenticated users
+    // Create: Authenticated users (own reviews)
+    // Update/Delete: Own reviews or super admin
+    // ============================================
+    match /reviews/{reviewId} {
+      allow read: if isAuthenticated();
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      
+      allow delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+        isSuperAdmin();
+    }
+
+    // ============================================
+    // AUDIT EVENTS COLLECTION (Analytics)
+    // Read: Super admin only
+    // Create: Authenticated users
+    // Update/Delete: Never
+    // ============================================
+    match /auditEvents/{eventId} {
+      allow read: if isSuperAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // ============================================
+    // SESSION PLANS COLLECTION
+    // Users can only access their own plans
+    // ============================================
+    match /sessionPlans/{planId} {
+      allow read: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid;
+      
+      allow delete: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================
+    // DEFAULT: Deny all other access
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
