@@ -124,21 +124,10 @@ export default function CatalogPage() {
         const exercisesCol = collection(db, "exercises");
         const snapshot = await getDocs(exercisesCol);
 
-<<<<<<< HEAD
-      const getExerciseNumber = (title: string): number => {
-        const match = title.match(/^(\d+)/);
-        return match ? parseInt(match[1], 10) : 9999;
-      };
-
-      const exercisesList = snapshot.docs
-        .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
-        .filter((ex): ex is Exercise => ex !== null);
-=======
         const getExerciseNumber = (title: string): number => {
           const match = title.match(/^(\d+)/);
           return match ? parseInt(match[1], 10) : 9999;
         };
->>>>>>> origin/Server-backed-Catalog
 
         const exercisesList: Exercise[] = snapshot.docs.map((doc) => {
           const data = doc.data();
