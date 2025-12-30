@@ -49,6 +49,8 @@ The `firestore.rules` file contains comprehensive security rules for all collect
 - `/api/create-club` - Creates a new club with the user as admin (POST, requires Bearer token)
 - `/api/redeem-invite` - Redeems an invite code to join a club (POST, requires Bearer token)
 - `/api/exercises` - Fetches exercises server-side with caching (GET)
+- `/api/admin/upgrade` - Super admin upgrades/downgrades users or clubs (POST, requires Bearer token)
+- `/api/webhooks/stripe` - Stripe webhook placeholder for future payment integration (POST)
 
 **Deploying Rules:**
 ```bash

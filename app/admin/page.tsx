@@ -46,6 +46,7 @@ interface ClubData {
   status?: string;
   suspendedAt?: Date;
   memberCount?: number;
+  subscriptionStatus?: string;
 }
 
 interface CoachData {
@@ -86,12 +87,13 @@ export default function AdminPage() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [confirmAction, setConfirmAction] = useState<{
-    type: "suspend" | "delete" | "unsuspend";
+    type: "suspend" | "delete" | "unsuspend" | "upgrade" | "downgrade";
     target: "club" | "coach";
     id: string;
     name: string;
   } | null>(null);
   const [reason, setReason] = useState("");
+  const [upgradeLoading, setUpgradeLoading] = useState<string | null>(null);
 
   const descriptionTemplate = `Overview
 -
@@ -187,6 +189,7 @@ Coaching Points
           status: data.status || "active",
           suspendedAt: data.suspendedAt?.toDate(),
           memberCount: membersSnap.size,
+          subscriptionStatus: data.subscriptionStatus || "inactive",
         });
       }
       setClubs(clubsData);
@@ -455,6 +458,74 @@ Coaching Points
     setActionLoading(null);
   };
 
+  const upgradeUser = async (userId: string, action: "upgrade" | "downgrade") => {
+    setUpgradeLoading(userId);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/upgrade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: "user",
+          targetId: userId,
+          action,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.error || "Failed to update user");
+      } else {
+        await fetchAllData();
+      }
+    } catch (err) {
+      console.error("Failed to upgrade user:", err);
+      alert("Failed to update user");
+    }
+    setUpgradeLoading(null);
+    setConfirmAction(null);
+  };
+
+  const upgradeClub = async (clubId: string, action: "upgrade" | "downgrade" | "trial") => {
+    setUpgradeLoading(clubId);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/upgrade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: "club",
+          targetId: clubId,
+          action,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.error || "Failed to update club");
+      } else {
+        await fetchAllData();
+      }
+    } catch (err) {
+      console.error("Failed to upgrade club:", err);
+      alert("Failed to update club");
+    }
+    setUpgradeLoading(null);
+    setConfirmAction(null);
+  };
+
   const handleConfirmAction = () => {
     if (!confirmAction) return;
     const { type, target, id } = confirmAction;
@@ -462,10 +533,14 @@ Coaching Points
       if (type === "suspend") suspendClub(id);
       else if (type === "unsuspend") unsuspendClub(id);
       else if (type === "delete") deleteClub(id);
+      else if (type === "upgrade") upgradeClub(id, "upgrade");
+      else if (type === "downgrade") upgradeClub(id, "downgrade");
     } else {
       if (type === "suspend") suspendCoach(id);
       else if (type === "unsuspend") unsuspendCoach(id);
       else if (type === "delete") deleteCoach(id);
+      else if (type === "upgrade") upgradeUser(id, "upgrade");
+      else if (type === "downgrade") upgradeUser(id, "downgrade");
     }
   };
 
@@ -854,6 +929,9 @@ Coaching Points
                     Members
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Subscription
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                     Status
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
@@ -876,6 +954,19 @@ Coaching Points
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
+                          club.subscriptionStatus === "active"
+                            ? "bg-amber-100 text-amber-800"
+                            : club.subscriptionStatus === "trial"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {club.subscriptionStatus || "inactive"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
                           club.status === "suspended"
                             ? "bg-red-100 text-red-800"
                             : "bg-green-100 text-green-800"
@@ -884,7 +975,39 @@ Coaching Points
                         {club.status || "active"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                      {club.subscriptionStatus !== "active" && (
+                        <button
+                          onClick={() =>
+                            setConfirmAction({
+                              type: "upgrade",
+                              target: "club",
+                              id: club.id,
+                              name: club.name,
+                            })
+                          }
+                          disabled={upgradeLoading === club.id}
+                          className="text-amber-600 hover:text-amber-900"
+                        >
+                          {upgradeLoading === club.id ? "..." : "Activate"}
+                        </button>
+                      )}
+                      {club.subscriptionStatus === "active" && (
+                        <button
+                          onClick={() =>
+                            setConfirmAction({
+                              type: "downgrade",
+                              target: "club",
+                              id: club.id,
+                              name: club.name,
+                            })
+                          }
+                          disabled={upgradeLoading === club.id}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          {upgradeLoading === club.id ? "..." : "Deactivate"}
+                        </button>
+                      )}
                       {club.status === "suspended" ? (
                         <button
                           onClick={() =>
@@ -895,7 +1018,7 @@ Coaching Points
                               name: club.name,
                             })
                           }
-                          className="text-green-600 hover:text-green-900 mr-3"
+                          className="text-green-600 hover:text-green-900"
                         >
                           Unsuspend
                         </button>
@@ -909,7 +1032,7 @@ Coaching Points
                               name: club.name,
                             })
                           }
-                          className="text-yellow-600 hover:text-yellow-900 mr-3"
+                          className="text-yellow-600 hover:text-yellow-900"
                         >
                           Suspend
                         </button>
@@ -932,7 +1055,7 @@ Coaching Points
                 ))}
                 {clubs.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex flex-col items-center gap-3">
                         <div className="text-3xl">🏟️</div>
                         <p className="text-gray-800 font-medium">No clubs registered yet</p>
@@ -1011,7 +1134,39 @@ Coaching Points
                         {coach.accountStatus || "active"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                      {!coach.clubId && coach.accountType !== "individualPremium" && (
+                        <button
+                          onClick={() =>
+                            setConfirmAction({
+                              type: "upgrade",
+                              target: "coach",
+                              id: coach.id,
+                              name: `${coach.fname} ${coach.lname}`,
+                            })
+                          }
+                          disabled={upgradeLoading === coach.id}
+                          className="text-amber-600 hover:text-amber-900"
+                        >
+                          {upgradeLoading === coach.id ? "..." : "Upgrade"}
+                        </button>
+                      )}
+                      {!coach.clubId && coach.accountType === "individualPremium" && (
+                        <button
+                          onClick={() =>
+                            setConfirmAction({
+                              type: "downgrade",
+                              target: "coach",
+                              id: coach.id,
+                              name: `${coach.fname} ${coach.lname}`,
+                            })
+                          }
+                          disabled={upgradeLoading === coach.id}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          {upgradeLoading === coach.id ? "..." : "Downgrade"}
+                        </button>
+                      )}
                       {coach.accountStatus === "suspended" ? (
                         <button
                           onClick={() =>
@@ -1022,7 +1177,7 @@ Coaching Points
                               name: `${coach.fname} ${coach.lname}`,
                             })
                           }
-                          className="text-green-600 hover:text-green-900 mr-3"
+                          className="text-green-600 hover:text-green-900"
                         >
                           Unsuspend
                         </button>
@@ -1036,7 +1191,7 @@ Coaching Points
                               name: `${coach.fname} ${coach.lname}`,
                             })
                           }
-                          className="text-yellow-600 hover:text-yellow-900 mr-3"
+                          className="text-yellow-600 hover:text-yellow-900"
                         >
                           Suspend
                         </button>
@@ -1098,6 +1253,10 @@ Coaching Points
                 ? "Confirm Delete"
                 : confirmAction.type === "suspend"
                 ? "Confirm Suspend"
+                : confirmAction.type === "upgrade"
+                ? "Confirm Upgrade"
+                : confirmAction.type === "downgrade"
+                ? "Confirm Downgrade"
                 : "Confirm Unsuspend"}
             </h3>
             <p className="text-gray-600 mb-4">
@@ -1109,6 +1268,14 @@ Coaching Points
                       ? "All associated coaches will also be suspended."
                       : ""
                   }`
+                : confirmAction.type === "upgrade"
+                ? confirmAction.target === "club"
+                  ? `Activate subscription for "${confirmAction.name}"? All coaches in this club will get full access.`
+                  : `Upgrade "${confirmAction.name}" to premium? They will get full access to all features.`
+                : confirmAction.type === "downgrade"
+                ? confirmAction.target === "club"
+                  ? `Deactivate subscription for "${confirmAction.name}"? Coaches will lose premium access.`
+                  : `Downgrade "${confirmAction.name}" to free? They will lose premium features.`
                 : `Are you sure you want to unsuspend ${confirmAction.target} "${confirmAction.name}"?`}
             </p>
             {(confirmAction.type === "suspend" || confirmAction.type === "delete") && (
@@ -1137,16 +1304,20 @@ Coaching Points
               </button>
               <button
                 onClick={handleConfirmAction}
-                disabled={actionLoading === confirmAction.id}
+                disabled={actionLoading === confirmAction.id || upgradeLoading === confirmAction.id}
                 className={`px-4 py-2 rounded-lg text-white ${
                   confirmAction.type === "delete"
                     ? "bg-red-600 hover:bg-red-700"
                     : confirmAction.type === "suspend"
                     ? "bg-yellow-600 hover:bg-yellow-700"
+                    : confirmAction.type === "upgrade"
+                    ? "bg-amber-600 hover:bg-amber-700"
+                    : confirmAction.type === "downgrade"
+                    ? "bg-gray-600 hover:bg-gray-700"
                     : "bg-green-600 hover:bg-green-700"
                 }`}
               >
-                {actionLoading === confirmAction.id ? "Processing..." : "Confirm"}
+                {(actionLoading === confirmAction.id || upgradeLoading === confirmAction.id) ? "Processing..." : "Confirm"}
               </button>
             </div>
           </div>
