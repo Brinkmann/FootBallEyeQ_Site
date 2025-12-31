@@ -1,35 +1,27 @@
 import CatalogPageClient from "./CatalogPageClient";
-import { headers } from "next/headers";
 import { Exercise } from "../types/exercise";
+import { getAdminDb } from "../utils/firebaseAdmin";
+import { parseExerciseFromFirestore } from "../lib/schemas";
 
 async function fetchInitialExercises(): Promise<Exercise[]> {
-  const hdrs = await headers();
-  const host = hdrs.get("host");
-  const forwardedProto = hdrs.get("x-forwarded-proto");
-  const protocol = forwardedProto ?? (host?.includes("localhost") ? "http" : "https");
-  const origin = host ? `${protocol}://${host}` : process.env.NEXT_PUBLIC_SITE_URL;
-
-  if (!origin) return [];
-
   try {
-    const res = await fetch(`${origin}/api/exercises`, {
-      cache: "no-store",
-      next: { revalidate: 0 },
-    });
+    const db = getAdminDb();
+    const snapshot = await db.collection("exercises").get();
 
-    if (!res.ok) {
-      return [];
-    }
+    const exercises = snapshot.docs
+      .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
+      .filter((ex): ex is Exercise => ex !== null)
+      .sort((a, b) => {
+        const numA = a.title.match(/^(\d+)/);
+        const numB = b.title.match(/^(\d+)/);
+        return (numA ? parseInt(numA[1], 10) : 9999) - (numB ? parseInt(numB[1], 10) : 9999);
+      });
 
-    const data = await res.json();
-    if (Array.isArray(data?.exercises)) {
-      return data.exercises as Exercise[];
-    }
+    return exercises;
   } catch (error) {
     console.error("Failed to prefetch exercises:", error);
+    return [];
   }
-
-  return [];
 }
 
 export default async function CatalogPage() {
