@@ -74,3 +74,7 @@ Required environment variables for server-side API routes:
 - `FIREBASE_PROJECT_ID` - Firebase project ID
 - `FIREBASE_CLIENT_EMAIL` - Service account email
 - `FIREBASE_PRIVATE_KEY` - Service account private key (supports various formats)
+
+## Documentation
+- `docs/debugging-guides/` - Case studies for debugging complex issues
+  - `drill-catalog-loading.md` - Firebase Admin credentials + Firestore query patterns
