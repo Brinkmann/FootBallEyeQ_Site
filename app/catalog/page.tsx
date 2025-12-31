@@ -12,16 +12,21 @@ import { useExerciseType } from "../components/ExerciseTypeProvider";
 import Link from "next/link";
 
 export default function CatalogPage() {
+  const [mounted, setMounted] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const hasFetchedRef = useRef(false);
   
   const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated, favoritesCountForType } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
+  
+  // Ensure client-side mounting completes before fetching
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [plasticBannerDismissed, setPlasticBannerDismissed] = useState(false);
   const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
   
@@ -111,7 +116,6 @@ export default function CatalogPage() {
       const data = JSON.parse(text);
       if (data.exercises && Array.isArray(data.exercises)) {
         setExercises(data.exercises);
-        hasFetchedRef.current = true;
       } else {
         throw new Error("Invalid response format");
       }
@@ -128,10 +132,10 @@ export default function CatalogPage() {
   }, []);
 
   useEffect(() => {
-    if (!hasFetchedRef.current) {
+    if (mounted) {
       fetchExercises();
     }
-  }, [fetchExercises]);
+  }, [mounted, fetchExercises]);
 
   // Capture initial favorites snapshot once when page loads (after both exercises AND favorites are loaded)
   // This prevents reordering when user favorites/unfavorites during the session
@@ -431,6 +435,29 @@ export default function CatalogPage() {
     playerInvolvement: selectedPlayerInvolvement,
     gameMoment: selectedGameMoment,
   }), [selectedAgeGroup, selectedDifficulty, selectedPracticeFormat, selectedDecisionTheme, selectedPlayerInvolvement, selectedGameMoment]);
+
+  // Show consistent loading state until client is mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background">
+        <NavBar />
+        <div className="px-4 sm:px-6 py-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Drill Catalogue</h1>
+              <p className="text-foreground opacity-60 text-sm">Find the perfect drill for your training session</p>
+            </div>
+            <div className="text-center py-12">
+              <div className="flex justify-center mb-3">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+              </div>
+              <p className="text-foreground">Loading drills...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
