@@ -18,7 +18,7 @@ The design incorporates a clear navigation structure with a prominent navbar and
 
 **Technical Implementations:**
 - **Two-tier Account System:** Supports Free, Club Coach, and Individual Premium accounts. Free users have limited access (1 session, 10 favorites, no stats), while Club and Premium users get full access. Club admins can manage coaches and generate invite codes.
-- **Exercise Type System (EyeQ vs Plastic):** Drills are categorized as 'eyeq' (smart LED cones) or 'plastic' (traditional cones). Clubs can set policies to restrict drill types, and coaches can filter accordingly.
+- **Exercise Type System (EyeQ vs Plastic):** Drills are categorized as 'eyeq' (smart LED cones) or 'plastic' (traditional cones). Clubs can set policies to restrict drill types, and coaches can filter accordingly. Uses onAuthStateChanged with prevUserIdRef to detect true logout events and reset to 'eyeq'; preferences are loaded from Firestore on login (not localStorage) to ensure consistency.
 - **Favorites System:** Allows coaches to mark drills as favorites, stored per user in Firestore with real-time synchronization.
 - **Smart Filtering System:** The Drill Catalogue features `SmartSearch` with autocomplete and `FacetedFilters` (bottom sheet on mobile, side panel on desktop) displaying live drill counts.
 - **Global State Synchronization:** `PlanSyncProvider` handles Firebase synchronization with offline detection, pending save tracking, and exponential backoff retry (up to 3 retries). `SyncStatusIndicator` shows sync status (idle/syncing/offline/error) on the planner page.

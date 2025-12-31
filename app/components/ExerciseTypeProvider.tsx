@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
 import { auth, db } from "@/Firebase/firebaseConfig";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
 import { ExerciseType } from "../types/exercise";
@@ -16,12 +17,32 @@ interface ExerciseTypeContextType {
 const ExerciseTypeContext = createContext<ExerciseTypeContextType | null>(null);
 
 export function ExerciseTypeProvider({ children }: { children: ReactNode }) {
-  const { canChooseExerciseType, enforcedExerciseType, isAuthenticated, isLoading: entitlementsLoading } = useEntitlements();
+  const { canChooseExerciseType, enforcedExerciseType, isLoading: entitlementsLoading } = useEntitlements();
   const [selectedType, setSelectedType] = useState<ExerciseType>("eyeq");
   const [isLoading, setIsLoading] = useState(true);
+  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const prevUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (entitlementsLoading) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const prevUserId = prevUserIdRef.current;
+      const currentUserId = user?.uid || null;
+      
+      if (prevUserId && !currentUserId) {
+        localStorage.removeItem("exerciseType");
+        setSelectedType("eyeq");
+      }
+      
+      prevUserIdRef.current = currentUserId;
+      setFirebaseUser(user);
+      setAuthReady(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!authReady || entitlementsLoading) return;
 
     if (enforcedExerciseType) {
       setSelectedType(enforcedExerciseType);
@@ -30,35 +51,23 @@ export function ExerciseTypeProvider({ children }: { children: ReactNode }) {
     }
 
     const loadPreference = async () => {
-      if (isAuthenticated && auth.currentUser) {
+      if (firebaseUser) {
         try {
-          const prefDoc = await getDoc(doc(db, "userPreferences", auth.currentUser.uid));
+          const prefDoc = await getDoc(doc(db, "userPreferences", firebaseUser.uid));
           if (prefDoc.exists() && prefDoc.data().exerciseType) {
-            setSelectedType(prefDoc.data().exerciseType as ExerciseType);
-          } else {
-            const stored = localStorage.getItem("exerciseType");
-            if (stored === "eyeq" || stored === "plastic") {
-              setSelectedType(stored);
-            }
+            const userPref = prefDoc.data().exerciseType as ExerciseType;
+            setSelectedType(userPref);
+            localStorage.setItem("exerciseType", userPref);
           }
         } catch (error) {
           console.error("Failed to load exercise type preference:", error);
-          const stored = localStorage.getItem("exerciseType");
-          if (stored === "eyeq" || stored === "plastic") {
-            setSelectedType(stored);
-          }
-        }
-      } else {
-        const stored = localStorage.getItem("exerciseType");
-        if (stored === "eyeq" || stored === "plastic") {
-          setSelectedType(stored);
         }
       }
       setIsLoading(false);
     };
 
     loadPreference();
-  }, [entitlementsLoading, enforcedExerciseType, isAuthenticated]);
+  }, [authReady, entitlementsLoading, enforcedExerciseType, firebaseUser]);
 
   const handleSetType = async (type: ExerciseType) => {
     if (!canChooseExerciseType) return;
@@ -66,9 +75,9 @@ export function ExerciseTypeProvider({ children }: { children: ReactNode }) {
     setSelectedType(type);
     localStorage.setItem("exerciseType", type);
 
-    if (isAuthenticated && auth.currentUser) {
+    if (firebaseUser) {
       try {
-        await setDoc(doc(db, "userPreferences", auth.currentUser.uid), {
+        await setDoc(doc(db, "userPreferences", firebaseUser.uid), {
           exerciseType: type,
           updatedAt: new Date(),
         }, { merge: true });
