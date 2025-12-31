@@ -5,8 +5,6 @@ import SessionCodeButton from "../components/SessionCodeButton";
 import WelcomeModal from "../components/WelcomeModal";
 import SyncStatusIndicator from "../components/SyncStatusIndicator";
 import { usePlanStore } from "../store/usePlanStore";
-import { db } from "../../Firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 import { useEntitlements } from "../components/EntitlementProvider";
 import { useExerciseType } from "../components/ExerciseTypeProvider";
@@ -27,13 +25,14 @@ export default function SeasonPlanningPage() {
     (async () => {
       setCatalogLoading(true);
       try {
-        const snap = await getDocs(collection(db, "exercises"));
-        const list = snap.docs.map((d) => {
-          const data = d.data() as { id?: number; title?: string; exerciseType?: ExerciseType };
-          const title = data.title ?? d.id;
+        const res = await fetch("/api/exercises");
+        if (!res.ok) throw new Error(`API returned ${res.status}`);
+        const data = await res.json();
+        const list = (data.exercises || []).map((ex: { title?: string; exerciseType?: ExerciseType }) => {
+          const title = ex.title ?? "";
           const titleMatch = typeof title === "string" ? title.match(/^(\d+)\s*-/) : null;
           const id = titleMatch ? parseInt(titleMatch[1], 10) : 0;
-          const exerciseType = data.exerciseType || "eyeq";
+          const exerciseType = ex.exerciseType || "eyeq";
           return { id, title, exerciseType };
         });
         setCatalog(list);
