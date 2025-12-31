@@ -5,6 +5,7 @@ import { UserProfile, AccountType } from "../types/account";
 
 const SESSION_COOKIE_NAME = "__session";
 const SESSION_EXPIRY_DAYS = 5;
+const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
 
 export interface SessionUser {
   uid: string;
@@ -39,28 +40,33 @@ export async function verifySession(): Promise<SessionUser | null> {
   }
 }
 
-export async function getUserProfile(uid: string): Promise<UserProfile | null> {
+export async function getUserProfile(uid: string, email?: string): Promise<UserProfile | null> {
   try {
     const db = getAdminFirestore();
-    const userDoc = await db.collection("users").doc(uid).get();
+    
+    const signupsQuery = db.collection("signups").where("uid", "==", uid).limit(1);
+    const snapshot = await signupsQuery.get();
 
-    if (!userDoc.exists) {
+    if (snapshot.empty) {
       return null;
     }
 
-    const data = userDoc.data();
+    const doc = snapshot.docs[0];
+    const data = doc.data();
     if (!data) return null;
 
+    const isSuperAdmin = email === SUPER_ADMIN_EMAIL;
+
     return {
-      uid: userDoc.id,
-      email: data.email || "",
+      uid: data.uid || uid,
+      email: data.email || email || "",
       fname: data.fname || "",
       lname: data.lname || "",
       organization: data.organization,
       accountType: data.accountType || "free",
       clubId: data.clubId,
       clubRole: data.clubRole,
-      admin: data.admin || false,
+      admin: isSuperAdmin || data.admin || false,
       createdAt: data.createdAt?.toDate?.() || new Date(),
       accountStatus: data.accountStatus,
       suspendedAt: data.suspendedAt?.toDate?.(),
@@ -76,7 +82,7 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
   const session = await verifySession();
   if (!session) return null;
 
-  const profile = await getUserProfile(session.uid);
+  const profile = await getUserProfile(session.uid, session.email);
 
   return {
     ...session,
