@@ -5,7 +5,8 @@ Football EyeQ is a Next.js application designed to assist football coaches in or
 
 ## User Preferences
 - Architecture: Firebase + Vercel + GitHub only (no Replit-specific dependencies)
-- Admin access: Controlled via Firestore `admin: true` field on user documents
+- Super admin: Determined by email (obrinkmann@gmail.com) - checked on both client and server
+- Club admin: Determined by `clubRole: "admin"` field in signups collection
 - Use ONLY user-provided infographic images (in attached_assets/)
 - Drill Catalogue + Session Planner = main features, front and center
 - No pricing information needed on the site
