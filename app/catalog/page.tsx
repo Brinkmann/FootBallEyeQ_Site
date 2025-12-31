@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
@@ -11,7 +12,7 @@ import { useFavoritesContext } from "../components/FavoritesProvider";
 import { useExerciseType } from "../components/ExerciseTypeProvider";
 import Link from "next/link";
 
-export default function CatalogPage() {
+function CatalogPageContent() {
   const [mounted, setMounted] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -107,14 +108,24 @@ export default function CatalogPage() {
   const fetchExercises = useCallback(async (retryCount = 0): Promise<void> => {
     setIsLoading(true);
     setLoadError(null);
+
     try {
-      const res = await fetch("/api/exercises");
+      const controller = new AbortController();
+      const res = await fetch(`/api/exercises?ts=${Date.now()}`, {
+        cache: "no-store",
+        credentials: "same-origin",
+        signal: controller.signal,
+      });
+
       if (!res.ok) {
         throw new Error(`API returned ${res.status}`);
       }
-      const text = await res.text();
-      const data = JSON.parse(text);
-      if (data.exercises && Array.isArray(data.exercises)) {
+
+      const data = await res.json().catch(() => {
+        throw new Error("Invalid JSON response");
+      });
+
+      if (data?.exercises && Array.isArray(data.exercises)) {
         setExercises(data.exercises);
       } else {
         throw new Error("Invalid response format");
@@ -713,3 +724,9 @@ export default function CatalogPage() {
     </div>
   );
 }
+
+const CatalogPage = dynamic(() => Promise.resolve(CatalogPageContent), {
+  ssr: false,
+});
+
+export default CatalogPage;
