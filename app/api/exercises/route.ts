@@ -4,6 +4,7 @@ import { parseExerciseFromFirestore, ValidatedExercise } from "@/app/lib/schemas
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
+export const runtime = "nodejs";
 
 function getExerciseNumber(title: string): number {
   const match = title.match(/^(\d+)/);
