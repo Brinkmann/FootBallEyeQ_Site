@@ -77,8 +77,10 @@ export default function PlanSyncProvider({ children }: { children: React.ReactNo
         }
 
         loadedUserRef.current = user.uid;
-      } catch (error) {
-        console.error("Failed to load planner:", error);
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'code' in error && error.code !== 'permission-denied') {
+          console.error("Failed to load planner:", error);
+        }
       } finally {
         isLoadingRef.current = false;
         setHydrated();

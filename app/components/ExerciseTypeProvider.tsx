@@ -59,8 +59,10 @@ export function ExerciseTypeProvider({ children }: { children: ReactNode }) {
             setSelectedType(userPref);
             localStorage.setItem("exerciseType", userPref);
           }
-        } catch (error) {
-          console.error("Failed to load exercise type preference:", error);
+        } catch (error: unknown) {
+          if (error && typeof error === 'object' && 'code' in error && error.code !== 'permission-denied') {
+            console.error("Failed to load exercise type preference:", error);
+          }
         }
       }
       setIsLoading(false);
@@ -81,8 +83,10 @@ export function ExerciseTypeProvider({ children }: { children: ReactNode }) {
           exerciseType: type,
           updatedAt: new Date(),
         }, { merge: true });
-      } catch (error) {
-        console.error("Failed to save exercise type preference:", error);
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'code' in error && error.code !== 'permission-denied') {
+          console.error("Failed to save exercise type preference:", error);
+        }
       }
     }
   };
