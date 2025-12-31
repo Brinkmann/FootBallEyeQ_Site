@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
 import { Exercise } from "../types/exercise";
@@ -18,6 +18,7 @@ export default function CatalogPage() {
   const [initialFavorites, setInitialFavorites] = useState<Set<string> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const hasFetchedRef = useRef(false);
   
   const { favorites, isAuthenticated, loading: favoritesLoading, hasHydrated: favoritesHydrated, favoritesCountForType } = useFavoritesContext();
   const { selectedExerciseType } = useExerciseType();
@@ -98,22 +99,30 @@ export default function CatalogPage() {
     "General / Mixed",
   ];
 
-  const fetchExercises = useCallback(async () => {
+  const fetchExercises = useCallback(async (retryCount = 0): Promise<void> => {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const res = await fetch("/api/exercises");
+      const res = await fetch("/api/exercises", {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" }
+      });
       if (!res.ok) {
         throw new Error(`API returned ${res.status}`);
       }
       const data = await res.json();
       if (data.exercises && Array.isArray(data.exercises)) {
         setExercises(data.exercises);
+        hasFetchedRef.current = true;
       } else {
         throw new Error("Invalid response format");
       }
     } catch (error) {
       console.error("Error fetching exercises:", error);
+      if (retryCount < 2) {
+        setTimeout(() => fetchExercises(retryCount + 1), 1000);
+        return;
+      }
       setLoadError("We couldn't load drills right now. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
@@ -121,7 +130,9 @@ export default function CatalogPage() {
   }, []);
 
   useEffect(() => {
-    fetchExercises();
+    if (!hasFetchedRef.current) {
+      fetchExercises();
+    }
   }, [fetchExercises]);
 
   // Capture initial favorites snapshot once when page loads (after both exercises AND favorites are loaded)
