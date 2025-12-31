@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/app/utils/firebaseAdmin";
 import { parseExerciseFromFirestore, ValidatedExercise } from "@/app/lib/schemas";
-import { fallbackExercises } from "@/app/lib/fallbackExercises";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -46,19 +45,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching exercises, serving fallback:", error);
-    const filteredFallback = exerciseType
-      ? fallbackExercises.filter((ex) => ex.exerciseType === exerciseType)
-      : fallbackExercises;
-
-    return NextResponse.json({
-      exercises: filteredFallback,
-      fallback: true,
-    }, {
-      headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
-      },
-      status: 200,
-    });
+    console.error("Error fetching exercises:", error);
+    return NextResponse.json({ error: "Failed to fetch exercises" }, { status: 500 });
   }
 }
