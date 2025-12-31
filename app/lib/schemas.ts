@@ -18,7 +18,15 @@ export const ExerciseSchema = z.object({
   description: nullableString(""),
   exerciseBreakdownDesc: nullableString(""),
   image: nullableString(""),
-  exerciseType: z.union([ExerciseTypeSchema, z.null(), z.undefined()]).transform((val) => val ?? "eyeq"),
+  exerciseType: z
+    .union([ExerciseTypeSchema, z.string(), z.null(), z.undefined()])
+    .transform((val) => {
+      if (!val) return "eyeq";
+      const normalized = typeof val === "string" ? val.trim().toLowerCase() : val;
+      if (normalized === "plastic") return "plastic";
+      if (normalized === "eyeq") return "eyeq";
+      return "eyeq";
+    }),
 });
 
 export function parseExerciseFromFirestore(docId: string, data: Record<string, unknown>): z.infer<typeof ExerciseSchema> | null {
