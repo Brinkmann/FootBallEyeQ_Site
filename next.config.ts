@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
     "*.replit.dev",
     "*.picard.replit.dev",
     "*.repl.co",
+    "*.kirk.replit.dev",
+    "*.spock.replit.dev",
+    "localhost",
     "localhost:5000",
+    "127.0.0.1",
     "127.0.0.1:5000",
   ],
   async headers() {
