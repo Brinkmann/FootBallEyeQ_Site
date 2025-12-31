@@ -103,14 +103,12 @@ export default function CatalogPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const res = await fetch("/api/exercises", {
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" }
-      });
+      const res = await fetch("/api/exercises");
       if (!res.ok) {
         throw new Error(`API returned ${res.status}`);
       }
-      const data = await res.json();
+      const text = await res.text();
+      const data = JSON.parse(text);
       if (data.exercises && Array.isArray(data.exercises)) {
         setExercises(data.exercises);
         hasFetchedRef.current = true;
@@ -118,10 +116,10 @@ export default function CatalogPage() {
         throw new Error("Invalid response format");
       }
     } catch (error) {
-      console.error("Error fetching exercises:", error);
+      console.error("Error fetching exercises:", error instanceof Error ? error.message : String(error));
       if (retryCount < 2) {
-        setTimeout(() => fetchExercises(retryCount + 1), 1000);
-        return;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return fetchExercises(retryCount + 1);
       }
       setLoadError("We couldn't load drills right now. Please check your connection and try again.");
     } finally {
@@ -571,7 +569,7 @@ export default function CatalogPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button
-                    onClick={fetchExercises}
+                    onClick={() => fetchExercises()}
                     className="px-4 py-2 bg-primary text-button rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     Retry loading drills

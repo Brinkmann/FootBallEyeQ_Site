@@ -124,21 +124,29 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       where("userId", "==", userId)
     );
 
-    const unsubSnap = onSnapshot(q, (snapshot) => {
-      const favs: FavoriteData[] = [];
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        if (data.exerciseId) {
-          favs.push({
-            exerciseId: data.exerciseId,
-            exerciseType: data.exerciseType || "eyeq",
-          });
-        }
-      });
-      setFavoritesData(favs);
-      setLoading(false);
-      setHasHydrated(true);
-    });
+    const unsubSnap = onSnapshot(
+      q, 
+      (snapshot) => {
+        const favs: FavoriteData[] = [];
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          if (data.exerciseId) {
+            favs.push({
+              exerciseId: data.exerciseId,
+              exerciseType: data.exerciseType || "eyeq",
+            });
+          }
+        });
+        setFavoritesData(favs);
+        setLoading(false);
+        setHasHydrated(true);
+      },
+      (error) => {
+        console.error("Favorites listener error:", error);
+        setLoading(false);
+        setHasHydrated(true);
+      }
+    );
 
     return () => unsubSnap();
   }, [userId]);

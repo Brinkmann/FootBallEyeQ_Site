@@ -51,30 +51,43 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
 
   /**
    * Subscribe to reviews collection for this exercise to get real-time updates
+   * Only for authenticated users (reviews require auth to read)
    */
   useEffect(() => {
+    if (!isAuthenticated) {
+      setAvgStars(0);
+      setReviewCount(0);
+      return;
+    }
+
     const q = query(
       collection(db, "reviews"),
       where("exerciseN", "==", exercise.title)
     );
     // Wait for real-time updates
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        setAvgStars(0);
-        setReviewCount(0);
-        return;
-      }
-      // Calculate average stars
-      const reviews = snapshot.docs.map((doc) => doc.data());
-      const totalStars = reviews.reduce((sum, r) => sum + (r.numStar || 0), 0);
-      const avg = totalStars / reviews.length;
+    const unsubscribe = onSnapshot(
+      q, 
+      (snapshot) => {
+        if (snapshot.empty) {
+          setAvgStars(0);
+          setReviewCount(0);
+          return;
+        }
+        // Calculate average stars
+        const reviews = snapshot.docs.map((doc) => doc.data());
+        const totalStars = reviews.reduce((sum, r) => sum + (r.numStar || 0), 0);
+        const avg = totalStars / reviews.length;
 
-      setAvgStars(Number(avg.toFixed(1)));
-      setReviewCount(reviews.length);
-    });
+        setAvgStars(Number(avg.toFixed(1)));
+        setReviewCount(reviews.length);
+      },
+      (error) => {
+        console.error("Reviews listener error:", error);
+      }
+    );
 
     return () => unsubscribe();
-  }, [exercise.title]);
+  }, [exercise.title, isAuthenticated]);
 
   // Handle adding exercise to a selected week
   const handlePick = (week: number) => {

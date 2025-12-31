@@ -60,28 +60,34 @@ export default function StatsPage() {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "reviews"), (snapshot) => {
-      const ratingMap: Record<string, { total: number; count: number }> = {};
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        const title = data.exerciseN;
-        const stars = data.numStar || 0;
-        if (!ratingMap[title]) {
-          ratingMap[title] = { total: 0, count: 0 };
-        }
-        ratingMap[title].total += stars;
-        ratingMap[title].count += 1;
-      });
+    const unsubscribe = onSnapshot(
+      collection(db, "reviews"), 
+      (snapshot) => {
+        const ratingMap: Record<string, { total: number; count: number }> = {};
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          const title = data.exerciseN;
+          const stars = data.numStar || 0;
+          if (!ratingMap[title]) {
+            ratingMap[title] = { total: 0, count: 0 };
+          }
+          ratingMap[title].total += stars;
+          ratingMap[title].count += 1;
+        });
 
-      const result: Record<string, { avg: number; count: number }> = {};
-      for (const title in ratingMap) {
-        result[title] = {
-          avg: ratingMap[title].total / ratingMap[title].count,
-          count: ratingMap[title].count,
-        };
+        const result: Record<string, { avg: number; count: number }> = {};
+        for (const title in ratingMap) {
+          result[title] = {
+            avg: ratingMap[title].total / ratingMap[title].count,
+            count: ratingMap[title].count,
+          };
+        }
+        setRatings(result);
+      },
+      (error) => {
+        console.error("Reviews listener error:", error);
       }
-      setRatings(result);
-    });
+    );
 
     return () => unsubscribe();
   }, []);
