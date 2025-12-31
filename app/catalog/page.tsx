@@ -2,6 +2,7 @@ import CatalogPageClient from "./CatalogPageClient";
 import { Exercise } from "../types/exercise";
 import { getAdminDb } from "../utils/firebaseAdmin";
 import { parseExerciseFromFirestore } from "../lib/schemas";
+import { fallbackExercises } from "../lib/fallbackExercises";
 
 async function fetchInitialExercises(): Promise<Exercise[]> {
   try {
@@ -18,7 +19,7 @@ async function fetchInitialExercises(): Promise<Exercise[]> {
       });
   } catch (error) {
     console.error("Failed to prefetch exercises:", error);
-    return [];
+    return fallbackExercises;
   }
 }
 

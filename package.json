@@ -31,8 +31,8 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.49.1",
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
     "@types/node": "^20",
@@ -40,7 +40,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
