@@ -3,10 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import ExerciseCard from "../components/ExerciseCard";
 import NavBar from "../components/Navbar";
-import { db } from "../../Firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
 import { Exercise } from "../types/exercise";
-import { parseExerciseFromFirestore } from "../lib/schemas";
 import SmartSearch from "../components/SmartSearch";
 import FacetedFilters from "../components/FacetedFilters";
 import ActiveFilters from "../components/ActiveFilters";
@@ -105,36 +102,15 @@ export default function CatalogPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      let loaded = false;
-      
-      try {
-        const res = await fetch("/api/exercises");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.exercises && data.exercises.length > 0) {
-            setExercises(data.exercises);
-            loaded = true;
-          }
-        }
-      } catch (apiError) {
-        console.warn("Server API failed, falling back to client SDK:", apiError);
+      const res = await fetch("/api/exercises");
+      if (!res.ok) {
+        throw new Error(`API returned ${res.status}`);
       }
-      
-      if (!loaded) {
-        const exercisesCol = collection(db, "exercises");
-        const snapshot = await getDocs(exercisesCol);
-
-        const getExerciseNumber = (title: string): number => {
-          const match = title.match(/^(\d+)/);
-          return match ? parseInt(match[1], 10) : 9999;
-        };
-
-        const exercisesList: Exercise[] = snapshot.docs
-          .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
-          .filter((ex): ex is Exercise => ex !== null);
-
-        exercisesList.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
-        setExercises(exercisesList);
+      const data = await res.json();
+      if (data.exercises && Array.isArray(data.exercises)) {
+        setExercises(data.exercises);
+      } else {
+        throw new Error("Invalid response format");
       }
     } catch (error) {
       console.error("Error fetching exercises:", error);
@@ -567,7 +543,7 @@ export default function CatalogPage() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(isLoading || !favoritesHydrated) ? (
+            {isLoading ? (
               <div className="col-span-full text-center py-12">
                 <div className="flex justify-center mb-3">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
