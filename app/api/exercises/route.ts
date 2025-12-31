@@ -39,8 +39,16 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching exercises:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+
     return NextResponse.json(
-      { error: "Failed to fetch exercises" },
+      {
+        error: "Failed to fetch exercises",
+        details: errorMessage,
+        stack: errorStack,
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }

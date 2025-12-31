@@ -12,6 +12,7 @@ import {
   setDoc,
   deleteDoc,
   getDocs,
+  getDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { FREE_ENTITLEMENTS, PREMIUM_ENTITLEMENTS, AccountType } from "../types/account";
@@ -98,13 +99,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       }
 
       try {
-        const signupsQuery = query(
-          collection(db, "signups"),
-          where("uid", "==", user.uid)
-        );
-        const snapshot = await getDocs(signupsQuery);
-        if (!snapshot.empty) {
-          const userData = snapshot.docs[0].data();
+        const signupDocRef = doc(db, "signups", user.uid);
+        const snapshot = await getDoc(signupDocRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.data();
           setAccountType((userData.accountType as AccountType) || "free");
         }
       } catch (error) {
