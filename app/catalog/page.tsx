@@ -595,7 +595,7 @@ export default function CatalogPage() {
           {/* Status line: Showing X of Y */}
           {!isLoading && !loadError && totalFilteredCount > 0 && (
             <div ref={listContainerRef} className="mb-4 text-sm text-foreground opacity-70">
-              Showing {displayedExercises.length} of {totalFilteredCount} drills
+              Showing <span className="font-semibold text-primary">{displayedExercises.length}</span> of {totalFilteredCount} drills
             </div>
           )}
 
