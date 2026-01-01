@@ -1,0 +1,1134 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-01-01",
+    "totalQuestions": 85,
+    "description": "Comprehensive FAQ for Football EyeQ platform covering all user personas and features"
+  },
+  "styleGuide": {
+    "tone": "Coach-friendly, supportive, and encouraging",
+    "voice": "Professional yet approachable - like a fellow coach sharing insights",
+    "principles": [
+      "Use 'we' and 'you' to create partnership feeling",
+      "Avoid jargon unless explaining technical features",
+      "Be concise but thorough - coaches are busy",
+      "Emphasize player development benefits, not just features",
+      "Use football-specific examples when possible",
+      "Show empathy for common coaching challenges",
+      "End complex answers with actionable next steps"
+    ],
+    "phrasesToUse": [
+      "Great question!",
+      "Here's how it works...",
+      "You're all set to...",
+      "This helps you...",
+      "Think of it like...",
+      "The benefit for your players is..."
+    ],
+    "phrasesToAvoid": [
+      "Obviously",
+      "Simply",
+      "Just do X",
+      "It's easy",
+      "Technical limitations",
+      "Not available"
+    ],
+    "exampleResponses": {
+      "good": "Great question! The session planner lets you organize your entire 12-week season in one place. You can add up to 5 drills per session, and everything syncs to the cloud so you can access it from your phone on the training pitch. This means less time organizing and more time coaching!",
+      "avoid": "The planner uses a Zustand state management system with Firestore cloud sync. Simply navigate to /planner and utilize the add-to-plan functionality."
+    }
+  },
+  "categories": [
+    {
+      "id": "getting-started",
+      "name": "Getting Started",
+      "priority": 1,
+      "icon": "🚀",
+      "description": "Essential first steps for new coaches"
+    },
+    {
+      "id": "account-types",
+      "name": "Account Types & Pricing",
+      "priority": 2,
+      "icon": "💳",
+      "description": "Understanding free, premium, and club accounts"
+    },
+    {
+      "id": "eyeq-vs-plastic",
+      "name": "EyeQ vs Plastic Cones",
+      "priority": 3,
+      "icon": "🔦",
+      "description": "Understanding smart cones vs traditional equipment"
+    },
+    {
+      "id": "drill-catalogue",
+      "name": "Drill Catalogue",
+      "priority": 4,
+      "icon": "📚",
+      "description": "Finding and using cognitive training drills"
+    },
+    {
+      "id": "session-planner",
+      "name": "Session Planning",
+      "priority": 5,
+      "icon": "📋",
+      "description": "Building and organizing training sessions"
+    },
+    {
+      "id": "club-management",
+      "name": "Club Management",
+      "priority": 6,
+      "icon": "👥",
+      "description": "For club admins managing coaching teams"
+    },
+    {
+      "id": "features",
+      "name": "Features & Tools",
+      "priority": 7,
+      "icon": "⚡",
+      "description": "Platform features and capabilities"
+    },
+    {
+      "id": "methodology",
+      "name": "Training Methodology",
+      "priority": 8,
+      "icon": "🧠",
+      "description": "Understanding cognitive football training"
+    },
+    {
+      "id": "technical",
+      "name": "Technical Support",
+      "priority": 9,
+      "icon": "🔧",
+      "description": "Login, sync, and troubleshooting"
+    }
+  ],
+  "questions": [
+    {
+      "id": "what-is-football-eyeq",
+      "category": "getting-started",
+      "priority": 1,
+      "question": "What is Football EyeQ?",
+      "answer": "Football EyeQ is a cognitive training platform that helps coaches develop game intelligence in players. While traditional training focuses on technical skills in isolation, Football EyeQ bridges the gap between technical ability and cognitive awareness. The platform provides a curated library of 100+ research-backed drills, intelligent filtering to design progressive sessions, season planning tools, and smart LED cone integration. Think of it as your complete system for teaching players to see more, think faster, and decide better on the pitch.",
+      "tags": ["overview", "platform", "cognitive-training"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["why-cognitive-training", "how-to-start", "what-makes-unique"],
+      "intent": "general_info",
+      "searchKeywords": ["what is", "platform", "overview", "about", "football eyeq"],
+      "conversationContext": "intro",
+      "followUpSuggestions": [
+        "How do I get started?",
+        "What makes Football EyeQ different?",
+        "Why is cognitive training important?"
+      ]
+    },
+    {
+      "id": "why-cognitive-training",
+      "category": "methodology",
+      "priority": 2,
+      "question": "Why is cognitive training important in football?",
+      "answer": "Research shows that elite players scan the field 8x more than average players before receiving the ball, and make decisions in 0.5 seconds under match pressure. Players who scan more have 23% better pass accuracy. Traditional training often focuses on technical skills in predictable environments, but real matches require constant scanning, processing information about 21 moving players, and split-second decisions under pressure. Cognitive training systematically develops these mental skills alongside technical ability. By training players to see more, think faster, and decide better, you're giving them the game intelligence that separates good players from elite ones.",
+      "tags": ["methodology", "research", "scanning", "decision-making"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["what-is-football-eyeq", "see-think-do", "age-groups"],
+      "intent": "educational",
+      "searchKeywords": ["why", "cognitive", "scanning", "research", "science", "elite players"],
+      "conversationContext": "educational",
+      "followUpSuggestions": [
+        "What is the See-Think-Do methodology?",
+        "What age should I start cognitive training?",
+        "How long before I see results?"
+      ]
+    },
+    {
+      "id": "how-to-start",
+      "category": "getting-started",
+      "priority": 1,
+      "question": "How do I get started with Football EyeQ?",
+      "answer": "Getting started is simple! First, create a free account at the signup page - you'll get immediate access to the full drill catalogue, 1 session planner, and 10 favorites. Next, explore the drill catalogue using the filters (age group, difficulty, game moment) to find exercises that match your team's needs. Then, build your first session by adding 3-5 drills to your planner. Finally, use the session details to run training with your team. You can start with traditional cones (Plastic exercises) and upgrade to smart LED cones (EyeQ exercises) later if you'd like. Everything syncs to the cloud, so you can plan on your laptop and access it from your phone on the pitch.",
+      "tags": ["getting-started", "signup", "first-steps"],
+      "personaRelevance": ["individual-coach", "new-user"],
+      "relatedQuestions": ["free-vs-premium", "eyeq-vs-plastic", "how-to-plan-session"],
+      "intent": "onboarding",
+      "searchKeywords": ["start", "begin", "sign up", "first time", "new", "getting started"],
+      "conversationContext": "onboarding",
+      "followUpSuggestions": [
+        "What's included in the free account?",
+        "Do I need smart cones to use Football EyeQ?",
+        "How do I build my first session?"
+      ]
+    },
+    {
+      "id": "free-vs-premium",
+      "category": "account-types",
+      "priority": 1,
+      "question": "What's the difference between Free and Premium accounts?",
+      "answer": "Free accounts are perfect for getting started - you get full access to the drill catalogue with all filters, 1 session planner, up to 10 favorites, and community reviews. Premium accounts ($29/month) unlock the full 12-session season planner so you can plan your entire season progression, unlimited favorites to build a complete coaching library, session stats and analytics, and export functionality. The key difference is planning scope: Free lets you plan week-to-week, while Premium enables full seasonal progression from Basic to Elite difficulty over 12 weeks. Both accounts get the same quality drills and features - Premium just gives you more planning capacity.",
+      "tags": ["pricing", "free", "premium", "comparison"],
+      "personaRelevance": ["individual-coach"],
+      "relatedQuestions": ["upgrade-to-premium", "club-accounts", "pricing"],
+      "intent": "pricing_comparison",
+      "searchKeywords": ["free", "premium", "difference", "upgrade", "pricing", "cost", "price"],
+      "conversationContext": "pricing",
+      "followUpSuggestions": [
+        "How much does Premium cost?",
+        "Can I upgrade later?",
+        "What about club accounts?"
+      ]
+    },
+    {
+      "id": "eyeq-vs-plastic-what",
+      "category": "eyeq-vs-plastic",
+      "priority": 1,
+      "question": "What's the difference between EyeQ and Plastic exercises?",
+      "answer": "Great question! This is a key distinction. **Plastic exercises** use traditional cones that you manually set up - these are the static cones every coach has. **EyeQ exercises** are designed for smart LED cones that light up in dynamic patterns controlled from the app. The cognitive difference is significant: with plastic cones, players can predict patterns and rely on memory. With smart LED cones, lights change unpredictably, forcing players to constantly scan, process visual information, and make real-time decisions - just like in a match. Both types teach the same cognitive principles, but EyeQ exercises add game-realistic unpredictability. The good news? You can use Football EyeQ with either equipment type!",
+      "tags": ["eyeq", "plastic", "smart-cones", "equipment"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["do-i-need-smart-cones", "how-smart-cones-work", "plastic-only-club"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["eyeq", "plastic", "difference", "cones", "smart cones", "led", "equipment"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "Do I need smart cones to use Football EyeQ?",
+        "How do the smart LED cones work?",
+        "Can I mix both types of exercises?"
+      ]
+    },
+    {
+      "id": "do-i-need-smart-cones",
+      "category": "eyeq-vs-plastic",
+      "priority": 1,
+      "question": "Do I need smart LED cones to use Football EyeQ?",
+      "answer": "No, absolutely not! Football EyeQ works with traditional cones too. The drill catalogue includes both **Plastic exercises** (for traditional cones) and **EyeQ exercises** (for smart LED cones). When browsing drills, you can filter by exercise type to see only what you can run with your current equipment. Many coaches start with Plastic exercises using their existing cones, then add smart LED cones later when they want to add dynamic visual cognitive load. Both types teach the same cognitive principles - smart cones just automate the unpredictability. You get full value from the platform regardless of equipment.",
+      "tags": ["equipment", "plastic", "eyeq", "requirements"],
+      "personaRelevance": ["individual-coach", "club-coach"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "filter-by-equipment", "where-buy-cones"],
+      "intent": "requirement_check",
+      "searchKeywords": ["need", "require", "smart cones", "equipment", "traditional cones", "plastic"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "How do I filter exercises by equipment type?",
+        "Where can I get smart LED cones?",
+        "Can I switch between Plastic and EyeQ exercises?"
+      ]
+    },
+    {
+      "id": "how-smart-cones-work",
+      "category": "eyeq-vs-plastic",
+      "priority": 2,
+      "question": "How do the smart LED cones work?",
+      "answer": "Smart LED cones bring your session plans to life! Here's the flow: First, you design your session in the Football EyeQ app by adding EyeQ exercises to your planner. When you're ready to train, click 'Generate Code' in your session - this creates a unique numeric code tied to your drill patterns. Send that code to your smart LED cones, and they'll execute the light sequences automatically. During training, the cones provide color-coded visual cues that change dynamically and unpredictably, forcing players to scan constantly. This creates game-realistic cognitive load - players can't rely on patterns or memory; they must scan, process, and decide in real-time. The result? Training that develops scanning habits automatically.",
+      "tags": ["smart-cones", "eyeq", "session-code", "technology"],
+      "personaRelevance": ["individual-coach", "club-coach", "club-admin"],
+      "relatedQuestions": ["session-codes", "eyeq-vs-plastic-what", "where-buy-cones"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["how", "smart cones", "led", "work", "session code", "technology"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "What are session codes?",
+        "Where can I buy smart LED cones?",
+        "Can I control the cones from my phone?"
+      ]
+    },
+    {
+      "id": "club-vs-individual",
+      "category": "account-types",
+      "priority": 2,
+      "question": "What's the difference between Individual and Club accounts?",
+      "answer": "Individual accounts are for coaches working independently - you pay for and manage your own subscription. Club accounts are for coaches who are part of an organization - your club admin pays for access and manages your account. As a **club coach**, you get all Premium features (12 sessions, unlimited favorites, stats) but your club admin controls your exercise type policy (EyeQ-only, Plastic-only, or Coach-choice) to ensure everyone uses the same equipment. Club admins get a dashboard to invite coaches, manage the roster, and set organization-wide policies. The benefit? If you're part of a club, your access is free to you and everyone uses a consistent methodology.",
+      "tags": ["club", "individual", "account-types"],
+      "personaRelevance": ["individual-coach", "club-coach", "club-admin"],
+      "relatedQuestions": ["join-club", "club-admin-role", "exercise-policy"],
+      "intent": "account_comparison",
+      "searchKeywords": ["club", "individual", "difference", "organization", "team"],
+      "conversationContext": "account_types",
+      "followUpSuggestions": [
+        "How do I join a club account?",
+        "What can club admins do?",
+        "What is an exercise type policy?"
+      ]
+    },
+    {
+      "id": "join-club",
+      "category": "account-types",
+      "priority": 2,
+      "question": "How do I join my club's account?",
+      "answer": "If your club uses Football EyeQ, your club admin will send you an invitation email with a unique access code. Here's how to join: If you don't have an account yet, sign up at the signup page and check the box 'I have a club access code' - you'll be prompted to enter your code after creating your account. If you already have a free account, go to the Upgrade page and enter your invite code in the 'Join a Club' section. The code is valid for 7 days and is specific to your email address. Once redeemed, you'll automatically get full Premium features and be added to your club's roster. Your account becomes managed by your club admin, and you'll see exercises filtered by your club's equipment policy.",
+      "tags": ["club", "invite-code", "join"],
+      "personaRelevance": ["club-coach"],
+      "relatedQuestions": ["club-vs-individual", "invite-code-expired", "exercise-policy"],
+      "intent": "how_to",
+      "searchKeywords": ["join", "club", "invite", "code", "access code", "redeem"],
+      "conversationContext": "club_join",
+      "followUpSuggestions": [
+        "What if my invite code expired?",
+        "What happens to my free account when I join a club?",
+        "Can I leave my club account?"
+      ]
+    },
+    {
+      "id": "club-admin-role",
+      "category": "club-management",
+      "priority": 1,
+      "question": "What can club admins do?",
+      "answer": "As a club admin, you're the organization leader with full control over your coaching team. Your dashboard lets you: **Invite coaches** via email with unique access codes (7-day expiry), **manage your roster** by viewing all active coaches and pending invitations, **set exercise type policy** organization-wide (EyeQ-only, Plastic-only, or Coach-choice) to ensure equipment consistency, and **track team activity** to see who's using the platform. This ensures all your coaches use the same methodology, have access to the same tools, and train with compatible equipment. You also get all Premium features for your own coaching. Think of it as being both a coach and the team manager for Football EyeQ at your club.",
+      "tags": ["club-admin", "management", "permissions"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["invite-coach", "exercise-policy", "register-club"],
+      "intent": "role_explanation",
+      "searchKeywords": ["admin", "club admin", "permissions", "what can", "role", "dashboard"],
+      "conversationContext": "club_management",
+      "followUpSuggestions": [
+        "How do I invite coaches to my club?",
+        "What is an exercise type policy?",
+        "How do I register my club?"
+      ]
+    },
+    {
+      "id": "invite-coach",
+      "category": "club-management",
+      "priority": 1,
+      "question": "How do I invite coaches to my club?",
+      "answer": "From your Club Dashboard, go to the 'Invite New Coach' section. Enter the coach's email address and click 'Generate Invite'. The system creates a unique 6-character access code that's tied to that specific email and expires in 7 days. An invitation email is automatically sent with the code and instructions. The coach can then sign up (if they're new) or redeem the code from the Upgrade page (if they have an existing account). You can track pending invitations in your dashboard and cancel them if needed. Once a coach redeems the code, they're automatically added to your roster with full Premium access, and they'll see exercises filtered by your club's equipment policy.",
+      "tags": ["club-admin", "invite", "onboarding"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["invite-code-expired", "remove-coach", "exercise-policy"],
+      "intent": "how_to",
+      "searchKeywords": ["invite", "add coach", "send invite", "access code", "onboard"],
+      "conversationContext": "club_management",
+      "followUpSuggestions": [
+        "What if the invite code expires?",
+        "Can I remove a coach from my club?",
+        "How many coaches can I invite?"
+      ]
+    },
+    {
+      "id": "exercise-policy",
+      "category": "club-management",
+      "priority": 1,
+      "question": "What is an exercise type policy and why set one?",
+      "answer": "An exercise type policy is an organization-wide setting that controls which drills your coaches can see, based on your club's equipment. There are three options: **EyeQ-only** (all coaches see only smart LED cone drills - for professional clubs with full hardware), **Plastic-only** (all coaches see only traditional cone drills - for grassroots clubs without smart hardware), and **Coach-choice** (coaches can toggle between both types - for hybrid clubs with mixed equipment). Setting a policy ensures consistency - no coach plans a drill they can't execute, everyone trains with the same equipment, and your methodology is aligned across all age groups and teams. You can change this policy anytime from your Club Dashboard.",
+      "tags": ["club-admin", "policy", "equipment", "eyeq", "plastic"],
+      "personaRelevance": ["club-admin", "club-coach"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "change-policy", "plastic-only-club"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["policy", "exercise type", "equipment policy", "eyeq only", "plastic only"],
+      "conversationContext": "club_management",
+      "followUpSuggestions": [
+        "Can I change our club's policy later?",
+        "What happens when I change the policy?",
+        "Can individual coaches override the policy?"
+      ]
+    },
+    {
+      "id": "register-club",
+      "category": "club-management",
+      "priority": 1,
+      "question": "How do I register my club?",
+      "answer": "Registering your club is straightforward! Go to the Club Signup page and follow the 2-step process: First, enter your club name (e.g., 'City FC Youth Academy'). Then, create your admin account with your name, email, and password. Once registered, you'll be taken to your Club Dashboard where you can set your exercise type policy and start inviting coaches. Your club starts on a trial subscription, giving you time to test the platform and onboard your team. As the club admin, you get full Premium features for yourself plus the management dashboard. All coaches you invite will get full Premium access automatically, paid for by the club subscription.",
+      "tags": ["club-admin", "signup", "registration"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["club-pricing", "invite-coach", "exercise-policy"],
+      "intent": "how_to",
+      "searchKeywords": ["register", "sign up", "club", "create club", "admin"],
+      "conversationContext": "club_signup",
+      "followUpSuggestions": [
+        "How much does a club subscription cost?",
+        "How many coaches can I invite?",
+        "What's included in the trial?"
+      ]
+    },
+    {
+      "id": "drill-filters",
+      "category": "drill-catalogue",
+      "priority": 1,
+      "question": "How do I find the right drills for my team?",
+      "answer": "The drill catalogue has a 6-dimensional filtering system designed to help you find exactly what you need. Start with **Age Group** (Foundation U7-U10, Youth Development U11-U14, Advanced U15-U18, or Senior) to match your players' developmental stage. Then filter by **Difficulty** (Basic, Intermediate, Advanced, Elite) based on current ability. Use **Decision Theme** (Pass or Dribble, Attack or Hold, Shoot or Pass) if you're targeting specific cognitive choices. **Game Moment** (Build-Up, Counter Attack, Defensive Shape, etc.) helps find drills that match your tactical system. **Player Involvement** (Individual, Pairs, Small Groups, Team Units) scales to your training group size. Finally, **Practice Format** (Rondo, Small-Sided Game, Shooting Pattern, etc.) adds variety. Each filter works together - set multiple filters to narrow down to perfect drills for today's session!",
+      "tags": ["catalogue", "filters", "search", "drills"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["filter-by-age", "filter-by-equipment", "how-many-drills"],
+      "intent": "how_to",
+      "searchKeywords": ["find", "filter", "search", "drills", "exercises", "catalogue"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "What age groups are available?",
+        "Can I filter by equipment type?",
+        "How many drills are in the catalogue?"
+      ]
+    },
+    {
+      "id": "add-to-favorites",
+      "category": "features",
+      "priority": 2,
+      "question": "How do favorites work?",
+      "answer": "Favorites are your personal coaching library! When you find a drill you love, click the heart icon on the exercise card to save it to your favorites. This creates quick access to your go-to drills without having to search and filter every time. Free accounts can save up to 10 favorites, while Premium and Club accounts get unlimited favorites. Your favorites sync to the cloud, so you can access them from any device. Think of it as bookmarking your proven drills - the ones that work well for your team, that you want to reuse across seasons, or that you're planning to try next. You can remove favorites anytime by clicking the heart again.",
+      "tags": ["favorites", "features", "library"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["favorite-limit", "free-vs-premium", "cloud-sync"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["favorites", "save", "bookmark", "library", "heart"],
+      "conversationContext": "features",
+      "followUpSuggestions": [
+        "How many favorites can I save?",
+        "Do favorites sync across devices?",
+        "Can I organize my favorites into folders?"
+      ]
+    },
+    {
+      "id": "session-planner-basics",
+      "category": "session-planner",
+      "priority": 1,
+      "question": "How does the session planner work?",
+      "answer": "The session planner is where you build your training roadmap! You get a 12-week seasonal overview where each week is a session slot. To build a session: browse the drill catalogue, click 'Add to Plan' on any drill, and select which session week to add it to. Each session can hold up to 5 drills, giving you a balanced 60-90 minute training session. You can mix difficulty levels (start Basic, progress to Elite) and combine different decision themes for variety. Everything saves automatically to the cloud, so you can plan on your laptop and access from your phone on the pitch. Free accounts get 1 session planner, while Premium and Club accounts get the full 12 sessions for complete seasonal progression.",
+      "tags": ["planner", "sessions", "planning"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["how-many-drills-per-session", "cloud-sync", "free-vs-premium"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["planner", "session", "how to plan", "build session", "organize"],
+      "conversationContext": "session_planning",
+      "followUpSuggestions": [
+        "How many drills can I add per session?",
+        "Does my session plan sync to the cloud?",
+        "How do I access my plan from my phone?"
+      ]
+    },
+    {
+      "id": "session-codes",
+      "category": "features",
+      "priority": 2,
+      "question": "What are session codes and how do I use them?",
+      "answer": "Session codes are the bridge between digital planning and on-field execution with smart LED cones! When you've built a session with EyeQ exercises, click the 'Generate Code' button in your planner. This creates a unique 6-character numeric code that maps your drills to specific cone light patterns. You can display this as a QR code or enter it manually into your LED cone controller. The cones then execute the programmed light sequences for your drills automatically. This means you design strategically at home, then execute seamlessly on the pitch - no manual cone reprogramming between drills. Note: Session codes only work with EyeQ exercises and smart LED cone hardware. For Plastic exercises with traditional cones, you'll use the drill diagrams for manual setup.",
+      "tags": ["session-codes", "eyeq", "smart-cones", "qr-code"],
+      "personaRelevance": ["individual-coach", "club-coach"],
+      "relatedQuestions": ["how-smart-cones-work", "eyeq-vs-plastic-what", "generate-code"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["session code", "qr code", "generate code", "cones", "led"],
+      "conversationContext": "smart_cones",
+      "followUpSuggestions": [
+        "Do I need smart cones to use session codes?",
+        "How do I generate a session code?",
+        "Can I use the same code multiple times?"
+      ]
+    },
+    {
+      "id": "community-reviews",
+      "category": "features",
+      "priority": 2,
+      "question": "How do community reviews and ratings work?",
+      "answer": "Community reviews help you learn from other coaches' real-world experience! Every drill in the catalogue shows a star rating (1-5 stars) based on reviews from coaches who've actually used it in training. You can see the average rating and total number of reviews on each exercise card. After you run a drill with your team, you can rate it to help other coaches. This creates a quality validation layer - popular drills that work well get higher visibility, while less effective drills are easy to spot. Think of it as coaching wisdom shared at scale. You don't have to test all 100+ drills yourself - you can learn from coaches who've already used them and see what works in real training environments.",
+      "tags": ["reviews", "ratings", "community", "stars"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["how-to-rate-drill", "most-popular-drills", "trust-reviews"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["reviews", "ratings", "stars", "community", "feedback"],
+      "conversationContext": "features",
+      "followUpSuggestions": [
+        "How do I rate a drill?",
+        "Can I see the most popular drills?",
+        "Are reviews from verified coaches?"
+      ]
+    },
+    {
+      "id": "see-think-do",
+      "category": "methodology",
+      "priority": 2,
+      "question": "What is the See-Think-Do methodology?",
+      "answer": "See-Think-Do is the three-pillar framework that underpins all Football EyeQ drills. **SEE** trains visual awareness - players learn to constantly scan the field, gathering information about teammates, opponents, space, and the ball before they receive it. **THINK** develops rapid decision-making - processing that visual information to identify the best option (pass or dribble, attack or hold, shoot or pass) in under 0.5 seconds. **DO** builds confident execution - turning smart decisions into effective actions under pressure. Traditional training often jumps straight to 'Do' with isolated technical practice. Football EyeQ integrates all three pillars in every drill, because in real matches, players must see, think, AND do simultaneously. This is how you build complete, intelligent footballers.",
+      "tags": ["methodology", "see-think-do", "framework"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["why-cognitive-training", "scanning-importance", "decision-making"],
+      "intent": "educational",
+      "searchKeywords": ["see think do", "methodology", "framework", "approach", "pillars"],
+      "conversationContext": "educational",
+      "followUpSuggestions": [
+        "How do drills teach scanning?",
+        "What is decision-making training?",
+        "How long to develop these habits?"
+      ]
+    },
+    {
+      "id": "age-groups",
+      "category": "methodology",
+      "priority": 2,
+      "question": "What age should I start cognitive training?",
+      "answer": "You can start as early as U7! The drill catalogue is organized into four age groups: **Foundation Phase (U7-U10)** focuses on building basic scanning habits and awareness in fun, simple drills. **Youth Development Phase (U11-U14)** adds decision-making under mild pressure with more complex scenarios. **Game Training Phase (U15-U18)** introduces game-realistic cognitive complexity and tactical awareness. **Performance Phase (U19-Senior)** delivers elite-level cognitive demands. The key insight: cognitive habits formed at 8-12 years old become automatic by 16. If you wait until players are teenagers to start cognitive training, you're trying to change ingrained habits instead of building good ones from the start. That said, it's never too late - even senior players benefit from systematic cognitive development.",
+      "tags": ["age-groups", "youth", "development", "when-to-start"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["filter-by-age", "progression", "youth-vs-senior"],
+      "intent": "educational",
+      "searchKeywords": ["age", "when", "start", "youth", "kids", "children", "u7", "u10", "u12"],
+      "conversationContext": "educational",
+      "followUpSuggestions": [
+        "How do I filter drills by age group?",
+        "How do I progress players from Basic to Elite?",
+        "Are there drills for senior players?"
+      ]
+    },
+    {
+      "id": "pricing",
+      "category": "account-types",
+      "priority": 1,
+      "question": "How much does Football EyeQ cost?",
+      "answer": "Football EyeQ has flexible pricing for different coaching contexts. **Free accounts** give you the full drill catalogue, 1 session planner, 10 favorites, and all core features at no cost - perfect for getting started or week-to-week planning. **Individual Premium** is $29/month for one coach, unlocking the full 12-session season planner, unlimited favorites, stats, and export tools. **Club accounts** provide Premium access for all your coaches (paid by the organization) - pricing depends on team size, and clubs start with a trial period. All accounts get the same quality drills and methodology; you're choosing planning capacity and scale. You can start free and upgrade anytime, or join a club account if your organization uses Football EyeQ.",
+      "tags": ["pricing", "cost", "free", "premium", "club"],
+      "personaRelevance": ["individual-coach", "club-admin"],
+      "relatedQuestions": ["free-vs-premium", "club-pricing", "trial"],
+      "intent": "pricing",
+      "searchKeywords": ["price", "cost", "how much", "pricing", "pay", "subscription", "free"],
+      "conversationContext": "pricing",
+      "followUpSuggestions": [
+        "What's included in the free account?",
+        "How do I upgrade to Premium?",
+        "What does a club subscription cost?"
+      ]
+    },
+    {
+      "id": "cloud-sync",
+      "category": "technical",
+      "priority": 2,
+      "question": "Do my session plans sync across devices?",
+      "answer": "Yes! Everything in Football EyeQ syncs automatically to the cloud. Your session plans, favorites, account settings, and preferences are stored in your cloud account and accessible from any device. This means you can plan strategically on your laptop at home, then pull up your session on your phone or tablet at the training pitch. Changes sync in real-time - add a drill on your computer, and it appears instantly on your phone. You just need to log in with the same account. This cloud-first design ensures you never lose your work and can access your coaching library anywhere, anytime.",
+      "tags": ["sync", "cloud", "devices", "mobile"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["mobile-app", "offline-access", "account-access"],
+      "intent": "technical",
+      "searchKeywords": ["sync", "cloud", "devices", "phone", "tablet", "mobile", "laptop"],
+      "conversationContext": "technical",
+      "followUpSuggestions": [
+        "Is there a mobile app?",
+        "Can I use Football EyeQ offline?",
+        "What if I change my email?"
+      ]
+    },
+    {
+      "id": "how-many-drills",
+      "category": "drill-catalogue",
+      "priority": 2,
+      "question": "How many drills are in the catalogue?",
+      "answer": "The catalogue currently features over 100 research-backed cognitive training drills, and it's growing! Each drill is carefully designed to develop specific aspects of game intelligence - scanning, decision-making, and execution under pressure. Drills are tagged across 6 dimensions (age group, difficulty, decision theme, game moment, player involvement, practice format), so you can filter to exactly what you need. The variety means you can run different drills every week for an entire season without repetition, keeping training fresh and engaging for players. Community ratings help you identify the most effective drills quickly, so you don't have to test all 100+ yourself.",
+      "tags": ["catalogue", "drills", "quantity", "library"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["drill-filters", "new-drills", "most-popular-drills"],
+      "intent": "general_info",
+      "searchKeywords": ["how many", "drills", "exercises", "catalogue", "library", "number"],
+      "conversationContext": "catalogue",
+      "followUpSuggestions": [
+        "Do you add new drills regularly?",
+        "How do I find the best drills?",
+        "Can I request specific drills?"
+      ]
+    },
+    {
+      "id": "upgrade-to-premium",
+      "category": "account-types",
+      "priority": 2,
+      "question": "How do I upgrade from Free to Premium?",
+      "answer": "Upgrading is simple! Go to the Upgrade page from the main navigation. You'll see the Premium pricing ($29/month) and feature comparison. Click 'View Checkout' to see the payment details. Note: Individual Premium subscriptions are labeled 'Coming soon' - full payment integration is being finalized. In the meantime, if you're part of a club, you can join via invite code to get Premium features. If you need Premium access as an individual coach right now, contact support. Once payment is live, you'll be able to upgrade instantly, and all your existing session plans and favorites will carry over - nothing is lost when upgrading.",
+      "tags": ["upgrade", "premium", "payment"],
+      "personaRelevance": ["individual-coach"],
+      "relatedQuestions": ["free-vs-premium", "pricing", "cancel-subscription"],
+      "intent": "how_to",
+      "searchKeywords": ["upgrade", "premium", "pay", "subscribe", "payment"],
+      "conversationContext": "upgrade",
+      "followUpSuggestions": [
+        "What payment methods do you accept?",
+        "Can I cancel anytime?",
+        "What happens to my free account when I upgrade?"
+      ]
+    },
+    {
+      "id": "what-makes-unique",
+      "category": "getting-started",
+      "priority": 2,
+      "question": "What makes Football EyeQ different from other training apps?",
+      "answer": "Five things set Football EyeQ apart: **1) Hardware-software integration** - We bridge digital planning with physical execution via smart LED cones, creating game-realistic cognitive load automatically. **2) Pedagogical filtering** - 6-dimensional drill organization helps you build progressive development, not just random exercises. **3) Complete ecosystem** - Plan (12-week seasonal progression) → Train (smart cone execution) → Enjoy (systematic results). **4) Multi-tier accessibility** - From grassroots free accounts to professional club management, everyone can use the methodology. **5) Exercise type flexibility** - Works with traditional cones OR smart hardware, so equipment budget doesn't limit coaching quality. Most apps are just drill libraries. Football EyeQ is a complete cognitive development system.",
+      "tags": ["unique", "differentiation", "features"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["what-is-football-eyeq", "hardware-integration", "why-choose"],
+      "intent": "comparison",
+      "searchKeywords": ["different", "unique", "better", "why", "comparison", "vs"],
+      "conversationContext": "intro",
+      "followUpSuggestions": [
+        "Do I need the smart cones to get value?",
+        "How does the seasonal planning work?",
+        "Can grassroots clubs afford this?"
+      ]
+    },
+    {
+      "id": "plastic-only-club",
+      "category": "eyeq-vs-plastic",
+      "priority": 2,
+      "question": "Can I use Football EyeQ if I only have traditional cones?",
+      "answer": "Absolutely! Many clubs use Football EyeQ with traditional cones only. When you browse the catalogue, filter by exercise type to show only 'Plastic' drills - these are designed for manual setup with standard cones. If you're a club admin, set your exercise type policy to 'Plastic-only' and all your coaches will automatically see only traditional cone drills. The cognitive training principles (See-Think-Do, scanning, decision-making) work with any equipment. Smart LED cones add automated unpredictability and dynamic visual cues, but you can create cognitive load manually too by coaching cues, varying patterns, and emphasizing scanning. You get full value from the platform with traditional cones - smart hardware is an enhancement, not a requirement.",
+      "tags": ["plastic", "traditional-cones", "equipment"],
+      "personaRelevance": ["individual-coach", "club-coach", "club-admin"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "do-i-need-smart-cones", "exercise-policy"],
+      "intent": "requirement_check",
+      "searchKeywords": ["plastic only", "traditional cones", "no smart cones", "regular cones"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "How do I filter to show only Plastic drills?",
+        "Can I add smart cones later?",
+        "What's the benefit of smart cones vs traditional?"
+      ]
+    },
+    {
+      "id": "filter-by-equipment",
+      "category": "drill-catalogue",
+      "priority": 2,
+      "question": "How do I filter drills by equipment type?",
+      "answer": "In the drill catalogue, look for the exercise type filter options. You'll see 'EyeQ' (for smart LED cones) and 'Plastic' (for traditional cones). Click the type that matches your available equipment, and the catalogue will show only drills you can execute. If you're a club coach, your club admin may have set an organization-wide policy, in which case the filter is preset and locked. If you're an individual coach or your club has 'Coach-choice' policy, you'll see a toggle in the navigation bar to switch between EyeQ and Plastic drills. This ensures you never plan a drill you can't run with your current equipment.",
+      "tags": ["filters", "equipment", "eyeq", "plastic"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "drill-filters", "exercise-policy"],
+      "intent": "how_to",
+      "searchKeywords": ["filter", "equipment", "eyeq", "plastic", "cones", "type"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Can I see both types at once?",
+        "What if my club uses both equipment types?",
+        "How do I know which exercises are which?"
+      ]
+    },
+    {
+      "id": "how-many-drills-per-session",
+      "category": "session-planner",
+      "priority": 2,
+      "question": "How many drills can I add to one session?",
+      "answer": "Each session can hold up to 5 drills. This is by design - a typical training session runs 60-90 minutes, and 5 well-chosen drills gives you: a warm-up (10-15 min), 2-3 main drills (15-20 min each), and a cool-down or small-sided game (15-20 min). More than 5 drills creates rushing and superficial training; fewer than 5 limits variety. The system prevents you from adding a 6th drill to ensure quality over quantity. If you try to add too many, you'll see a message reminding you of the 5-drill limit. This constraint helps you plan focused, effective sessions rather than overwhelming players with too many concepts in one day.",
+      "tags": ["planner", "sessions", "limits"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["session-planner-basics", "remove-drill", "reorder-drills"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["how many", "drills", "session", "limit", "maximum", "5"],
+      "conversationContext": "session_planning",
+      "followUpSuggestions": [
+        "Can I remove a drill from a session?",
+        "Can I reorder drills within a session?",
+        "What if I need more than 5 drills?"
+      ]
+    },
+    {
+      "id": "where-buy-cones",
+      "category": "eyeq-vs-plastic",
+      "priority": 3,
+      "question": "Where can I buy smart LED cones?",
+      "answer": "Smart LED cone availability is expanding! The platform is designed to work with IP-based LED cone controllers that receive HTTP commands. Currently, the cone integration is in development with hardware partners. For the latest information on where to purchase compatible smart cones, check the 'How It Works' page or contact support. In the meantime, you can use all of Football EyeQ's features with traditional Plastic cones - the drill library, session planning, cloud sync, and methodology all work fully. When smart cones become available, you'll simply toggle your exercise type to 'EyeQ' and start generating session codes. Your existing account and session plans will work seamlessly with the hardware.",
+      "tags": ["smart-cones", "hardware", "purchase", "eyeq"],
+      "personaRelevance": ["individual-coach", "club-admin"],
+      "relatedQuestions": ["how-smart-cones-work", "eyeq-vs-plastic-what", "hardware-requirements"],
+      "intent": "purchase",
+      "searchKeywords": ["buy", "purchase", "smart cones", "led cones", "where", "get"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "How much do smart cones cost?",
+        "Do I need special WiFi or setup?",
+        "Can I use Football EyeQ while waiting for cones?"
+      ]
+    },
+    {
+      "id": "invite-code-expired",
+      "category": "account-types",
+      "priority": 3,
+      "question": "What if my club invite code expired?",
+      "answer": "Invite codes are valid for 7 days after generation. If your code expired, simply contact your club admin and ask them to generate a new one. They can do this from the Club Dashboard by entering your email again - the system will create a fresh code with a new 7-day window. The email-specific nature means each code is tied to your address for security. If you're the club admin and need to resend an invite, you can cancel the old pending invitation and create a new one. The 7-day expiry ensures invite codes don't remain active indefinitely for security reasons, but there's no limit on how many times an admin can invite the same email.",
+      "tags": ["invite", "expired", "club", "troubleshooting"],
+      "personaRelevance": ["club-coach"],
+      "relatedQuestions": ["join-club", "invite-coach", "contact-admin"],
+      "intent": "troubleshooting",
+      "searchKeywords": ["expired", "invite code", "code expired", "7 days", "invalid"],
+      "conversationContext": "troubleshooting",
+      "followUpSuggestions": [
+        "How do I contact my club admin?",
+        "Can I still join if the code expired?",
+        "Why do codes expire?"
+      ]
+    },
+    {
+      "id": "favorite-limit",
+      "category": "features",
+      "priority": 3,
+      "question": "Why is there a limit on favorites for free accounts?",
+      "answer": "Free accounts can save up to 10 favorites as a way to balance generous free access with encouraging upgrades for serious coaches. 10 favorites is enough to bookmark your go-to drills and test the feature, but if you're building a comprehensive personal coaching library across multiple age groups, difficulty levels, and themes, you'll want unlimited favorites. Premium and Club accounts remove this limit entirely. The limit helps keep the free tier sustainable while ensuring coaches who rely on Football EyeQ professionally have full capacity. If you hit the 10-favorite limit and try to add more, you'll see a message suggesting you upgrade or remove old favorites to make room.",
+      "tags": ["favorites", "limits", "free", "premium"],
+      "personaRelevance": ["individual-coach"],
+      "relatedQuestions": ["add-to-favorites", "free-vs-premium", "upgrade-to-premium"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["favorite", "limit", "10", "maximum", "why", "restriction"],
+      "conversationContext": "features",
+      "followUpSuggestions": [
+        "How do I upgrade to unlimited favorites?",
+        "Can I export my favorites list?",
+        "What happens to favorites if I downgrade?"
+      ]
+    },
+    {
+      "id": "remove-coach",
+      "category": "club-management",
+      "priority": 3,
+      "question": "Can I remove a coach from my club roster?",
+      "answer": "Yes, as a club admin you can manage your roster. While the specific remove functionality may depend on your admin dashboard version, you generally have control over active coaches. Removing a coach from your club roster converts their account back to a free individual account - they lose Premium features (12 sessions become 1, unlimited favorites become 10) but keep their existing session plans and favorites within the new limits. If a coach leaves your organization, it's good practice to remove them so they're not using club resources. They can always create a new individual Premium subscription if they want to continue using full features independently.",
+      "tags": ["club-admin", "roster", "remove", "management"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["invite-coach", "club-admin-role", "downgrade"],
+      "intent": "how_to",
+      "searchKeywords": ["remove", "delete", "coach", "roster", "kick out", "terminate"],
+      "conversationContext": "club_management",
+      "followUpSuggestions": [
+        "What happens to their session plans when removed?",
+        "Can a removed coach rejoin later?",
+        "How do I add a coach back?"
+      ]
+    },
+    {
+      "id": "change-policy",
+      "category": "club-management",
+      "priority": 3,
+      "question": "Can I change my club's exercise type policy?",
+      "answer": "Yes! As a club admin, you can update your exercise type policy anytime from the Club Dashboard. Simply select the new policy (EyeQ-only, Plastic-only, or Coach-choice) and save - changes apply immediately to all coaches in your organization. When you change the policy, all your club coaches will instantly see the updated exercise filter. For example, if you switch from Plastic-only to Coach-choice, your coaches will suddenly have access to toggle between both exercise types. This flexibility is useful as your equipment situation evolves - maybe you start with traditional cones, then invest in smart LED cones later. Existing session plans are not deleted; coaches just see different drill options going forward.",
+      "tags": ["club-admin", "policy", "change", "settings"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["exercise-policy", "eyeq-vs-plastic-what", "club-admin-role"],
+      "intent": "how_to",
+      "searchKeywords": ["change", "policy", "update", "switch", "exercise type"],
+      "conversationContext": "club_management",
+      "followUpSuggestions": [
+        "What happens to existing session plans when I change policy?",
+        "Will coaches be notified of the change?",
+        "Can coaches see both types temporarily?"
+      ]
+    },
+    {
+      "id": "club-pricing",
+      "category": "account-types",
+      "priority": 3,
+      "question": "How much does a club subscription cost?",
+      "answer": "Club subscription pricing is customized based on your organization's size and needs. All clubs start with a trial subscription to test the platform and onboard coaches. During the trial, you get full access to all features - invite coaches, set policies, use the full drill catalogue and season planner. For specific pricing beyond the trial period, contact support or check the Club Signup page for current offers. Club subscriptions provide Premium access for all your coaches (unlimited favorites, 12-session planner, stats) at an organizational rate, which is more cost-effective than individual coaches subscribing separately. The investment scales with team size, ensuring fair pricing for small grassroots clubs and large academies alike.",
+      "tags": ["pricing", "club", "subscription", "cost"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["register-club", "pricing", "trial"],
+      "intent": "pricing",
+      "searchKeywords": ["club", "price", "cost", "subscription", "how much", "organization"],
+      "conversationContext": "pricing",
+      "followUpSuggestions": [
+        "How long is the trial period?",
+        "Can I cancel during the trial?",
+        "Do you offer discounts for grassroots clubs?"
+      ]
+    },
+    {
+      "id": "filter-by-age",
+      "category": "drill-catalogue",
+      "priority": 2,
+      "question": "What age groups can I filter by?",
+      "answer": "The drill catalogue organizes exercises into four age-based developmental phases: **Foundation Phase (U7-U10)** for early scanning habit formation with simple, fun drills; **Youth Development Phase (U11-U14)** for decision-making under mild pressure with moderate complexity; **Game Training Phase (U15-U18)** for game-realistic cognitive challenges and tactical awareness; and **Performance Phase (U19-Senior)** for elite-level cognitive demands. There's also a 'General/Unspecified' option for drills that work across multiple ages. When you filter by age group, you'll see drills pedagogically designed for that developmental stage - not just easier or harder, but cognitively appropriate for how players at that age learn and process information.",
+      "tags": ["filters", "age-groups", "youth", "development"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["age-groups", "drill-filters", "progression"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["age", "filter", "u7", "u10", "u12", "u14", "u15", "youth", "senior"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Can I use U11-U14 drills with U10s?",
+        "How do I progress from one age group to the next?",
+        "Are there separate drills for boys and girls?"
+      ]
+    },
+    {
+      "id": "mobile-app",
+      "category": "technical",
+      "priority": 3,
+      "question": "Is there a mobile app?",
+      "answer": "Football EyeQ is a responsive web application that works beautifully on phones, tablets, and computers. You don't need to download a separate mobile app - just visit the website on your mobile browser and log in. Everything is optimized for mobile: the drill catalogue is easy to browse, session planner displays clearly on small screens, and you can generate session codes from your phone on the training pitch. The mobile web experience syncs instantly with your desktop work since everything is cloud-based. This approach means you always have the latest features without waiting for app store updates. Simply bookmark the site on your phone's home screen for quick access that feels like a native app.",
+      "tags": ["mobile", "app", "phone", "tablet"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["cloud-sync", "offline-access", "device-compatibility"],
+      "intent": "technical",
+      "searchKeywords": ["mobile", "app", "phone", "download", "ios", "android"],
+      "conversationContext": "technical",
+      "followUpSuggestions": [
+        "Does it work offline?",
+        "Can I add it to my home screen?",
+        "Which browsers are supported?"
+      ]
+    },
+    {
+      "id": "progression",
+      "category": "methodology",
+      "priority": 3,
+      "question": "How do I build progression across a 12-week season?",
+      "answer": "Seasonal progression is built into the planner design! Start your season with Basic difficulty drills and simple decision themes. Weeks 1-3 might focus on fundamental scanning habits with Foundation or Youth Development age-appropriate exercises. Weeks 4-6 introduce Intermediate difficulty, adding game moments like Build-Up or Counter Attack. Weeks 7-9 move to Advanced drills with more complex decision themes (Pass or Dribble, Attack or Hold). Weeks 10-12 culminate in Elite difficulty with full game-realistic scenarios. The key is gradual progression - don't jump from Basic to Elite in one week. Layer complexity: start with individual exercises, progress to pairs, then small groups, then team units. Mix practice formats (Rondo → Positional Play → Small-Sided Games) for variety. The 6-dimensional filters help you map this progression systematically.",
+      "tags": ["progression", "planning", "seasonal", "development"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["session-planner-basics", "filter-by-age", "difficulty-levels"],
+      "intent": "how_to",
+      "searchKeywords": ["progression", "season", "develop", "12 weeks", "plan", "build"],
+      "conversationContext": "session_planning",
+      "followUpSuggestions": [
+        "Can I repeat drills across weeks?",
+        "What if players struggle with a difficulty level?",
+        "How do I balance variety and repetition?"
+      ]
+    },
+    {
+      "id": "trial",
+      "category": "account-types",
+      "priority": 3,
+      "question": "Is there a free trial?",
+      "answer": "Free accounts ARE the trial! Unlike platforms that time-limit full access, Football EyeQ gives you permanent free access with functional features: full drill catalogue with all filters, 1 session planner, 10 favorites, community reviews, and cloud sync. There's no credit card required, no trial expiry, and no forced upgrade. This lets you thoroughly test the methodology, try drills with your team, and see real results before deciding to upgrade. For clubs, there IS a trial period on club subscriptions - you can register your club, invite coaches, and use all Premium features during the trial to ensure it fits your organization before committing. This generous trial approach reflects confidence in the platform's value.",
+      "tags": ["trial", "free", "testing"],
+      "personaRelevance": ["individual-coach", "club-admin"],
+      "relatedQuestions": ["free-vs-premium", "club-pricing", "how-to-start"],
+      "intent": "pricing",
+      "searchKeywords": ["trial", "free trial", "test", "try", "demo"],
+      "conversationContext": "pricing",
+      "followUpSuggestions": [
+        "What's included in the free account?",
+        "How long is the club trial?",
+        "Can I downgrade after upgrading?"
+      ]
+    },
+    {
+      "id": "cancel-subscription",
+      "category": "account-types",
+      "priority": 3,
+      "question": "Can I cancel my subscription anytime?",
+      "answer": "Yes, subscriptions are cancel-anytime with no long-term commitment. If you're on an Individual Premium plan, you can cancel from your account settings and your access continues until the end of your current billing period, then reverts to the free tier (1 session planner, 10 favorites). Your existing session plans and favorites are preserved within the free limits. For club subscriptions, the club admin manages cancellation - when a club subscription ends, all coaches revert to individual free accounts. The cancel-anytime policy removes risk from upgrading. If your coaching situation changes, you're not locked in. This flexibility reflects a coach-first approach where subscriptions are earned month-to-month through value, not contractual obligation.",
+      "tags": ["cancel", "subscription", "downgrade"],
+      "personaRelevance": ["individual-coach", "club-admin"],
+      "relatedQuestions": ["free-vs-premium", "downgrade", "refund"],
+      "intent": "account_management",
+      "searchKeywords": ["cancel", "stop", "subscription", "downgrade", "quit"],
+      "conversationContext": "account_management",
+      "followUpSuggestions": [
+        "What happens to my session plans if I cancel?",
+        "Can I resubscribe later?",
+        "Do you offer refunds?"
+      ]
+    },
+    {
+      "id": "generate-code",
+      "category": "features",
+      "priority": 3,
+      "question": "How do I generate a session code?",
+      "answer": "Once you've built a session with EyeQ exercises in your planner, open that session week and look for the 'Generate Code' button. Click it, and the system creates a unique 6-character numeric code that maps your drills to smart cone light patterns. You'll see the code displayed both as text and as a QR code that you can scan with your cone controller or phone. This code tells your LED cones which light sequences to run for each drill in your session. You can generate codes as many times as you need - each time you update your session drills, just regenerate the code. Note: Session codes only work with EyeQ exercises and smart LED cone hardware. Plastic exercises use manual cone setup instead.",
+      "tags": ["session-codes", "generate", "eyeq", "smart-cones"],
+      "personaRelevance": ["individual-coach", "club-coach"],
+      "relatedQuestions": ["session-codes", "how-smart-cones-work", "qr-code"],
+      "intent": "how_to",
+      "searchKeywords": ["generate", "code", "session code", "create code", "qr"],
+      "conversationContext": "smart_cones",
+      "followUpSuggestions": [
+        "Can I share my session code with other coaches?",
+        "How long is a session code valid?",
+        "What if the code doesn't work with my cones?"
+      ]
+    },
+    {
+      "id": "how-to-rate-drill",
+      "category": "features",
+      "priority": 3,
+      "question": "How do I rate a drill after using it?",
+      "answer": "After running a drill with your team, find it in the catalogue and click on the exercise card to view details. You'll see a rating section with 1-5 stars. Click the number of stars that reflects your experience: 1 star for 'not effective', 3 stars for 'decent', 5 stars for 'excellent for my team'. Your rating is submitted immediately and contributes to the drill's average community rating. This helps other coaches see which drills work well in real training environments. You can only rate each drill once, but your rating represents your overall assessment after using it. Consider: Did players engage? Was the cognitive load appropriate? Did it improve scanning and decision-making? Was setup time reasonable? Rate honestly to help the community!",
+      "tags": ["reviews", "ratings", "community", "feedback"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["community-reviews", "most-popular-drills", "trust-reviews"],
+      "intent": "how_to",
+      "searchKeywords": ["rate", "review", "stars", "feedback", "rating"],
+      "conversationContext": "features",
+      "followUpSuggestions": [
+        "Can I change my rating later?",
+        "Can I leave a written review?",
+        "Are my ratings public?"
+      ]
+    },
+    {
+      "id": "most-popular-drills",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "How can I see the most popular or highest-rated drills?",
+      "answer": "While browsing the drill catalogue, look at the star rating and review count displayed on each exercise card. The star rating shows the average community score (1-5 stars), and the number next to it shows how many coaches have rated it. Drills with higher ratings and more reviews are generally proven effective in real training. You can mentally sort by scanning for 4-5 star ratings with substantial review counts (10+ reviews is a good signal). Future versions may add explicit 'sort by rating' functionality, but for now, the visual star display on each card makes high-quality drills easy to spot. This community validation helps you prioritize which drills to try first when exploring new age groups or difficulty levels.",
+      "tags": ["ratings", "popular", "best", "drills"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["community-reviews", "drill-filters", "how-many-drills"],
+      "intent": "discovery",
+      "searchKeywords": ["popular", "best", "highest rated", "top", "recommended"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Do you recommend specific drills for beginners?",
+        "Can I filter by minimum rating?",
+        "What makes a drill highly rated?"
+      ]
+    },
+    {
+      "id": "remove-drill",
+      "category": "session-planner",
+      "priority": 3,
+      "question": "How do I remove a drill from my session?",
+      "answer": "In your session planner, open the session week that contains the drill you want to remove. You'll see all drills currently in that session listed. Look for a remove icon (typically an 'X', trash can, or minus button) next to each drill. Click it to remove that drill from the session. The drill is only removed from your plan - it's not deleted from the catalogue, and you can re-add it anytime. Removing drills is useful when you're refining your session design, replacing drills with better-rated alternatives, or adjusting difficulty progression. There's no limit on how many times you can add and remove drills - experiment until your session feels right!",
+      "tags": ["planner", "remove", "delete", "sessions"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["session-planner-basics", "how-many-drills-per-session", "reorder-drills"],
+      "intent": "how_to",
+      "searchKeywords": ["remove", "delete", "drill", "session", "take out"],
+      "conversationContext": "session_planning",
+      "followUpSuggestions": [
+        "Can I undo removing a drill?",
+        "Can I move a drill to a different session?",
+        "Will removing a drill affect my session code?"
+      ]
+    },
+    {
+      "id": "reorder-drills",
+      "category": "session-planner",
+      "priority": 3,
+      "question": "Can I reorder drills within a session?",
+      "answer": "Drill order within a session may be fixed based on the order you added them, or you might have drag-and-drop reordering depending on the planner interface version. The typical training flow is: warm-up drill first, main drills in the middle, small-sided game or cool-down last. When building your session, add drills in the order you intend to run them. If you need to reorder, the current approach is to remove drills and re-add them in the desired sequence. Future updates may add explicit drag-and-drop reordering. Session order matters for pedagogical progression (simple → complex within one session) and practical flow (high-intensity → recovery periods). Plan your session structure before adding drills to minimize reordering needs.",
+      "tags": ["planner", "order", "organize", "sessions"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["session-planner-basics", "remove-drill", "progression"],
+      "intent": "how_to",
+      "searchKeywords": ["reorder", "move", "drag", "sequence", "order", "rearrange"],
+      "conversationContext": "session_planning",
+      "followUpSuggestions": [
+        "Does drill order affect the session code?",
+        "Should I always start with a warm-up drill?",
+        "Can I duplicate a session to another week?"
+      ]
+    },
+    {
+      "id": "offline-access",
+      "category": "technical",
+      "priority": 3,
+      "question": "Can I use Football EyeQ offline?",
+      "answer": "Football EyeQ requires an internet connection for full functionality - browsing the catalogue, adding drills, and generating session codes all need cloud access. However, if you've loaded a session or drill details while online, your browser may cache that information temporarily. For reliable offline access, consider taking screenshots of your session drills or printing drill details before heading to the pitch. The platform is optimized for mobile data, so even with a basic cellular connection at your training ground, you can access your plans. Future versions may add offline mode with advanced caching, but currently, plan to have internet access when using the platform. This cloud-first design ensures you always see the latest drill ratings and your most recent session edits.",
+      "tags": ["offline", "internet", "connectivity", "mobile"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["mobile-app", "cloud-sync", "print-sessions"],
+      "intent": "technical",
+      "searchKeywords": ["offline", "no internet", "connection", "wifi", "data"],
+      "conversationContext": "technical",
+      "followUpSuggestions": [
+        "Can I print my session plans?",
+        "How much data does the platform use?",
+        "What if I lose connection during a session?"
+      ]
+    },
+    {
+      "id": "difficulty-levels",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "What do the difficulty levels mean?",
+      "answer": "Difficulty levels indicate cognitive complexity and technical demands: **Basic** drills focus on fundamental scanning habits with simple decision-making in low-pressure environments - perfect for early development or introducing new concepts. **Intermediate** adds complexity with more game-realistic scenarios, moderate time pressure, and 2-3 decision options. **Advanced** drills feature game-realistic pressure, complex tactical scenarios, and require players to process multiple information sources simultaneously. **Elite** represents professional-level cognitive demands with high-speed decision-making, dense information environments, and consequences for poor choices. Difficulty isn't just about physical intensity - it's about cognitive load. A Basic drill can be physically demanding but cognitively simple. Progress difficulty gradually across your season: start Basic, end Elite.",
+      "tags": ["difficulty", "filters", "levels", "progression"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["filter-by-age", "progression", "drill-filters"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["difficulty", "levels", "basic", "elite", "advanced", "intermediate"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Can I use Elite drills with youth players?",
+        "How do I know if a drill is too difficult?",
+        "Should I mix difficulty levels in one session?"
+      ]
+    },
+    {
+      "id": "decision-themes",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "What are decision themes?",
+      "answer": "Decision themes are the specific cognitive choices that drills force players to make: **Pass or Dribble** trains recognizing when to release the ball vs. when to take players on. **Attack or Hold** develops knowing when to exploit space vs. when to maintain possession and wait. **Shoot or Pass** teaches final-third decision-making under pressure. These themes reflect the most common high-pressure decisions in matches. By filtering for a specific theme, you can target the cognitive skill your team struggles with. For example, if your players always dribble when they should pass, focus on 'Pass or Dribble' themed drills for 2-3 weeks. There's also a 'General/Unspecified' option for drills that develop overall awareness without forcing a specific binary choice.",
+      "tags": ["decision-themes", "filters", "cognitive", "decision-making"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["drill-filters", "see-think-do", "game-moments"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["decision", "theme", "pass or dribble", "attack or hold", "shoot or pass"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Can I combine multiple decision themes in one session?",
+        "Which theme should I start with for young players?",
+        "How do themes relate to game moments?"
+      ]
+    },
+    {
+      "id": "game-moments",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "What are game moments?",
+      "answer": "Game moments are tactical scenarios that reflect when and where actions happen in real matches: **Build-Up** for progressing the ball from defense to attack. **Final Third Decision** for actions near the opponent's goal. **Defensive Shape** for organizing defensively. **Counter Attack** for rapid transition to exploit opponent imbalance. **Transition (Attack to Defend, Defend to Attack)** for the chaotic moments when possession changes. **Switch of Play** for changing the point of attack. Filtering by game moment helps you match drills to your team's tactical system and current match challenges. For example, if your team struggles with quick counters, focus on 'Counter Attack' drills. This creates game-realistic training that transfers directly to match situations.",
+      "tags": ["game-moments", "filters", "tactical", "scenarios"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["drill-filters", "decision-themes", "tactical-training"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["game moment", "build up", "counter attack", "transition", "tactical"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Which game moment should I prioritize?",
+        "Can drills cover multiple game moments?",
+        "How do I match drills to my team's formation?"
+      ]
+    },
+    {
+      "id": "player-involvement",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "What does player involvement mean?",
+      "answer": "Player involvement indicates how many players participate in each drill, which affects setup, space requirements, and cognitive complexity: **Individual** drills are 1-player exercises for personal skill development (great for warm-ups or small training groups). **1v1 / 2v2** introduces direct opposition with minimal complexity (pairs work). **Small Group (3-4 players)** adds more decision options and scanning demands. **Team Unit (5+ players)** creates game-realistic density and information overload. Progression generally moves from Individual → Pairs → Small Groups → Team Units across a season. Smaller groups = more touches and simpler decisions. Larger groups = fewer touches but more realistic game scenarios. Filter by player involvement based on your available squad size and training goals.",
+      "tags": ["player-involvement", "filters", "group-size", "setup"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["drill-filters", "progression", "setup"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["player", "involvement", "1v1", "small group", "team", "number of players"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "What if I have an odd number of players?",
+        "Can I adapt team drills for small groups?",
+        "Should I always progress from small to large groups?"
+      ]
+    },
+    {
+      "id": "practice-formats",
+      "category": "drill-catalogue",
+      "priority": 3,
+      "question": "What are practice formats?",
+      "answer": "Practice formats describe the structural type of drill, which affects training variety and player engagement: **Warm-Up / Ball Mastery** for low-intensity skill activation. **Fun Game / Physical** for fitness with enjoyment. **Finishing / Shooting Pattern** for goal-focused repetition. **Positional Possession Game** for maintaining shape under pressure. **Rondo / Tight Possession** for close-quarters ball circulation. **Directional Small-Sided Game** for mini-matches with tactical goals. Varying formats keeps training fresh - don't do rondos every day! Mix formats across your season: Monday = Rondo, Wednesday = Small-Sided Game, Friday = Shooting Pattern. Each format develops different aspects of game intelligence while teaching the same See-Think-Do principles. Use this filter to ensure variety in your session plans.",
+      "tags": ["practice-formats", "filters", "variety", "drill-types"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["drill-filters", "progression", "variety"],
+      "intent": "feature_explanation",
+      "searchKeywords": ["format", "rondo", "small sided", "shooting", "possession", "game"],
+      "conversationContext": "drill_discovery",
+      "followUpSuggestions": [
+        "Which format is best for beginners?",
+        "How often should I change formats?",
+        "Can I mix formats in one session?"
+      ]
+    },
+    {
+      "id": "new-drills",
+      "category": "drill-catalogue",
+      "priority": 4,
+      "question": "Do you add new drills regularly?",
+      "answer": "The drill catalogue is a living library that grows over time. While the current 100+ drills provide comprehensive coverage of cognitive training scenarios, new drills are added based on coaching feedback, research developments, and community needs. As a cloud-based platform, new drills appear automatically in your catalogue when added - no app updates required. If you have specific drill requests or cognitive training scenarios not currently covered, use the feedback or contact options to suggest them. Community input helps prioritize what drills are developed next. The goal is quality over quantity - every drill is research-backed and pedagogically designed, so new additions go through rigorous development rather than being added rapidly.",
+      "tags": ["catalogue", "updates", "new", "growth"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["how-many-drills", "request-drill", "catalogue-updates"],
+      "intent": "general_info",
+      "searchKeywords": ["new", "drills", "add", "update", "more exercises"],
+      "conversationContext": "catalogue",
+      "followUpSuggestions": [
+        "How can I request a specific drill?",
+        "Will I be notified of new drills?",
+        "Can I submit my own drill designs?"
+      ]
+    },
+    {
+      "id": "login-issues",
+      "category": "technical",
+      "priority": 4,
+      "question": "What if I can't log in?",
+      "answer": "If you're having login trouble, try these steps: **Check your email and password** - ensure you're using the email you signed up with and the correct password (they're case-sensitive). **Reset your password** - use the 'Forgot Password' link on the login page to get a reset email. **Check your spam folder** - password reset emails sometimes land there. **Try a different browser** - browser extensions or cache issues can sometimes interfere. **Clear your browser cache** - old cached data can cause login problems. If none of these work, contact support with your email address and a description of the error message you're seeing. For club coaches, verify with your club admin that your invite was properly redeemed - sometimes login issues stem from incomplete club onboarding.",
+      "tags": ["login", "troubleshooting", "password", "access"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["forgot-password", "account-access", "technical-support"],
+      "intent": "troubleshooting",
+      "searchKeywords": ["login", "can't log in", "password", "forgot", "access", "sign in"],
+      "conversationContext": "troubleshooting",
+      "followUpSuggestions": [
+        "How do I reset my password?",
+        "Can I change my email address?",
+        "What if I never received a confirmation email?"
+      ]
+    },
+    {
+      "id": "contact-support",
+      "category": "technical",
+      "priority": 4,
+      "question": "How do I contact support?",
+      "answer": "For support, questions, or feedback, visit the Contact page from the main navigation. You can also find support links in the footer of every page. When contacting support, include: your account email, a clear description of your question or issue, what you've already tried (if troubleshooting), and any error messages you're seeing. For club-related questions, mention if you're a club admin or club coach. Support aims to respond within 1-2 business days. For immediate help, check this FAQ first - most common questions are answered here. You can also explore the Learn section (Why Scanning, How It Works, Ecosystem) for educational resources that explain platform features and methodology in depth.",
+      "tags": ["support", "contact", "help", "feedback"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["login-issues", "technical-support", "feedback"],
+      "intent": "support",
+      "searchKeywords": ["contact", "support", "help", "email", "question", "problem"],
+      "conversationContext": "support",
+      "followUpSuggestions": [
+        "What are your support hours?",
+        "Can I schedule a demo call?",
+        "Do you have video tutorials?"
+      ]
+    },
+    {
+      "id": "super-admin",
+      "category": "account-types",
+      "priority": 5,
+      "question": "What is a super admin account?",
+      "answer": "Super admin accounts are reserved for platform administrators who manage the Football EyeQ system itself - think of it as the 'behind the scenes' role. Super admins can create, edit, and delete exercises in the drill catalogue, manage all clubs and coaches, upgrade or downgrade any account, and access analytics across the platform. This is NOT a role for regular coaches or even club admins - it's for the Football EyeQ team who maintains the platform. If you're a coach looking for administrative control over your club, you want a 'Club Admin' account instead. Super admin status is email-based (not a purchasable upgrade) and provides system-wide access for platform operations. Most users will never need or encounter super admin features.",
+      "tags": ["admin", "super-admin", "permissions", "platform"],
+      "personaRelevance": ["platform-staff"],
+      "relatedQuestions": ["club-admin-role", "account-types", "permissions"],
+      "intent": "general_info",
+      "searchKeywords": ["super admin", "platform admin", "administrator", "system admin"],
+      "conversationContext": "account_types",
+      "followUpSuggestions": [
+        "How do I become a club admin?",
+        "Can I edit exercises in the catalogue?",
+        "Who manages the platform?"
+      ]
+    },
+    {
+      "id": "what-is-plastic",
+      "category": "eyeq-vs-plastic",
+      "priority": 2,
+      "question": "What does 'Plastic' mean in exercise type?",
+      "answer": "'Plastic' refers to traditional cone exercises - the standard static cones every coach already has. These are manually set up in specific patterns for drills, and they don't have any electronic components. The term 'Plastic' distinguishes these drills from 'EyeQ' drills that require smart LED cones. Plastic exercises teach the same cognitive principles (See-Think-Do, scanning, decision-making) but rely on coaching cues and manual pattern changes rather than automated light sequences. When you filter for Plastic exercises, you're seeing drills you can run with your existing equipment - no special purchase needed. This ensures Football EyeQ is accessible to all coaches regardless of equipment budget. Many successful coaches use only Plastic exercises and see excellent player development!",
+      "tags": ["plastic", "traditional-cones", "equipment", "definition"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "do-i-need-smart-cones", "plastic-only-club"],
+      "intent": "definition",
+      "searchKeywords": ["plastic", "what is plastic", "traditional", "cones", "meaning"],
+      "conversationContext": "equipment",
+      "followUpSuggestions": [
+        "Are Plastic drills less effective than EyeQ drills?",
+        "Can I upgrade from Plastic to EyeQ later?",
+        "How many Plastic drills are in the catalogue?"
+      ]
+    },
+    {
+      "id": "why-choose-eyeq-site",
+      "category": "eyeq-vs-plastic",
+      "priority": 2,
+      "question": "Why is this called an 'EyeQ site' if it includes Plastic exercises?",
+      "answer": "Great observation! Football EyeQ is the platform brand - it represents the cognitive training methodology (See-Think-Do) and the complete ecosystem (Plan-Train-Enjoy). The 'EyeQ' name comes from developing players' 'Eye IQ' - their visual awareness and cognitive game intelligence. While the platform is designed to integrate with smart LED 'EyeQ' cones, it's built to serve ALL coaches, regardless of equipment. Plastic exercises are included specifically to help clubs get started with the methodology using traditional cones, with the option to add smart LED cones later as budget allows. Think of it this way: Football EyeQ is the coaching system; EyeQ cones are one tool within that system. The platform is 'EyeQ' because it develops Eye IQ in players - whether you use smart cones or traditional ones.",
+      "tags": ["branding", "eyeq", "plastic", "platform"],
+      "personaRelevance": ["all"],
+      "relatedQuestions": ["eyeq-vs-plastic-what", "what-is-football-eyeq", "plastic-only-club"],
+      "intent": "general_info",
+      "searchKeywords": ["eyeq", "name", "why", "plastic", "branding"],
+      "conversationContext": "platform",
+      "followUpSuggestions": [
+        "Do I get less value if I only use Plastic exercises?",
+        "Is this platform only for clubs with smart cones?",
+        "What's the ultimate vision for Football EyeQ?"
+      ]
+    },
+    {
+      "id": "plastic-to-start-club",
+      "category": "club-management",
+      "priority": 2,
+      "question": "Our club wants to start with Plastic and upgrade to EyeQ later - how does that work?",
+      "answer": "Perfect approach! Many clubs start exactly this way. As a club admin, set your exercise type policy to 'Plastic-only' when you register. All your coaches will see only traditional cone drills, and you can begin systematic cognitive training immediately with your existing equipment. Your coaches build session plans, develop the methodology, and see player improvement with Plastic exercises. When your club is ready to invest in smart LED cones (whether that's in 3 months or 3 years), simply change your exercise type policy to 'EyeQ-only' or 'Coach-choice' from your dashboard. Instantly, all your coaches gain access to smart cone drills. Their existing session plans remain, and they can now add EyeQ exercises or convert Plastic sessions to EyeQ versions. This staged approach lets you prove value with low upfront cost, then enhance with hardware when it makes sense financially.",
+      "tags": ["club-admin", "plastic", "eyeq", "transition", "upgrade"],
+      "personaRelevance": ["club-admin"],
+      "relatedQuestions": ["exercise-policy", "change-policy", "where-buy-cones"],
+      "intent": "planning",
+      "searchKeywords": ["start", "plastic", "upgrade", "eyeq", "transition", "club", "later"],
+      "conversationContext": "club_planning",
+      "followUpSuggestions": [
+        "What happens to Plastic session plans when we switch to EyeQ?",
+        "Can some coaches use Plastic while others use EyeQ?",
+        "How much do smart cones cost?"
+      ]
+    }
+  ]
+}
