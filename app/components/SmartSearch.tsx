@@ -236,12 +236,6 @@ export default function SmartSearch({
           </div>
         </div>
       )}
-
-      {resultCount !== undefined && totalCount !== undefined && (
-        <div className="mt-2 text-sm text-foreground opacity-60">
-          Showing <span className="font-semibold text-primary">{resultCount}</span> of {totalCount} drills
-        </div>
-      )}
     </div>
   );
 }

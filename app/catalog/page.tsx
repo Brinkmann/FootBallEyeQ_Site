@@ -30,8 +30,9 @@ export default function CatalogPage() {
   const [plasticBannerDismissed, setPlasticBannerDismissed] = useState(false);
   const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
   
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const [displayedCount, setDisplayedCount] = useState(6);
+  const batchSize = 6;
+  const listContainerRef = useRef<HTMLDivElement>(null);
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -242,15 +243,19 @@ export default function CatalogPage() {
     initialFavorites,
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredExercises.length / itemsPerPage));
+  const totalFilteredCount = filteredExercises.length;
   
-  const paginatedExercises = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredExercises.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredExercises, currentPage, itemsPerPage]);
+  const displayedExercises = useMemo(() => {
+    return filteredExercises.slice(0, displayedCount);
+  }, [filteredExercises, displayedCount]);
+
+  const hasMoreToLoad = displayedCount < totalFilteredCount;
 
   useEffect(() => {
-    setCurrentPage(1);
+    setDisplayedCount(batchSize);
+    if (listContainerRef.current) {
+      listContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, [
     searchQuery,
     selectedAgeGroup,
@@ -263,11 +268,10 @@ export default function CatalogPage() {
     selectedExerciseType,
   ]);
 
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  const handleLoadMore = useCallback(() => {
+    if (!hasMoreToLoad) return;
+    setDisplayedCount(prev => Math.min(prev + batchSize, totalFilteredCount));
+  }, [hasMoreToLoad, totalFilteredCount]);
 
   const resetFilters = () => {
     setSelectedAgeGroup(defaultAgeGroup);
@@ -588,15 +592,29 @@ export default function CatalogPage() {
             onClearAll={resetFilters}
           />
 
+          {/* Status line: Showing X of Y */}
+          {!isLoading && !loadError && totalFilteredCount > 0 && (
+            <div ref={listContainerRef} className="mb-4 text-sm text-foreground opacity-70">
+              Showing <span className="font-semibold text-primary">{displayedExercises.length}</span> of {totalFilteredCount} drills
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(isLoading && exercises.length === 0) ? (
-              <div className="col-span-full text-center py-12">
-                <div className="flex justify-center mb-3">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-                </div>
-                <p className="text-foreground">Loading drills...</p>
-                <p className="text-sm text-foreground opacity-60">Hang tight while we fetch the latest catalog.</p>
-              </div>
+              <>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-card rounded-xl border border-divider p-4 animate-pulse">
+                    <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
+                    <div className="flex gap-2">
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : loadError ? (
               <div className="col-span-full bg-red-50 border border-red-200 rounded-xl p-6 text-center">
                 <div className="text-6xl mb-4">🚧</div>
@@ -648,74 +666,25 @@ export default function CatalogPage() {
                 </ul>
               </div>
             ) : (
-              paginatedExercises.map((exercise) => (
+              displayedExercises.map((exercise) => (
                 <ExerciseCard key={exercise.id} exercise={exercise} />
               ))
             )}
           </div>
 
-          {totalPages > 1 && !isLoading && filteredExercises.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 pb-4">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-lg border border-divider bg-card text-foreground 
-                             hover:bg-primary-light hover:border-primary disabled:opacity-50 
-                             disabled:cursor-not-allowed transition-colors"
-                  aria-label="Previous page"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum: number;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-10 h-10 rounded-lg font-medium transition-colors
-                          ${currentPage === pageNum 
-                            ? "bg-primary text-button" 
-                            : "bg-card text-foreground border border-divider hover:bg-primary-light hover:border-primary"
-                          }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-                </div>
-                
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-lg border border-divider bg-card text-foreground 
-                             hover:bg-primary-light hover:border-primary disabled:opacity-50 
-                             disabled:cursor-not-allowed transition-colors"
-                  aria-label="Next page"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-              
-              <p className="text-sm text-foreground opacity-70">
-                Page {currentPage} of {totalPages} ({filteredExercises.length} drills)
-              </p>
+          {/* Load more button */}
+          {hasMoreToLoad && !isLoading && !loadError && (
+            <div className="flex flex-col items-center gap-3 mt-8 pb-4">
+              <button
+                onClick={handleLoadMore}
+                className="px-6 py-3 rounded-xl bg-primary text-button font-medium
+                           hover:bg-primary-hover transition-colors flex items-center gap-2"
+              >
+                Load more drills
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           )}
         </div>
