@@ -47,6 +47,7 @@ export function parseExerciseFromFirestore(docId: string, data: Record<string, u
 
 export const AccountTypeSchema = z.enum(["free", "clubCoach", "individualPremium"]);
 export const AccountStatusSchema = z.enum(["active", "suspended"]);
+export const SubscriptionStatusSchema = z.enum(["active", "inactive", "trial"]);
 export const ExerciseTypePolicySchema = z.enum(["eyeq-only", "plastic-only", "coach-choice"]);
 export const ClubRoleSchema = z.enum(["admin", "coach"]);
 
