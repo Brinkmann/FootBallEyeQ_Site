@@ -90,16 +90,44 @@ export default function FAQPage() {
   }, [questions, selectedCategory, searchQuery]);
 
   const renderAnswer = (answer: string) => {
-    const parts = answer.split(/(\*\*[^*]+\*\*)/g);
-    return parts.map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return (
-          <strong key={index} className="font-semibold text-gray-900">
-            {part.slice(2, -2)}
-          </strong>
-        );
-      }
-      return <span key={index}>{part}</span>;
+    let processedAnswer = answer;
+    
+    processedAnswer = processedAnswer.replace(/(\d+\))\s+/g, '\n$1 ');
+    
+    processedAnswer = processedAnswer.replace(/\.\s+\*\*([^*]+)\*\*/g, '.\n\n**$1**');
+    
+    processedAnswer = processedAnswer.replace(/:\s+\*\*([^*]+)\*\*/g, ':\n\n**$1**');
+    
+    processedAnswer = processedAnswer.replace(/,\s+\*\*([^*]+)\*\*\s+\(/g, ',\n\n**$1** (');
+    
+    processedAnswer = processedAnswer.replace(/\.\s+(Free accounts|Individual Premium|Club accounts|Premium accounts|All accounts)/g, '.\n\n$1');
+    
+    const lines = processedAnswer.split('\n').filter((line, idx) => idx === 0 || line.trim());
+    
+    return lines.map((line, lineIndex) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return null;
+      
+      const parts = trimmedLine.split(/(\*\*[^*]+\*\*)/g);
+      const renderedParts = parts.map((part, partIndex) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return (
+            <strong key={partIndex} className="font-semibold text-gray-900">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        return <span key={partIndex}>{part}</span>;
+      });
+      
+      const isNumberedItem = /^\d+\)/.test(trimmedLine);
+      const isListItem = /^\*\*/.test(trimmedLine) || /^(Free accounts|Individual Premium|Club accounts|Premium accounts|All accounts)/.test(trimmedLine);
+      
+      return (
+        <span key={lineIndex} className={isNumberedItem || isListItem ? "block mt-2" : lineIndex > 0 ? "block mt-3" : ""}>
+          {renderedParts}
+        </span>
+      );
     });
   };
 
