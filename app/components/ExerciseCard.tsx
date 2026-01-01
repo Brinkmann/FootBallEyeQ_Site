@@ -5,6 +5,7 @@ import { Exercise } from "../types/exercise";
 import { db } from "@/Firebase/firebaseConfig";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useFavoritesContext } from "./FavoritesProvider";
+import { renderMarkdownBold } from "../utils/renderMarkdown";
 
 import ExercisePreviewModal from "./ExercisePreviewModal";
 import ExerciseReviewModal from "./ExerciseReviewModal";
@@ -159,7 +160,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
         {/* Overview - full description, no truncation */}
         {overview && (
           <p className="text-foreground opacity-80 text-sm mb-4">
-            {overview}
+            {renderMarkdownBold(overview)}
           </p>
         )}
 

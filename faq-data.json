@@ -2,7 +2,7 @@
   "metadata": {
     "version": "1.0.0",
     "lastUpdated": "2026-01-01",
-    "totalQuestions": 85,
+    "totalQuestions": 84,
     "description": "Comprehensive FAQ for Football EyeQ platform covering all user personas and features"
   },
   "styleGuide": {
@@ -1056,24 +1056,6 @@
         "What are your support hours?",
         "Can I schedule a demo call?",
         "Do you have video tutorials?"
-      ]
-    },
-    {
-      "id": "super-admin",
-      "category": "account-types",
-      "priority": 5,
-      "question": "What is a super admin account?",
-      "answer": "Super admin accounts are reserved for platform administrators who manage the Football EyeQ system itself - think of it as the 'behind the scenes' role. Super admins can create, edit, and delete exercises in the drill catalogue, manage all clubs and coaches, upgrade or downgrade any account, and access analytics across the platform. This is NOT a role for regular coaches or even club admins - it's for the Football EyeQ team who maintains the platform. If you're a coach looking for administrative control over your club, you want a 'Club Admin' account instead. Super admin status is email-based (not a purchasable upgrade) and provides system-wide access for platform operations. Most users will never need or encounter super admin features.",
-      "tags": ["admin", "super-admin", "permissions", "platform"],
-      "personaRelevance": ["platform-staff"],
-      "relatedQuestions": ["club-admin-role", "account-types", "permissions"],
-      "intent": "general_info",
-      "searchKeywords": ["super admin", "platform admin", "administrator", "system admin"],
-      "conversationContext": "account_types",
-      "followUpSuggestions": [
-        "How do I become a club admin?",
-        "Can I edit exercises in the catalogue?",
-        "Who manages the platform?"
       ]
     },
     {

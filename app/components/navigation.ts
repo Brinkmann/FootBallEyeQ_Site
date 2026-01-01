@@ -17,6 +17,7 @@ export const aboutLinks = [
 ];
 
 export const supportLinks = [
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
 

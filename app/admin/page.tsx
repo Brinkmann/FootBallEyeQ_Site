@@ -16,6 +16,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import Link from "next/link";
+import { stripMarkdown } from "../utils/renderMarkdown";
 
 const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
 
@@ -889,7 +890,7 @@ Coaching Points
                     >
                       <div>
                         <p className="font-medium">{exercise.title}</p>
-                        <p className="text-sm text-gray-500">{exercise.overview}</p>
+                        <p className="text-sm text-gray-500">{exercise.overview ? stripMarkdown(exercise.overview) : ''}</p>
                         <div className="text-xs mt-1 text-gray-400">
                           {exercise.ageGroup} | {exercise.difficulty}
                         </div>
