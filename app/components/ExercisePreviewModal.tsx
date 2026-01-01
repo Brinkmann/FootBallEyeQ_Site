@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
+import { renderMarkdownBold } from "../utils/renderMarkdown";
 
 // Define the props our new component will accept
 interface Props {
@@ -138,7 +139,7 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
                 <>
                   <h4 className="text-md font-semibold mb-2 text-foreground">Overview</h4>
                   <p className="text-sm text-gray-500 mb-4 whitespace-pre-line">
-                    {exercise.overview}
+                    {renderMarkdownBold(exercise.overview)}
                   </p>
                 </>
               )}
@@ -150,7 +151,7 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
                 <>
                   <h4 className="text-md font-semibold mb-2 text-foreground">Description</h4>
                   <p className="text-sm text-gray-500 whitespace-pre-line">
-                    {exercise.description}
+                    {renderMarkdownBold(exercise.description)}
                   </p>
                 </>
               )}
