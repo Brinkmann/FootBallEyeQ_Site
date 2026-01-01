@@ -13,7 +13,7 @@ import {
   ExerciseTypePolicy,
 } from "../types/account";
 import { ExerciseType } from "../types/exercise";
-import { AccountTypeSchema, AccountStatusSchema, ClubRoleSchema, ExerciseTypePolicySchema } from "../lib/schemas";
+import { AccountTypeSchema, AccountStatusSchema, ClubRoleSchema, ExerciseTypePolicySchema, SubscriptionStatusSchema } from "../lib/schemas";
 
 const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
 
@@ -89,6 +89,11 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
             
             const clubStatusParsed = AccountStatusSchema.safeParse(clubData.status);
             if (clubStatusParsed.success && clubStatusParsed.data === "suspended") {
+              setAccountStatus("suspended");
+            }
+            
+            const subscriptionParsed = SubscriptionStatusSchema.safeParse(clubData.subscriptionStatus);
+            if (subscriptionParsed.success && subscriptionParsed.data === "inactive") {
               setAccountStatus("suspended");
             }
           }
