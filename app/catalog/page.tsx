@@ -31,8 +31,12 @@ export default function CatalogPage() {
   const [showEyeQTooltip, setShowEyeQTooltip] = useState(false);
   
   const [displayedCount, setDisplayedCount] = useState(6);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [statusAnnouncement, setStatusAnnouncement] = useState("");
   const batchSize = 6;
   const listContainerRef = useRef<HTMLDivElement>(null);
+  const isRestoringState = useRef(false);
+  const STORAGE_KEY = "catalog_state";
 
   const defaultAgeGroup = "All Age Groups";
   const defaultDecisionTheme = "All Decision Themes";
@@ -252,6 +256,9 @@ export default function CatalogPage() {
   const hasMoreToLoad = displayedCount < totalFilteredCount;
 
   useEffect(() => {
+    // Skip reset if we're restoring state from sessionStorage
+    if (isRestoringState.current) return;
+    
     setDisplayedCount(batchSize);
     if (listContainerRef.current) {
       listContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -270,8 +277,73 @@ export default function CatalogPage() {
 
   const handleLoadMore = useCallback(() => {
     if (!hasMoreToLoad) return;
-    setDisplayedCount(prev => Math.min(prev + batchSize, totalFilteredCount));
-  }, [hasMoreToLoad, totalFilteredCount]);
+    const newCount = Math.min(displayedCount + batchSize, totalFilteredCount);
+    setDisplayedCount(newCount);
+    setStatusAnnouncement(`Now showing ${newCount} of ${totalFilteredCount} drills`);
+  }, [hasMoreToLoad, totalFilteredCount, displayedCount]);
+
+  // Restore state from sessionStorage on mount
+  useEffect(() => {
+    if (!mounted) return;
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const state = JSON.parse(saved);
+        if (state.displayedCount && state.displayedCount > batchSize) {
+          isRestoringState.current = true;
+          setDisplayedCount(state.displayedCount);
+          // Restore scroll position after render
+          requestAnimationFrame(() => {
+            if (state.scrollY) {
+              window.scrollTo(0, state.scrollY);
+            }
+            isRestoringState.current = false;
+          });
+        }
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }, [mounted]);
+
+  // Save state to sessionStorage on unmount (SPA navigations) and beforeunload (hard refresh)
+  const displayedCountRef = useRef(displayedCount);
+  useEffect(() => {
+    displayedCountRef.current = displayedCount;
+  }, [displayedCount]);
+
+  useEffect(() => {
+    const saveState = () => {
+      if (displayedCountRef.current > batchSize) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          displayedCount: displayedCountRef.current,
+          scrollY: window.scrollY
+        }));
+      }
+    };
+
+    window.addEventListener('beforeunload', saveState);
+    
+    // Cleanup function runs on unmount (SPA navigations)
+    return () => {
+      window.removeEventListener('beforeunload', saveState);
+      saveState(); // Save state when navigating away
+    };
+  }, []);
+
+  // Show/hide "Back to top" button based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    listContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   const resetFilters = () => {
     setSelectedAgeGroup(defaultAgeGroup);
@@ -688,6 +760,31 @@ export default function CatalogPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Back to top floating button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top of drill list"
+          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-primary text-white shadow-lg
+                     hover:bg-primary-hover transition-all duration-300 
+                     focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+      )}
+
+      {/* Accessibility: Live region for status announcements */}
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {statusAnnouncement}
       </div>
     </div>
   );
