@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import { Exercise } from "../types/exercise";
 import jsPDF from "jspdf";
-import { renderMarkdownBold } from "../utils/renderMarkdown";
+import { renderMarkdownBold, stripMarkdown } from "../utils/renderMarkdown";
 
 // Define the props our new component will accept
 interface Props {
@@ -42,7 +42,7 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
       pdf.text("Overview:", 10, y);
       y += 7;
       pdf.setFontSize(12);
-      pdf.text(pdf.splitTextToSize(exercise.overview, 180), 10, y);
+      pdf.text(pdf.splitTextToSize(stripMarkdown(exercise.overview), 180), 10, y);
       y += 15;
     }
     // Description
@@ -51,7 +51,7 @@ export default function ExercisePreviewModal({ exercise, onClose }: Props) {
       pdf.text("Description:", 10, y);
       y += 7;
       pdf.setFontSize(12);
-      pdf.text(pdf.splitTextToSize(exercise.description, 180), 10, y);
+      pdf.text(pdf.splitTextToSize(stripMarkdown(exercise.description), 180), 10, y);
       y += 15;
     }
 
