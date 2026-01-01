@@ -1,0 +1,76 @@
+Build a “Load more” experience for an existing training drill library that displays DrillCard tiles (DrillCard already exists and must be used as-is). The library is used for inspirational browsing. Typical filtered result count is 10–20 drills. No sharing/deep-linking is required.
+
+Assume:
+- The data source and how to query it are already known in this codebase.
+- Filtering and sorting are already implemented and produce a filtered/sorted result set (or query parameters) that this list should react to.
+- Do not change DrillCard. Only integrate it.
+
+GOAL
+Replace (or avoid) pagination and implement a smooth, controlled “Load more” list that keeps users in flow while browsing drills, without turning into an endless, confusing scroll.
+
+FUNCTIONAL REQUIREMENTS
+1) Initial list load
+- Show an initial batch of drills as DrillCard tiles (default batchSize = 12).
+- Display a compact status line above the list: “Showing X of Y” where:
+  - Y is the total number of drills after filters/sort are applied.
+  - X is the number currently rendered.
+
+2) Load more button (incremental append)
+- If X < Y, show a “Load more” button below the list.
+- Clicking “Load more” appends the next batch (same batchSize) to the list.
+- While fetching, disable the button and show an in-button loading indicator.
+- If the request fails:
+  - Keep already loaded drills visible.
+  - Show an inline error under the button with “Try again”.
+  - Do not reset scroll position.
+
+3) Reacting to filter/sort changes (already implemented)
+- When filters or sorting changes:
+  - Reset the loaded drills list back to the first batch of the new result set.
+  - Reset internal paging state (offset/cursor/page token, etc.).
+  - Scroll back to the top of the list container (not the entire page if the layout has a scrollable region).
+
+4) Drill details navigation (state restore)
+- When a user opens a drill detail screen and returns to the library:
+  - Restore the previous scroll position in the library list.
+  - Restore the previously loaded amount (so they return to the same point in the browsing flow).
+- Persist this state for the session using the simplest existing pattern in the codebase (e.g., view-state store or session storage). No shareable URLs required.
+
+5) UX guardrails (avoid “endless list” problems)
+- Always show the “Showing X of Y” line.
+- Add a “Back to top” control that appears after the user scrolls down a bit (subtle).
+- Empty state: if Y = 0 after filters, show a helpful empty message and a “Clear filters” action (hook it into the existing filter reset).
+- Initial loading: show skeleton placeholders (6–8 tile placeholders) while the first batch is loading.
+
+6) Accessibility
+- “Load more” is keyboard accessible.
+- After loading more, announce via a polite live region: “Loaded N more drills. Showing X of Y.”
+- Focus behaviour:
+  - Keep focus on the “Load more” button after new items append.
+  - If the button disappears because X == Y, move focus to the first newly appended DrillCard tile (or the list container).
+- Ensure error messages are announced to screen readers.
+
+7) Performance and correctness
+- Results are usually 10–20, keep implementation simple and fast.
+- Do not re-render the entire list unnecessarily.
+- Prevent duplicate concurrent “Load more” requests.
+- Handle rapid filter changes without race conditions:
+  - Only render the latest response; cancel/ignore stale requests.
+- Handle edge case where the next batch returns 0 items even though X < Y:
+  - Stop offering “Load more” and avoid infinite loading loops.
+
+INTEGRATION NOTES
+- Do not specify or change the underlying UI framework.
+- Use the existing data access layer and patterns already present in the project.
+- Use the existing filter/sort outputs and treat them as inputs into the drill query/list logic.
+- Use DrillCard unchanged, passing whatever props it already expects.
+
+DELIVERABLES
+Provide the complete implementation changes required in this codebase:
+- The updated drill library list view logic (initial batch, load more, status line, skeleton, empty state, error handling).
+- The view-state persistence for scroll position and loaded count (session-scoped).
+- Any small helper utilities needed (request cancellation, state serialisation, etc.).
+
+Also include:
+- A short “where to plug this in” note referencing the existing library page/list component and the existing drill query function/hook/service names as they appear in the codebase.
+- A concise list of files changed/added.
