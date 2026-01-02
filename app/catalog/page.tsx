@@ -638,11 +638,19 @@ export default function CatalogPage() {
               <SmartSearch
                 value={searchQuery}
                 onChange={setSearchQuery}
-                exercises={exercises}
+                exercises={exercisesForCurrentType}
                 onFilterSelect={handleFilterSelect}
                 placeholder="Search or type to filter..."
                 resultCount={filteredExercises.length}
                 totalCount={exerciseTypeBaseCount}
+                activeFilters={{
+                  ageGroup: selectedAgeGroup,
+                  difficulty: selectedDifficulty,
+                  practiceFormat: selectedPracticeFormat,
+                  gameMoment: selectedGameMoment,
+                  decisionTheme: selectedDecisionTheme,
+                  playerInvolvement: selectedPlayerInvolvement,
+                }}
               />
             </div>
             <div className="flex-shrink-0 flex gap-2 pt-0">
