@@ -48,11 +48,6 @@ export const usePlanStore = create<PlanState>((set, get) => ({
       return { ok: false, reason: "duplicate" };
     }
     
-    // Enforce single exercise type per week - block if week has exercises of different type
-    if (current.exercises.length > 0 && current.exercises[0].type !== type) {
-      return { ok: false, reason: "type-mismatch" };
-    }
-    
     // Check week capacity
     if (current.exercises.length >= maxPerWeek) {
       return { ok: false, reason: "full" };
