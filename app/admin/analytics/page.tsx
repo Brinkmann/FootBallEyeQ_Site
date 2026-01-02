@@ -30,6 +30,8 @@ interface UserStats {
   sessionsWithDrills: number;
   totalWeeks: number;
   totalDrills: number;
+  drillsEyeq: number;
+  drillsPlastic: number;
   avgDrillsPerSession: number;
   loginsLast4Weeks: number;
   signupDate: string;
@@ -120,22 +122,29 @@ export default function AuditAnalyticsPage() {
           reviewsByUser.set(userId, current);
         });
 
-        const plannersByUser: Map<string, { sessionsWithDrills: number; totalWeeks: number; totalDrills: number }> = new Map();
+        const plannersByUser: Map<string, { sessionsWithDrills: number; totalWeeks: number; totalDrills: number; eyeq: number; plastic: number }> = new Map();
         plannersSnap.docs.forEach((doc) => {
           const userId = doc.id;
           const data = doc.data();
           if (data.weeks && Array.isArray(data.weeks)) {
             let sessionsWithDrills = 0;
             let totalDrills = 0;
+            let eyeq = 0;
+            let plastic = 0;
             const totalWeeks = data.weeks.length;
-            data.weeks.forEach((week: { exercises?: Array<{ name: string }> }) => {
-              const drillCount = week.exercises?.length || 0;
+            data.weeks.forEach((week: { exercises?: Array<{ name: string; type?: string }> }) => {
+              const exercises = week.exercises || [];
+              const drillCount = exercises.length;
               if (drillCount > 0) {
                 sessionsWithDrills++;
                 totalDrills += drillCount;
+                exercises.forEach((ex) => {
+                  if (ex.type === "plastic") plastic++;
+                  else if (ex.type === "eyeq") eyeq++;
+                });
               }
             });
-            plannersByUser.set(userId, { sessionsWithDrills, totalWeeks, totalDrills });
+            plannersByUser.set(userId, { sessionsWithDrills, totalWeeks, totalDrills, eyeq, plastic });
           }
         });
 
@@ -151,7 +160,7 @@ export default function AuditAnalyticsPage() {
         users.forEach((user) => {
           const favs = favoritesByUser.get(user.uid) || { eyeq: 0, plastic: 0 };
           const revs = reviewsByUser.get(user.uid) || { eyeq: 0, plastic: 0 };
-          const plan = plannersByUser.get(user.uid) || { sessionsWithDrills: 0, totalWeeks: 12, totalDrills: 0 };
+          const plan = plannersByUser.get(user.uid) || { sessionsWithDrills: 0, totalWeeks: 12, totalDrills: 0, eyeq: 0, plastic: 0 };
           const logins = loginsByUser.get(user.uid) || 0;
 
           stats.push({
@@ -166,6 +175,8 @@ export default function AuditAnalyticsPage() {
             sessionsWithDrills: plan.sessionsWithDrills,
             totalWeeks: plan.totalWeeks,
             totalDrills: plan.totalDrills,
+            drillsEyeq: plan.eyeq,
+            drillsPlastic: plan.plastic,
             avgDrillsPerSession: plan.sessionsWithDrills > 0
               ? Math.round((plan.totalDrills / plan.sessionsWithDrills) * 10) / 10
               : 0,
@@ -382,8 +393,20 @@ export default function AuditAnalyticsPage() {
                       <span className="font-medium text-foreground">{user.sessionsWithDrills}</span>
                       <span className="text-gray-400">/{user.totalWeeks}</span>
                     </td>
-                    <td className="px-4 py-3 text-center text-foreground">
-                      {user.avgDrillsPerSession || "—"}
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className={`font-medium ${user.totalDrills > 0 ? "text-foreground" : "text-gray-400"}`}>
+                          {user.avgDrillsPerSession || 0}
+                        </span>
+                        <div className="flex gap-1">
+                          <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">
+                            {user.drillsEyeq} E
+                          </span>
+                          <span className="text-xs px-1.5 py-0.5 rounded bg-orange-100 text-orange-700">
+                            {user.drillsPlastic} P
+                          </span>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`font-medium ${user.loginsLast4Weeks > 0 ? "text-foreground" : "text-gray-400"}`}>

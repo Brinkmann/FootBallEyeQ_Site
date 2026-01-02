@@ -1,0 +1,64 @@
+// Calculate average drills per session across both EyeQ and plastic drills
+const calculateAverageDrillsPerSession = (sessions) => {
+  // sessions structure:
+  // [
+  //   { 
+  //     sessionNumber: 1, 
+  //     eyeqDrills: 3, 
+  //     plasticDrills: 1 
+  //   },
+  //   ...
+  // ]
+  
+  const sessionsWithDrills = sessions.filter(s => 
+    (s.eyeqDrills + s.plasticDrills) > 0
+  );
+  
+  if (sessionsWithDrills.length === 0) return 0;
+  
+  const totalDrills = sessionsWithDrills.reduce((sum, s) => 
+    sum + s.eyeqDrills + s.plasticDrills, 0
+  );
+  
+  return totalDrills / sessionsWithDrills.length;
+};
+
+// Example with your current data:
+const seasonPlan = [
+  { sessionNumber: 1, eyeqDrills: 3, plasticDrills: 1 },  // 4 total
+  { sessionNumber: 2, eyeqDrills: 2, plasticDrills: 1 },  // 3 total
+  { sessionNumber: 3, eyeqDrills: 2, plasticDrills: 0 },  // 2 total
+  { sessionNumber: 4, eyeqDrills: 0, plasticDrills: 0 },  // empty
+  // ... up to session 12
+];
+
+const avg = calculateAverageDrillsPerSession(seasonPlan);
+console.log(avg.toFixed(1)); // "3.0"
+
+// For display with context:
+const getStatsDisplay = (sessions) => {
+  const sessionsWithDrills = sessions.filter(s => 
+    (s.eyeqDrills + s.plasticDrills) > 0
+  );
+  
+  const totalDrills = sessionsWithDrills.reduce((sum, s) => 
+    sum + s.eyeqDrills + s.plasticDrills, 0
+  );
+  
+  const totalEyeq = sessions.reduce((sum, s) => sum + s.eyeqDrills, 0);
+  const totalPlastic = sessions.reduce((sum, s) => sum + s.plasticDrills, 0);
+  
+  const avg = sessionsWithDrills.length > 0 
+    ? totalDrills / sessionsWithDrills.length 
+    : 0;
+  
+  return {
+    averageDrillsPerSession: avg,
+    totalDrills,
+    eyeqDrills: totalEyeq,
+    plasticDrills: totalPlastic,
+    populatedSessions: sessionsWithDrills.length,
+    totalSessions: sessions.length,
+    displayText: `${avg.toFixed(1)} drills per session (${sessionsWithDrills.length}/${sessions.length} sessions planned)`
+  };
+};
