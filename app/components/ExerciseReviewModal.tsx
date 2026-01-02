@@ -28,6 +28,7 @@ export default function ExerciseReviewModal({ exercise, onClose }: Props) {
     try {
       await addDoc(collection(db, "reviews"), {
         exerciseN: exercise.title,
+        exerciseType: exercise.exerciseType || "eyeq",
         numStar,
         feedback,
       });
