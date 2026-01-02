@@ -25,7 +25,7 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Global State Synchronization:** `PlanSyncProvider` handles Firebase synchronization with offline detection, pending save tracking, and exponential backoff retry (up to 3 retries). `SyncStatusIndicator` shows sync status (idle/syncing/offline/error) on the planner page.
 - **Exercise Schema:** Exercises are structured with fields like `id`, `title`, `ageGroup`, `decisionTheme`, `difficulty`, `practiceFormat`, `overview`, `description`, `image`, and `exerciseType`.
 - **Server-Side Authorization:** Protected routes use server-side layouts with Firebase Admin SDK session verification. Session cookies are created on login and cleared on logout via API routes.
-- **Runtime Data Validation:** Zod schemas validate Firestore documents at runtime (exercises, user profiles, club data). Invalid documents are filtered out with console warnings for data quality monitoring.
+- **Firebase Admin SDK:** Single initialization file at `app/utils/firebaseAdmin.ts` with singleton pattern to prevent duplicate app errors in Vercel's warm serverless functions.
 
 **Feature Specifications:**
 - **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.

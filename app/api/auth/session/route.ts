@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getAdminAuth } from "@/app/lib/firebaseAdmin";
+import { getAdminAuth } from "@/app/utils/firebaseAdmin";
 import { createSessionCookie, getSessionCookieOptions } from "@/app/lib/serverAuth";
 
 export async function POST(request: NextRequest) {

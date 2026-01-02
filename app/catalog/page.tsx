@@ -112,38 +112,23 @@ export default function CatalogPage() {
     "General / Mixed",
   ];
 
-  const fetchExercises = useCallback(async (retryCount = 0): Promise<void> => {
+  const fetchExercises = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     setLoadError(null);
 
     try {
-      const controller = new AbortController();
-      const res = await fetch(`/api/exercises?ts=${Date.now()}`, {
-        cache: "no-store",
-        credentials: "same-origin",
-        signal: controller.signal,
-      });
+      const res = await fetch(`/api/exercises?ts=${Date.now()}`, { cache: "no-store" });
 
       if (!res.ok) {
-        throw new Error(`API returned ${res.status}`);
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.details || `Failed to load drills (${res.status})`);
       }
 
-      const data = await res.json().catch(() => {
-        throw new Error("Invalid JSON response");
-      });
-
-      if (data?.exercises && Array.isArray(data.exercises)) {
-        setExercises(data.exercises);
-      } else {
-        throw new Error("Invalid response format");
-      }
+      const data = await res.json();
+      setExercises(data.exercises || []);
     } catch (error) {
-      console.error("Error fetching exercises:", error instanceof Error ? error.message : String(error));
-      if (retryCount < 2) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return fetchExercises(retryCount + 1);
-      }
-      setLoadError("We couldn't load drills right now. Please check your connection and try again.");
+      console.error("Error fetching exercises:", error);
+      setLoadError(error instanceof Error ? error.message : "Failed to load drills");
     } finally {
       setIsLoading(false);
     }
