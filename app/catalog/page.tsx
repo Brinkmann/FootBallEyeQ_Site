@@ -11,6 +11,9 @@ import { useFavoritesContext } from "../components/FavoritesProvider";
 import { useExerciseType } from "../components/ExerciseTypeProvider";
 import Link from "next/link";
 
+// Module-level flag: true if catalog has been visited this session (persists across SPA navigations)
+let catalogVisitedThisSession = false;
+
 export default function CatalogPage() {
   const [mounted, setMounted] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -282,24 +285,42 @@ export default function CatalogPage() {
     setStatusAnnouncement(`Now showing ${newCount} of ${totalFilteredCount} drills`);
   }, [hasMoreToLoad, totalFilteredCount, displayedCount]);
 
-  // Restore state from sessionStorage on mount
+  // Restore state from sessionStorage on mount (SPA navigations and reload, but not fresh visits)
   useEffect(() => {
     if (!mounted) return;
     try {
+      // Check navigation type for reload/back_forward (with legacy fallback for Safari)
+      const navEntries = performance.getEntriesByType?.('navigation') as PerformanceNavigationTiming[] | undefined;
+      const modernNavType = navEntries?.[0]?.type;
+      // Legacy API: 0 = navigate, 1 = reload, 2 = back_forward
+      const legacyNavType = (performance as { navigation?: { type?: number } }).navigation?.type;
+      
+      const isReloadOrBackForward = modernNavType === 'reload' || modernNavType === 'back_forward' ||
+        legacyNavType === 1 || legacyNavType === 2;
+      
+      // Restore if: SPA navigation (visited before this session) OR reload/back_forward
+      const shouldRestore = catalogVisitedThisSession || isReloadOrBackForward;
+      
+      // Mark as visited for future SPA navigations
+      catalogVisitedThisSession = true;
+      
       const saved = sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const state = JSON.parse(saved);
-        if (state.displayedCount && state.displayedCount > batchSize) {
-          isRestoringState.current = true;
-          setDisplayedCount(state.displayedCount);
-          // Restore scroll position after render
-          requestAnimationFrame(() => {
-            if (state.scrollY) {
-              window.scrollTo(0, state.scrollY);
-            }
-            isRestoringState.current = false;
-          });
+        if (shouldRestore) {
+          const state = JSON.parse(saved);
+          if (state.displayedCount && state.displayedCount > batchSize) {
+            isRestoringState.current = true;
+            setDisplayedCount(state.displayedCount);
+            // Restore scroll position after render
+            requestAnimationFrame(() => {
+              if (state.scrollY) {
+                window.scrollTo(0, state.scrollY);
+              }
+              isRestoringState.current = false;
+            });
+          }
         }
+        // Always clear after checking (prevents stale state on next fresh visit)
         sessionStorage.removeItem(STORAGE_KEY);
       }
     } catch (e) {
