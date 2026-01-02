@@ -10,6 +10,15 @@ interface FilterSuggestion {
   count: number;
 }
 
+interface ActiveFilters {
+  ageGroup?: string;
+  difficulty?: string;
+  practiceFormat?: string;
+  gameMoment?: string;
+  decisionTheme?: string;
+  playerInvolvement?: string;
+}
+
 interface SmartSearchProps {
   value: string;
   onChange: (value: string) => void;
@@ -18,6 +27,7 @@ interface SmartSearchProps {
   placeholder?: string;
   resultCount?: number;
   totalCount?: number;
+  activeFilters?: ActiveFilters;
 }
 
 export default function SmartSearch({
@@ -28,6 +38,7 @@ export default function SmartSearch({
   placeholder = "Search drills or type to filter...",
   resultCount,
   totalCount,
+  activeFilters = {},
 }: SmartSearchProps) {
   const [localValue, setLocalValue] = useState(value);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -64,9 +75,29 @@ export default function SmartSearch({
     const query = localValue.toLowerCase();
     const results: FilterSuggestion[] = [];
 
+    // Pre-filter exercises by active filters (excluding the field we're counting)
+    const getFilteredExercises = (excludeField?: string) => {
+      return exercises.filter((ex) => {
+        if (excludeField !== "ageGroup" && activeFilters.ageGroup && 
+            !activeFilters.ageGroup.includes("All") && ex.ageGroup !== activeFilters.ageGroup) return false;
+        if (excludeField !== "difficulty" && activeFilters.difficulty && 
+            !activeFilters.difficulty.includes("All") && ex.difficulty !== activeFilters.difficulty) return false;
+        if (excludeField !== "practiceFormat" && activeFilters.practiceFormat && 
+            !activeFilters.practiceFormat.includes("All") && ex.practiceFormat !== activeFilters.practiceFormat) return false;
+        if (excludeField !== "gameMoment" && activeFilters.gameMoment && 
+            !activeFilters.gameMoment.includes("All") && ex.gameMoment !== activeFilters.gameMoment) return false;
+        if (excludeField !== "decisionTheme" && activeFilters.decisionTheme && 
+            !activeFilters.decisionTheme.includes("All") && ex.decisionTheme !== activeFilters.decisionTheme) return false;
+        if (excludeField !== "playerInvolvement" && activeFilters.playerInvolvement && 
+            !activeFilters.playerInvolvement.includes("All") && ex.playerInvolvement !== activeFilters.playerInvolvement) return false;
+        return true;
+      });
+    };
+
     const countByField = (field: keyof Exercise, filterType: FilterSuggestion["type"]) => {
       const counts: Record<string, number> = {};
-      exercises.forEach((ex) => {
+      const filteredExercises = getFilteredExercises(field);
+      filteredExercises.forEach((ex) => {
         const val = ex[field];
         if (typeof val === "string" && val !== "N/A" && val !== "Unknown") {
           counts[val] = (counts[val] || 0) + 1;
@@ -90,11 +121,10 @@ export default function SmartSearch({
     countByField("decisionTheme", "decision");
     countByField("playerInvolvement", "players");
     countByField("gameMoment", "moment");
-
     countByField("practiceFormat", "format");
 
     return results.sort((a, b) => b.count - a.count).slice(0, 8);
-  }, [localValue, exercises]);
+  }, [localValue, exercises, activeFilters]);
 
   const handleChange = (newValue: string) => {
     setLocalValue(newValue);
