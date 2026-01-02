@@ -6,7 +6,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/Firebase/firebaseConfig";
 
 type ConsentState = "unknown" | "granted" | "denied";
-export type CriticalEventName = "signup" | "purchase" | "share" | "error";
+export type CriticalEventName = "signup" | "login" | "purchase" | "share" | "error";
 
 export interface AuditEventContext {
   label?: string;

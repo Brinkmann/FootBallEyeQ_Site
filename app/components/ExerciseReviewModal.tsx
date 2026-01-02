@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Exercise } from "../types/exercise";
-import { db } from "@/Firebase/firebaseConfig"; //  import your firebase config
-import { collection, addDoc } from "firebase/firestore";
+import { auth, db } from "@/Firebase/firebaseConfig";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-// Define the props our new component will accept
 interface Props {
   exercise: Exercise;
   onClose: () => void;
@@ -14,22 +13,20 @@ export default function ExerciseReviewModal({ exercise, onClose }: Props) {
   const [feedback, setFeedback] = useState("");
   const [numStar, setNumStar] = useState(0);
 
-  /**
-   * Handle review submission
-   */
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    //  if any field is empty, alert and return
     if (!feedback || numStar <= 0) {
       alert("Please fill all fields and select a star rating.");
       return;
     }
-    // Add review to Firestore
     try {
       await addDoc(collection(db, "reviews"), {
+        userId: auth.currentUser?.uid || null,
         exerciseN: exercise.title,
+        exerciseType: exercise.exerciseType || "eyeq",
         numStar,
         feedback,
+        createdAt: serverTimestamp(),
       });
       alert("Thank you for your review!");
       setFeedback("");

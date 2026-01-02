@@ -3,12 +3,14 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/Firebase/auth";
+import { useAnalytics } from "@/app/components/AnalyticsProvider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { trackEvent } = useAnalytics();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,11 +25,19 @@ export default function LoginPage() {
         JSON.stringify({ uid: user.uid, email: user.email, name: storedName })
       );
 
+      trackEvent("login", {
+        userId: user.uid,
+      }).catch(() => {});
+
       router.push("/planner"); // redirect after login to session planner
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login failed:", err.message);
         setError(err.message); // optional: show error in the UI
+        trackEvent("error", {
+          label: "login",
+          errorMessage: err.message,
+        }).catch(() => {});
       }
     }
   };
