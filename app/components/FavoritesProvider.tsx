@@ -18,6 +18,7 @@ import {
 import { FREE_ENTITLEMENTS, PREMIUM_ENTITLEMENTS, AccountType } from "../types/account";
 import { ExerciseType } from "../types/exercise";
 import { useExerciseType } from "./ExerciseTypeProvider";
+import { AccountTypeSchema } from "../lib/schemas";
 
 interface FavoriteData {
   exerciseId: string;
@@ -103,7 +104,11 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const snapshot = await getDoc(signupDocRef);
         if (snapshot.exists()) {
           const userData = snapshot.data();
-          setAccountType((userData.accountType as AccountType) || "free");
+          const accountTypeParsed = AccountTypeSchema.safeParse(userData.accountType);
+          if (!accountTypeParsed.success) {
+            console.warn(`Invalid accountType for user ${user.uid}:`, accountTypeParsed.error.flatten());
+          }
+          setAccountType(accountTypeParsed.success ? accountTypeParsed.data : "free");
         }
       } catch (error) {
         console.error("Failed to load account type:", error);
