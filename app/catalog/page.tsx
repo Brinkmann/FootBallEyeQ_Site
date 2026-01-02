@@ -258,12 +258,53 @@ export default function CatalogPage() {
 
   const hasMoreToLoad = displayedCount < totalFilteredCount;
 
+  // Track previous filter state to determine when to scroll
+  const prevFiltersRef = useRef({
+    searchQuery,
+    selectedAgeGroup,
+    selectedDecisionTheme,
+    selectedPlayerInvolvement,
+    selectedGameMoment,
+    selectedDifficulty,
+    selectedPracticeFormat,
+    showFavoritesOnly,
+    selectedExerciseType,
+  });
+  
   useEffect(() => {
     // Skip reset if we're restoring state from sessionStorage
     if (isRestoringState.current) return;
     
+    // Always reset displayed count
     setDisplayedCount(batchSize);
-    if (listContainerRef.current) {
+    
+    // Check if any non-search filter changed
+    const prev = prevFiltersRef.current;
+    const filtersChanged = 
+      prev.selectedAgeGroup !== selectedAgeGroup ||
+      prev.selectedDecisionTheme !== selectedDecisionTheme ||
+      prev.selectedPlayerInvolvement !== selectedPlayerInvolvement ||
+      prev.selectedGameMoment !== selectedGameMoment ||
+      prev.selectedDifficulty !== selectedDifficulty ||
+      prev.selectedPracticeFormat !== selectedPracticeFormat ||
+      prev.showFavoritesOnly !== showFavoritesOnly ||
+      prev.selectedExerciseType !== selectedExerciseType;
+    
+    // Update ref with current values
+    prevFiltersRef.current = {
+      searchQuery,
+      selectedAgeGroup,
+      selectedDecisionTheme,
+      selectedPlayerInvolvement,
+      selectedGameMoment,
+      selectedDifficulty,
+      selectedPracticeFormat,
+      showFavoritesOnly,
+      selectedExerciseType,
+    };
+    
+    // Only scroll when filters changed (not just search typing)
+    if (filtersChanged && listContainerRef.current) {
       listContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [
