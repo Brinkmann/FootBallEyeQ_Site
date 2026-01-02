@@ -8,6 +8,12 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { useEntitlements } from "./EntitlementProvider";
 import { useExerciseType } from "./ExerciseTypeProvider";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
+import { z } from "zod";
+
+const UserNameSchema = z.object({
+  fname: z.string().min(1),
+  lname: z.string().min(1),
+});
 
 const extraLinks = [...aboutLinks, ...supportLinks, pricingLink];
 
@@ -25,7 +31,13 @@ export default function NavBar() {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
-            setUserName(`${data.fname} ${data.lname}`);
+            const nameParsed = UserNameSchema.safeParse(data);
+            if (nameParsed.success) {
+              setUserName(`${nameParsed.data.fname} ${nameParsed.data.lname}`);
+            } else {
+              console.warn(`Invalid user name data for ${user.uid}:`, nameParsed.error.flatten());
+              setUserName(user.email ?? "User");
+            }
           } else {
             setUserName(user.email ?? "User");
           }
