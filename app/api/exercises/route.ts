@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/app/utils/firebaseAdmin";
-import { parseExerciseFromFirestore, ValidatedExercise } from "@/app/lib/schemas";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 60;
 
 function getExerciseNumber(title: string): number {
-  const match = title.match(/^(\d+)/);
+  const match = title?.match(/^(\d+)/);
   return match ? parseInt(match[1], 10) : 9999;
 }
 
@@ -18,37 +16,42 @@ export async function GET(request: NextRequest) {
     const db = getAdminDb();
     let query = db.collection("exercises");
     
-    if (exerciseType && (exerciseType === "eyeq" || exerciseType === "plastic")) {
+    if (exerciseType === "eyeq" || exerciseType === "plastic") {
       query = query.where("exerciseType", "==", exerciseType) as typeof query;
     }
     
     const snapshot = await query.get();
 
-    const exercises: ValidatedExercise[] = snapshot.docs
-      .map((doc) => parseExerciseFromFirestore(doc.id, doc.data() as Record<string, unknown>))
-      .filter((ex): ex is ValidatedExercise => ex !== null);
+    const exercises = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title || "No title",
+        ageGroup: data.ageGroup || "N/A",
+        decisionTheme: data.decisionTheme || "N/A",
+        playerInvolvement: data.playerInvolvement || "N/A",
+        gameMoment: data.gameMoment || "N/A",
+        difficulty: data.difficulty || "Unknown",
+        practiceFormat: data.practiceFormat || "General / Mixed",
+        overview: data.overview || "",
+        description: data.description || "",
+        exerciseBreakdownDesc: data.exerciseBreakdownDesc || "",
+        image: data.image || "",
+        exerciseType: data.exerciseType || "eyeq",
+      };
+    });
 
     exercises.sort((a, b) => getExerciseNumber(a.title) - getExerciseNumber(b.title));
 
-    return NextResponse.json({ 
-      exercises
-    }, {
+    return NextResponse.json({ exercises }, {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
       },
     });
   } catch (error) {
     console.error("Error fetching exercises:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
-
     return NextResponse.json(
-      {
-        error: "Failed to fetch exercises",
-        details: errorMessage,
-        stack: errorStack,
-        timestamp: new Date().toISOString()
-      },
+      { error: "Failed to fetch exercises", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { getAdminAuth, getAdminFirestore } from "./firebaseAdmin";
+import { getAdminAuth, getAdminFirestore } from "../utils/firebaseAdmin";
 import { UserProfile, AccountType } from "../types/account";
 
 const SESSION_COOKIE_NAME = "__session";

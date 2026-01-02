@@ -60,6 +60,8 @@ export function getAdminDb(): Firestore {
   return db;
 }
 
+export const getAdminFirestore = getAdminDb;
+
 export function getAdminAuth(): Auth {
   if (auth) return auth;
   getAdminApp();
