@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Exercise } from "../types/exercise";
-import { auth, db } from "@/Firebase/firebaseConfig";
+import { db } from "@/Firebase/firebaseConfig";
+import { getAuth } from "firebase/auth";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 interface Props {
@@ -20,6 +21,7 @@ export default function ExerciseReviewModal({ exercise, onClose }: Props) {
       return;
     }
     try {
+      const auth = getAuth();
       await addDoc(collection(db, "reviews"), {
         userId: auth.currentUser?.uid || null,
         exerciseN: exercise.title,
