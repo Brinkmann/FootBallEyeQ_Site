@@ -27,13 +27,10 @@ interface UserStats {
   favoritesPlastic: number;
   reviewsEyeq: number;
   reviewsPlastic: number;
-  sessionsEyeq: number;
-  sessionsPlastic: number;
+  sessionsWithDrills: number;
   totalWeeks: number;
-  drillsEyeq: number;
-  drillsPlastic: number;
-  avgDrillsEyeq: number;
-  avgDrillsPlastic: number;
+  totalDrills: number;
+  avgDrillsPerSession: number;
   loginsLast4Weeks: number;
   signupDate: string;
 }
@@ -123,41 +120,22 @@ export default function AuditAnalyticsPage() {
           reviewsByUser.set(userId, current);
         });
 
-        interface PlannerStats {
-          sessionsEyeq: number;
-          sessionsPlastic: number;
-          totalWeeks: number;
-          drillsEyeq: number;
-          drillsPlastic: number;
-        }
-        const plannersByUser: Map<string, PlannerStats> = new Map();
+        const plannersByUser: Map<string, { sessionsWithDrills: number; totalWeeks: number; totalDrills: number }> = new Map();
         plannersSnap.docs.forEach((doc) => {
           const userId = doc.id;
           const data = doc.data();
           if (data.weeks && Array.isArray(data.weeks)) {
-            let sessionsEyeq = 0;
-            let sessionsPlastic = 0;
-            let drillsEyeq = 0;
-            let drillsPlastic = 0;
+            let sessionsWithDrills = 0;
+            let totalDrills = 0;
             const totalWeeks = data.weeks.length;
-            data.weeks.forEach((week: { exercises?: Array<{ name: string; exerciseType?: string }> }) => {
-              const exercises = week.exercises || [];
-              let hasEyeq = false;
-              let hasPlastic = false;
-              exercises.forEach((ex) => {
-                const type = ex.exerciseType || "eyeq";
-                if (type === "eyeq") {
-                  drillsEyeq++;
-                  hasEyeq = true;
-                } else if (type === "plastic") {
-                  drillsPlastic++;
-                  hasPlastic = true;
-                }
-              });
-              if (hasEyeq) sessionsEyeq++;
-              if (hasPlastic) sessionsPlastic++;
+            data.weeks.forEach((week: { exercises?: Array<{ name: string }> }) => {
+              const drillCount = week.exercises?.length || 0;
+              if (drillCount > 0) {
+                sessionsWithDrills++;
+                totalDrills += drillCount;
+              }
             });
-            plannersByUser.set(userId, { sessionsEyeq, sessionsPlastic, totalWeeks, drillsEyeq, drillsPlastic });
+            plannersByUser.set(userId, { sessionsWithDrills, totalWeeks, totalDrills });
           }
         });
 
@@ -173,7 +151,7 @@ export default function AuditAnalyticsPage() {
         users.forEach((user) => {
           const favs = favoritesByUser.get(user.uid) || { eyeq: 0, plastic: 0 };
           const revs = reviewsByUser.get(user.uid) || { eyeq: 0, plastic: 0 };
-          const plan = plannersByUser.get(user.uid) || { sessionsEyeq: 0, sessionsPlastic: 0, totalWeeks: 12, drillsEyeq: 0, drillsPlastic: 0 };
+          const plan = plannersByUser.get(user.uid) || { sessionsWithDrills: 0, totalWeeks: 12, totalDrills: 0 };
           const logins = loginsByUser.get(user.uid) || 0;
 
           stats.push({
@@ -185,16 +163,11 @@ export default function AuditAnalyticsPage() {
             favoritesPlastic: favs.plastic,
             reviewsEyeq: revs.eyeq,
             reviewsPlastic: revs.plastic,
-            sessionsEyeq: plan.sessionsEyeq,
-            sessionsPlastic: plan.sessionsPlastic,
+            sessionsWithDrills: plan.sessionsWithDrills,
             totalWeeks: plan.totalWeeks,
-            drillsEyeq: plan.drillsEyeq,
-            drillsPlastic: plan.drillsPlastic,
-            avgDrillsEyeq: plan.sessionsEyeq > 0
-              ? Math.round((plan.drillsEyeq / plan.sessionsEyeq) * 10) / 10
-              : 0,
-            avgDrillsPlastic: plan.sessionsPlastic > 0
-              ? Math.round((plan.drillsPlastic / plan.sessionsPlastic) * 10) / 10
+            totalDrills: plan.totalDrills,
+            avgDrillsPerSession: plan.sessionsWithDrills > 0
+              ? Math.round((plan.totalDrills / plan.sessionsWithDrills) * 10) / 10
               : 0,
             loginsLast4Weeks: logins,
             signupDate: user.createdAt?.seconds
@@ -235,8 +208,8 @@ export default function AuditAnalyticsPage() {
           bVal = b.reviewsEyeq + b.reviewsPlastic;
           break;
         case "sessions":
-          aVal = a.sessionsEyeq + a.sessionsPlastic;
-          bVal = b.sessionsEyeq + b.sessionsPlastic;
+          aVal = a.sessionsWithDrills;
+          bVal = b.sessionsWithDrills;
           break;
         case "logins":
           aVal = a.loginsLast4Weeks;
@@ -259,7 +232,7 @@ export default function AuditAnalyticsPage() {
         favorites: acc.favorites + user.favoritesEyeq + user.favoritesPlastic,
         reviews: acc.reviews + user.reviewsEyeq + user.reviewsPlastic,
         logins: acc.logins + user.loginsLast4Weeks,
-        usersWithPlans: acc.usersWithPlans + ((user.sessionsEyeq + user.sessionsPlastic) > 0 ? 1 : 0),
+        usersWithPlans: acc.usersWithPlans + (user.sessionsWithDrills > 0 ? 1 : 0),
       }),
       { users: 0, favorites: 0, reviews: 0, logins: 0, usersWithPlans: 0 }
     );
@@ -406,24 +379,11 @@ export default function AuditAnalyticsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <div className="flex justify-center gap-2">
-                        <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
-                          {user.sessionsEyeq} EyeQ
-                        </span>
-                        <span className="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-700">
-                          {user.sessionsPlastic} Plastic
-                        </span>
-                      </div>
+                      <span className="font-medium text-foreground">{user.sessionsWithDrills}</span>
+                      <span className="text-gray-400">/{user.totalWeeks}</span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      <div className="flex justify-center gap-2">
-                        <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
-                          {user.avgDrillsEyeq || "—"} EyeQ
-                        </span>
-                        <span className="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-700">
-                          {user.avgDrillsPlastic || "—"} Plastic
-                        </span>
-                      </div>
+                    <td className="px-4 py-3 text-center text-foreground">
+                      {user.avgDrillsPerSession || "—"}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`font-medium ${user.loginsLast4Weeks > 0 ? "text-foreground" : "text-gray-400"}`}>
