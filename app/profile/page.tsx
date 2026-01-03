@@ -223,12 +223,12 @@ export default function ProfilePage() {
   const formatExercisePolicy = (policy?: string): string => {
     switch (policy) {
       case "eyeq":
-        return "EyeQ Drills Only (Smart LED Cones)";
+        return "EyeQ drills only (Smart LED Cones)";
       case "plastic":
-        return "Plastic Drills Only (Traditional Cones)";
+        return "Plastic drills only (Traditional Cones)";
       case "both":
       default:
-        return "EyeQ & Plastic Drills";
+        return "all drills (EyeQ & Plastic)";
     }
   };
 
@@ -318,7 +318,7 @@ export default function ProfilePage() {
               {isClubAdmin && " (Club Admin)"}
             </p>
           </div>
-          {organization && (
+          {organization && !isClubCoach && (
             <div>
               <label className="block text-sm text-foreground-secondary mb-1">Organization</label>
               <p className="p-3 rounded-lg border border-divider bg-gray-50 text-gray-600">{organization}</p>
@@ -356,9 +356,9 @@ export default function ProfilePage() {
                 </p>
               </div>
               <div>
-                <label className="block text-sm text-foreground-secondary mb-1">Available Drills</label>
+                <label className="block text-sm text-foreground-secondary mb-1">Drill Catalog Access</label>
                 <p className="p-3 rounded-lg border border-divider bg-gray-50 text-gray-600">
-                  {formatExercisePolicy(clubData.exerciseTypePolicy)}
+                  You have access to {formatExercisePolicy(clubData.exerciseTypePolicy)}
                 </p>
               </div>
             </div>
