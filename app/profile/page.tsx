@@ -16,6 +16,7 @@ import {
 import { onAuthStateChanged, User } from "firebase/auth";
 
 interface UserData {
+  uid?: string;
   fname: string;
   lname: string;
   organization: string;
@@ -38,7 +39,7 @@ export default function ProfilePage() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        fetchUserDataByEmail(currentUser);
+        fetchUserDataByUid(currentUser);
       } else {
         setUser(null);
         setLoading(false);
@@ -47,13 +48,13 @@ export default function ProfilePage() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch user data by email
-  const fetchUserDataByEmail = async (currentUser: User) => {
+  // Fetch user data by uid
+  const fetchUserDataByUid = async (currentUser: User) => {
     setLoading(true);
     try {
       const q = query(
         collection(db, "signups"),
-        where("email", "==", currentUser.email)
+        where("uid", "==", currentUser.uid)
       );
       const querySnapshot = await getDocs(q);
 
@@ -74,10 +75,11 @@ export default function ProfilePage() {
         // Save Firestore doc ID for updates
         setUser((prev) => (prev ? { ...prev, docId: userDoc.id } : null));
       } else {
-        console.warn("No Firestore document found for this email!");
+        console.warn("No Firestore document found for this uid!");
         // Optional: create a new document if none exists
         const newUserRef = doc(collection(db, "signups"));
         const newUserData: UserData = {
+          uid: currentUser.uid,
           fname: "",
           lname: "",
           organization: "",
