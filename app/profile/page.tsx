@@ -223,13 +223,12 @@ export default function ProfilePage() {
   const formatExercisePolicy = (policy?: string): string => {
     switch (policy) {
       case "eyeq":
-        return "EyeQ Drills Only";
+        return "EyeQ Drills Only (Smart LED Cones)";
       case "plastic":
-        return "Plastic Drills Only";
+        return "Plastic Drills Only (Traditional Cones)";
       case "both":
-        return "All Drills (EyeQ & Plastic)";
       default:
-        return "All Drills";
+        return "EyeQ & Plastic Drills";
     }
   };
 
