@@ -31,7 +31,7 @@ interface UserData {
 
 interface ClubData {
   name: string;
-  exerciseTypePolicy?: 'eyeq' | 'plastic' | 'both';
+  exerciseTypePolicy?: 'eyeq' | 'plastic' | 'both' | 'eyeq-only' | 'plastic-only' | 'coach-choice';
 }
 
 const SUPER_ADMIN_EMAIL = "obrinkmann@gmail.com";
@@ -223,9 +223,13 @@ export default function ProfilePage() {
   const formatExercisePolicy = (policy?: string): string => {
     switch (policy) {
       case "eyeq":
+      case "eyeq-only":
         return "EyeQ drills only (Smart LED Cones)";
       case "plastic":
+      case "plastic-only":
         return "Plastic drills only (Traditional Cones)";
+      case "coach-choice":
+        return "EyeQ or Plastic drills (your choice)";
       case "both":
       default:
         return "all drills (EyeQ & Plastic)";
