@@ -54,7 +54,7 @@ export default function JoinClubPage() {
       setSuccess(`Welcome to ${data.clubName || "the club"}!`);
       
       setTimeout(() => {
-        router.push("/planner?welcome=true");
+        router.push(`/planner?clubJoined=true&clubName=${encodeURIComponent(data.clubName || "your club")}`);
       }, 1500);
     } catch (err) {
       console.error("Failed to join club:", err);
