@@ -45,7 +45,7 @@ export default function SignupPage() {
       });
 
       if (hasClubCode) {
-        router.push("/upgrade?welcome=true");
+        router.push("/join-club");
       } else {
         router.push("/planner?welcome=true");
       }
