@@ -58,7 +58,10 @@ export default function ProfilePage() {
 
   const isSuperAdmin = email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
   const isClubAdmin = clubRole === "admin";
-  const showInviteSection = !isSuperAdmin && !isClubAdmin;
+  const isIndividualPremium = accountType === "individualPremium";
+  const isClubCoach = accountType === "clubCoach";
+  
+  const showClubSection = !isSuperAdmin && !isClubAdmin && !isIndividualPremium;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -335,11 +338,11 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {showInviteSection && (
+      {showClubSection && (
         <div className="bg-card p-6 rounded-xl shadow-md w-full max-w-md border border-divider">
           <h2 className="text-lg font-semibold text-primary mb-4">Club Membership</h2>
           
-          {clubId && clubData ? (
+          {isClubCoach && clubId && clubData ? (
             <div className="flex flex-col gap-3">
               <div>
                 <label className="block text-sm text-foreground-secondary mb-1">Club</label>
