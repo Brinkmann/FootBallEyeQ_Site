@@ -110,31 +110,40 @@ export default function SeasonPlanningPage() {
             
             if (isLocked) {
               return (
-                <div key={week.week} className="bg-card rounded shadow p-4 border border-divider opacity-60 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/95 rounded z-10">
-                    <div className="text-center p-6 max-w-[200px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-10 h-10 mx-auto mb-3" style={{ color: '#A10115' }}>
+                <div key={week.week} className="relative bg-white rounded-lg shadow border-2 overflow-hidden" style={{ borderColor: '#F0EFEA' }}>
+                  {/* Lock overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50/80 z-10"></div>
+
+                  {/* Content */}
+                  <div className="relative z-20 flex flex-col items-center justify-center text-center p-8 min-h-[280px]">
+                    {/* Lock icon */}
+                    <div className="mb-4 p-3 rounded-full" style={{ backgroundColor: '#F0EFEA' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8" style={{ color: '#A10115' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
-                      <p className="text-sm font-semibold mb-1" style={{ color: '#A10115' }}>
-                        Session {week.week} Locked
-                      </p>
-                      <p className="text-xs mb-3" style={{ color: '#C0B2B5' }}>
-                        Free plans include 1 session. Upgrade to plan all 12 sessions of your season.
-                      </p>
-                      <Link
-                        href="/upgrade"
-                        className="inline-block px-4 py-2 text-xs font-medium text-white rounded transition-colors"
-                        style={{ backgroundColor: '#D72C16' }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#A10115'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#D72C16'}
-                      >
-                        View Upgrade Options
-                      </Link>
                     </div>
+
+                    {/* Heading */}
+                    <h4 className="text-base font-bold mb-2" style={{ color: '#A10115' }}>
+                      Session {week.week}
+                    </h4>
+
+                    {/* Description */}
+                    <p className="text-sm leading-relaxed mb-6 px-2" style={{ color: '#6B7280' }}>
+                      Upgrade to unlock all 12 sessions
+                    </p>
+
+                    {/* CTA Button */}
+                    <Link
+                      href="/upgrade"
+                      className="px-6 py-2.5 text-sm font-semibold text-white rounded-lg transition-all hover:shadow-lg"
+                      style={{ backgroundColor: '#D72C16' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#A10115'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#D72C16'}
+                    >
+                      Upgrade Plan
+                    </Link>
                   </div>
-                  <h4 className="font-bold text-foreground mb-2">Session {week.week}</h4>
-                  <p className="text-sm text-gray-400">Locked</p>
                 </div>
               );
             }
