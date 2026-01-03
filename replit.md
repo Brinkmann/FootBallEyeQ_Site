@@ -28,7 +28,8 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Firebase Admin SDK:** Single initialization file at `app/utils/firebaseAdmin.ts` with singleton pattern to prevent duplicate app errors in Vercel's warm serverless functions.
 
 **Feature Specifications:**
-- **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.
+- **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, Profile, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.
+- **Profile Page:** Displays editable first/last name, read-only account details (email, account type, member since), and club membership section. Coaches can enter invite codes to join clubs; club admins and super admin see club info but not the invite entry. Shows club's exercise type policy when applicable.
 - **Navigation:** Navbar includes Drill Catalogue, Session Planner, Tag Guide, and a "Learn" dropdown. Role-specific tabs for "My Club" (club admins) and "Admin Hub" (super admin).
 - **Post-Signup Onboarding:** Contextual welcome modals and redirects guide users based on their account type.
 
