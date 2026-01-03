@@ -12,11 +12,6 @@ export default function UpgradePage() {
       <NavBar />
 
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Unlock Full Access</h1>
-        <p className="text-gray-600 mb-8">
-          Upgrade to Premium and plan your entire 12-session season.
-        </p>
-
         {accountType !== "free" && (
           <div className="rounded-xl p-6 mb-8 border-2" style={{ backgroundColor: '#F0EFEA', borderColor: '#A10115' }}>
             <div className="flex items-start gap-4">
@@ -40,6 +35,11 @@ export default function UpgradePage() {
             </div>
           </div>
         )}
+
+        <h1 className="text-3xl font-bold text-foreground mb-2">Unlock Full Access</h1>
+        <p className="text-gray-600 mb-8">
+          Upgrade to Premium and plan your entire 12-session season.
+        </p>
 
         {/* HERO: Individual Premium */}
         <div className="rounded-2xl p-8 mb-8 shadow-xl relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #D72C16 0%, #A10115 100%)' }}>
