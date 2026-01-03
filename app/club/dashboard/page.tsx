@@ -34,6 +34,7 @@ interface ClubInvite {
   email?: string;
   createdAt: Date;
   expiresAt: Date;
+  usedBy?: string;
 }
 
 export default function ClubDashboardPage() {
@@ -112,8 +113,9 @@ export default function ClubDashboardPage() {
           email: doc.data().email,
           createdAt: doc.data().createdAt?.toDate(),
           expiresAt: doc.data().expiresAt?.toDate(),
+          usedBy: doc.data().usedBy,
         }));
-        setInvites(invitesList.filter((i) => !i.expiresAt || i.expiresAt > new Date()));
+        setInvites(invitesList);
       } catch (error) {
         console.error("Failed to load club data:", error);
       } finally {
@@ -196,6 +198,45 @@ export default function ClubDashboardPage() {
       setExerciseTypePolicy(oldPolicy);
     } finally {
       setPolicyLoading(false);
+    }
+  };
+
+  const handleRemoveMember = async (memberId: string, memberEmail: string) => {
+    if (!clubId) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to remove ${memberEmail} from the club? They will lose access to club features and their account will be downgraded to Free.`
+    );
+    
+    if (!confirmed) return;
+
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please log in again.");
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/club/remove-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ clubId, memberId, memberEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMembers(members.filter((m) => m.id !== memberId));
+      } else {
+        alert(data.error || "Failed to remove member. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to remove member:", error);
+      alert("Failed to remove member. Please try again.");
     }
   };
 
@@ -289,67 +330,103 @@ export default function ClubDashboardPage() {
           )}
 
           <div className="space-y-2">
-            {members.length === 0 && invites.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">
-                No coaches yet. Click &quot;Invite Coach&quot; to add your first team member.
-              </p>
-            ) : (
-              <>
-                {members.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between p-4 bg-background rounded-lg border border-divider"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-green-600">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{member.email}</p>
-                        <p className="text-xs text-gray-500 capitalize">{member.role}</p>
-                      </div>
-                    </div>
-                    <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
-                      Active
-                    </span>
-                  </div>
-                ))}
+            {(() => {
+              const pendingInvites = invites.filter((i) => 
+                !i.usedBy && (!i.expiresAt || i.expiresAt > new Date())
+              );
+              const inviteByEmail = new Map<string, ClubInvite>();
+              invites.forEach((inv) => {
+                if (inv.email) inviteByEmail.set(inv.email.toLowerCase(), inv);
+              });
 
-                {invites.map((invite) => (
-                  <div
-                    key={invite.id}
-                    className="flex items-center justify-between p-4 bg-amber-50 rounded-lg border border-amber-200"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-600">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{invite.email || "No email"}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-amber-300 text-primary font-bold">
-                            {invite.code}
+              if (members.length === 0 && pendingInvites.length === 0) {
+                return (
+                  <p className="text-sm text-gray-500 text-center py-8">
+                    No coaches yet. Click &quot;Invite Coach&quot; to add your first team member.
+                  </p>
+                );
+              }
+
+              return (
+                <>
+                  {members.map((member) => {
+                    const memberInvite = inviteByEmail.get(member.email?.toLowerCase() || "");
+                    return (
+                      <div
+                        key={member.id}
+                        className="flex items-center justify-between p-4 bg-background rounded-lg border border-divider"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-green-600">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{member.email}</p>
+                            {memberInvite ? (
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded border border-gray-300 text-primary font-bold">
+                                  {memberInvite.code}
+                                </span>
+                                <span className="text-xs text-gray-500 capitalize">{member.role}</span>
+                              </div>
+                            ) : (
+                              <p className="text-xs text-gray-500 capitalize">{member.role}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+                            Active
                           </span>
-                          <span className="text-xs text-amber-600">
-                            Expires {invite.expiresAt?.toLocaleDateString()}
-                          </span>
+                          {member.role !== "admin" && (
+                            <button
+                              onClick={() => handleRemoveMember(member.id, member.email)}
+                              className="text-xs text-red-500 hover:text-red-700 hover:underline"
+                            >
+                              Remove
+                            </button>
+                          )}
                         </div>
                       </div>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteInvite(invite.id)}
-                      className="text-xs text-red-500 hover:text-red-700 hover:underline"
+                    );
+                  })}
+
+                  {pendingInvites.map((invite) => (
+                    <div
+                      key={invite.id}
+                      className="flex items-center justify-between p-4 bg-amber-50 rounded-lg border border-amber-200"
                     >
-                      Cancel
-                    </button>
-                  </div>
-                ))}
-              </>
-            )}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-600">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{invite.email || "No email"}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-amber-300 text-primary font-bold">
+                              {invite.code}
+                            </span>
+                            <span className="text-xs text-amber-600">
+                              Expires {invite.expiresAt?.toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteInvite(invite.id)}
+                        className="text-xs text-red-500 hover:text-red-700 hover:underline"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ))}
+                </>
+              );
+            })()}
           </div>
         </div>
 
