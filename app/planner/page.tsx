@@ -79,14 +79,14 @@ export default function SeasonPlanningPage() {
       <WelcomeModal type="coach" />
 
       <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-4">
             <h3 className="text-lg font-semibold text-foreground">12-Session Season Plan</h3>
             <SyncStatusIndicator />
           </div>
           <Link
             href="/planner/stats"
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-divider text-foreground hover:bg-primary-light hover:border-primary transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-divider text-foreground hover:bg-primary-light hover:border-primary transition-colors flex items-center gap-2 w-fit"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
@@ -94,6 +94,61 @@ export default function SeasonPlanningPage() {
             View Stats
           </Link>
         </div>
+
+        {/* Session Counter */}
+        {isAuthenticated && !entitlementsLoading && (
+          <div className="mb-6 bg-white rounded-lg shadow-sm border-2 p-4 sm:p-5" style={{ borderColor: '#F0EFEA' }}>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Counter text */}
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{ backgroundColor: '#F0EFEA' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5" style={{ color: '#A10115' }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: '#A10115' }}>
+                    {entitlements.maxSessions === Infinity ? '12' : entitlements.maxSessions} of 12 Sessions Available
+                  </p>
+                  <p className="text-xs" style={{ color: '#6B7280' }}>
+                    {accountType === 'free' ? 'Free plan' : accountType === 'individualPremium' ? 'Premium plan' : 'Club member'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="flex-1 sm:max-w-xs">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: '#F0EFEA' }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${entitlements.maxSessions === Infinity ? 100 : (entitlements.maxSessions / 12) * 100}%`,
+                        backgroundColor: entitlements.maxSessions === 1 ? '#D72C16' : '#A10115'
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium" style={{ color: '#A10115' }}>
+                    {entitlements.maxSessions === Infinity ? '100' : Math.round((entitlements.maxSessions / 12) * 100)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Upgrade CTA for free users */}
+              {accountType === 'free' && (
+                <Link
+                  href="/upgrade"
+                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-all hover:shadow-md w-fit whitespace-nowrap"
+                  style={{ backgroundColor: '#D72C16' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#A10115'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#D72C16'}
+                >
+                  Unlock All Sessions
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
 
         {(catalogLoading || !hasHydrated || entitlementsLoading) ? (
           <div className="text-center py-12">
