@@ -14,7 +14,7 @@ export default async function ClubDashboardLayout({
 
   const isClubAdmin =
     user.profile?.admin ||
-    (user.profile?.accountType === "clubCoach" && user.profile?.clubRole === "admin");
+    user.profile?.clubRole === "admin";
 
   if (!isClubAdmin) {
     redirect("/catalog");
