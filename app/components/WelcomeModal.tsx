@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 interface WelcomeModalProps {
@@ -10,25 +11,29 @@ interface WelcomeModalProps {
 }
 
 export default function WelcomeModal({ type, userName, clubName }: WelcomeModalProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState(type);
   const [joinedClubName, setJoinedClubName] = useState(clubName);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const clubJoined = searchParams.get("clubJoined");
+    const welcome = searchParams.get("welcome");
+    const clubNameParam = searchParams.get("clubName");
     
-    if (params.get("clubJoined") === "true") {
+    if (clubJoined === "true") {
       setModalType("clubCoach");
-      const club = params.get("clubName");
-      if (club) setJoinedClubName(decodeURIComponent(club));
+      if (clubNameParam) setJoinedClubName(decodeURIComponent(clubNameParam));
       setShow(true);
-      window.history.replaceState({}, "", window.location.pathname);
-    } else if (params.get("welcome") === "true") {
+      router.replace(pathname, { scroll: false });
+    } else if (welcome === "true") {
       setModalType(type);
       setShow(true);
-      window.history.replaceState({}, "", window.location.pathname);
+      router.replace(pathname, { scroll: false });
     }
-  }, [type]);
+  }, [searchParams, type, router, pathname]);
 
   if (!show) return null;
 
