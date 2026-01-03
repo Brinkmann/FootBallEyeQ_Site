@@ -1,61 +1,75 @@
 # Football EyeQ User Journey Audit
 ## Comprehensive UX/UI Assessment and Recommendations
+### Pre-Launch Readiness & Startup Mode Focus
 
 **Date:** January 3, 2026
 **Auditor:** Claude (UX/UI Journey Designer)
+**Platform Status:** 🚧 **Startup/Conceptual Mode** (Pre-Launch)
 **Scope:** First landing → Fully fledged user journey for all personas
 
 ---
 
 ## Executive Summary
 
-Football EyeQ has implemented a **solid foundational architecture** for managing multiple user personas with clear subscription tiers. The platform successfully handles:
-- ✅ Individual coaches (free → premium)
-- ✅ Club-based coaching systems
-- ✅ Club administration
-- ✅ Super admin platform management
+Football EyeQ is a **well-architected coaching platform** in its pre-launch phase with strong foundational design for multiple user personas. The platform demonstrates professional UX patterns and thoughtful feature gating.
 
-**Key Strengths:**
-- Clean, well-structured signup flows with clear value propositions
-- Effective club invite code system
-- Good separation of concerns between personas
-- Welcome modals provide excellent first-time user orientation
+### Platform Status: Startup Mode
+- Payment integration is **intentionally placeholder-based** (not live)
+- Subscription management is **manual via super admin** (appropriate for pre-launch)
+- Focus is on **UX polish and mockups** rather than full infrastructure
+- Platform is being validated before go-live
 
-**Critical Gaps Identified:**
-1. **Payment integration incomplete** - Individual Premium upgrade path is blocked
-2. **Missing persona:** Direct player/athlete access not considered
-3. **Free tier limitations** create frustration without clear upgrade incentive in-app
-4. **Navigation discoverability** - key upgrade paths hidden or unclear
-5. **Club admin subscription management** entirely manual (no self-service)
-6. **Onboarding lacks progressive disclosure** - users may feel overwhelmed
+### Key Strengths:
+- ✅ Clean, intuitive signup flows for all personas
+- ✅ Robust club invite code system with security
+- ✅ Well-designed FREE tier (1 reusable session)
+- ✅ Excellent first-time user onboarding (welcome modals)
+- ✅ Unique club-level exercise policy control (EyeQ vs Plastic)
+
+### Pre-Launch Priorities Identified:
+1. **UX Polish** - Limitation messaging, upgrade CTAs, feature discoverability
+2. **Payment Mockups** - Create compelling checkout UI/UX for testing
+3. **Admin Enhancements** - Improve club management tools
+4. **User Journey Optimization** - Remove friction, improve conversion paths
 
 ---
 
-## Part 1: Persona Validation & Expansion
+## Part 1: Persona Validation & Architecture
 
-### ✅ Current Personas (VALIDATED)
+### ✅ Current Personas (VALIDATED & WELL-DESIGNED)
 
 #### Persona 1: Individual Coach (No Club Affiliation)
 **Profile:**
 - Independent coach, private trainer, or freelance coach
 - No affiliation with a registered club
-- Wants to plan training sessions professionally
+- Wants to plan professional training sessions
 - May upgrade if value is demonstrated
 
 **Current Journey:** FREE → Individual Premium ($29/month)
-**Status:** ⚠️ Partially implemented (payment blocked)
+**Implementation Status:** ✅ **Excellent UX**, ⚠️ Payment is mockup (correct for startup mode)
+
+**Code Verified:**
+- FREE tier: 1 session (reusable - can edit unlimited), 10 favorites
+- Premium tier: 12 sessions, unlimited favorites
+- Session locking works correctly (app/planner/page.tsx:109)
 
 ---
 
 #### Persona 2: Club Coach
 **Profile:**
 - Coach at a registered club/academy
-- May or may not have a club code initially
-- Should experience platform value before club joins
-- Needs ability to "convert" from individual to club-based access
+- May or may not have club code initially
+- Experiences platform on FREE tier before club joins
+- Converts to full access when receives club code
 
 **Current Journey:** FREE → Club Member (via code)
-**Status:** ✅ Well implemented
+**Implementation Status:** ✅ **Excellently implemented**
+
+**Path Flexibility:**
+- ✅ Can sign up before club exists (uses FREE tier)
+- ✅ Can sign up with code during signup
+- ✅ Can enter code later (multiple entry points)
+- ✅ Seamless conversion from FREE to club member
 
 ---
 
@@ -64,1246 +78,1642 @@ Football EyeQ has implemented a **solid foundational architecture** for managing
 - Director of coaching, head coach, or club administrator
 - Manages multiple coaches on their staff
 - Needs roster management and invite system
-- Requires club-level feature controls (exercise type policy)
+- Controls club-level policies (exercise type, access)
 
-**Current Journey:** Sign up as Club → Invite coaches → Manage team
-**Status:** ✅ Implemented, ⚠️ Missing self-service subscription
+**Current Journey:** Sign up → Invite coaches → Manage team
+**Implementation Status:** ✅ **Well-designed dashboard**, ⚠️ Manual subscription (appropriate for startup)
+
+**Subscription Model (Verified):**
+- Clubs start with `subscriptionStatus: "trial"`
+- NO automatic trial expiration (indefinite until go-live)
+- Super admin manually activates clubs
+- **This is perfect for startup mode** - allows testing without payment complexity
 
 ---
 
 #### Persona 4: Super Admin (Platform Owner)
 **Profile:**
-- obrinkmann@gmail.com (hardcoded)
+- obrinkmann@gmail.com (hardcoded - appropriate for single-admin startup)
 - Platform oversight and management
-- Exercise catalog management
-- Club/coach subscription management
+- Exercise catalog curation
+- Manual club/coach subscription management
 
 **Current Journey:** Login → Admin dashboard
-**Status:** ✅ Implemented, ⚠️ Scalability concerns (hardcoded email)
+**Implementation Status:** ✅ **Functional**, ⚠️ Scalability note (future consideration)
 
 ---
 
-### 🆕 Missing Persona (RECOMMENDED)
+### 🔍 Missing Persona Assessment
 
-#### Persona 5: Player/Athlete (Future Consideration)
-**Profile:**
-- Young player at a club
-- Parent of a player
-- Wants to view personal training history and progress
-- May want to practice drills independently
+**Potential Persona 5: Player/Athlete**
+**Recommendation:** ❌ **Do NOT add** (focus on coaches first)
 
-**Potential Journey:** Join via club → View assigned sessions → Track progress
-**Priority:** LOW (future phase)
-**Rationale:** While not critical for launch, many training platforms eventually add player-facing features for engagement and retention. Consider in roadmap.
+**Rationale:**
+- Platform's core value is coach planning, not player tracking
+- Adding players dilutes focus during critical launch phase
+- Most successful coaching SaaS start coach-only, add players later (if ever)
+- Focus on perfecting coach experience before expanding
 
-**Recommendation:** Do NOT add this persona now. Focus on perfecting coach experience first.
+**Verdict:** Current 4 personas are **complete and correct** for launch.
 
 ---
 
 ## Part 2: Detailed User Journey Maps
 
-### 🎯 Journey 1: Individual Coach (Free → Premium)
+### 🎯 Journey 1: Individual Coach (FREE → Premium)
 
-#### **Step 1: Discovery & Landing**
+#### **Landing & Discovery** (/)
 **Current State:**
-- User lands on homepage (/)
-- Sees "Login" and "Sign Up" buttons in navbar
-- Marketing content about Football EyeQ
+- Homepage with "Login" and "Sign Up" CTAs
+- Marketing content about Football EyeQ value
 
-**Assessment:** ✅ Clear CTAs
-**Gap:** Homepage doesn't clearly communicate FREE tier value vs. Premium benefits
+**Assessment:** ✅ Clear entry points
+**Pre-Launch Opportunity:** Optimize messaging for early adopters
 
 ---
 
-#### **Step 2: Signup**
+#### **Signup** (/signup)
 **Current State:**
-- Navigate to `/signup`
-- See value prop: "Full drill catalog, 1 session planner, 10 favorites"
-- Fill form: First Name, Last Name, Email, Organization (optional), Password
-- Optional checkbox: "I have a club access code"
-- Clear link to club signup alternative
-- Redirect to `/planner?welcome=true`
+```
+- Clear value prop: "Full drill catalog, 1 session planner, 10 favorites"
+- Form fields: First Name, Last Name, Email, Organization (optional), Password
+- Checkbox: "I have a club access code" (shows alternative path)
+- Link to club signup for admins
+- Redirect: /planner?welcome=true
+```
 
-**Assessment:** ✅ EXCELLENT
-- Clear value proposition shown upfront
-- Form is simple and low-friction
-- Alternative paths clearly marked
-- Optional organization field doesn't create confusion
+**Assessment:** ✅ **EXCELLENT DESIGN**
 
 **Strengths:**
-- "Start free and upgrade anytime" messaging reduces signup anxiety
-- Club admin alternative prominently displayed
-- Already have account? Login link visible
+- Low friction (5 fields, 1 optional)
+- Clear FREE tier benefits shown upfront
+- Alternative paths prominently displayed
+- "Start free and upgrade anytime" reduces signup anxiety
+- Organization field optional (doesn't create confusion)
 
-**Minor Improvements Suggested:**
-1. Add email validation indicator (checkmark when valid)
-2. Show password strength meter
-3. Consider social auth (Google/Apple) for even lower friction
+**Minor Polish Opportunities:**
+1. Add email format validation with visual feedback
+2. Password strength indicator (visual bar)
+3. Consider social auth (Google/Apple) for even lower friction (post-launch)
+
+**Code Location:** `app/signup/page.tsx:11-215`
 
 ---
 
-#### **Step 3: First Login & Welcome**
+#### **Welcome & First Use** (/planner?welcome=true)
 **Current State:**
-- User lands on `/planner?welcome=true`
-- Welcome modal appears:
-  - Title: "Welcome to Football EyeQ!"
-  - Lists 3 things they can do:
-    1. Browse 100+ exercises
-    2. Save up to 10 favorites
-    3. Plan first session
-  - CTAs: "Browse Drills" or "Start Planning"
-  - Upgrade prompt in footer
+```
+Welcome Modal appears:
+- Title: "Welcome to Football EyeQ!"
+- "Your free coach account is ready"
+- 3 clear next steps:
+  1. Browse 100+ exercises in catalog
+  2. Save up to 10 favorites
+  3. Plan your first session
+- CTAs: "Browse Drills" | "Start Planning"
+- Upgrade prompt in footer (subtle, not pushy)
+```
 
-**Assessment:** ✅ EXCELLENT
-- Clear, actionable next steps
-- Not overwhelming (only 3 items)
-- Dual CTAs allow user preference
+**Assessment:** ✅ **EXCELLENT ONBOARDING**
 
-**Gap Identified:**
-- No guided tour or tooltips for first-time use
-- Users who close modal may not know how to navigate
+**Strengths:**
+- Not overwhelming (only 3 steps)
+- Action-oriented (verb-first: "Browse", "Save", "Plan")
+- Dual CTAs respect user intent
+- Clear URL parameter system (removes ?welcome after view)
 
+**Pre-Launch Polish Opportunity:**
+- Add optional "Take a 2-minute tour" for first-time users
+- Implement dismissible tooltips on first catalog/planner visit
+
+**Code Location:** `app/components/WelcomeModal.tsx:27-83`
+
+---
+
+#### **Exploring FREE Tier**
+
+**Current Implementation (Code Verified):**
+
+| Feature | FREE Tier | Premium | Implementation |
+|---------|-----------|---------|----------------|
+| Exercise Catalog | ✅ Full access (100+) | ✅ Full | No restrictions |
+| Session Planner | ⚠️ 1 session (reusable) | ✅ 12 sessions | Locked at session 2+ |
+| Favorites | ⚠️ 10 maximum | ✅ Unlimited (Infinity) | Count enforced |
+| Stats/Analytics | ❌ Completely locked | ✅ Full access | Route blocked |
+| Export | ❌ Locked | ✅ Available | Feature gated |
+
+**Code Locations:**
+- Entitlements: `app/types/account.ts:62-74`
+- Enforcement: `app/planner/page.tsx:109-129`
+
+---
+
+#### **FREE Tier Assessment**
+
+### ✅ What Works Exceptionally Well:
+
+**1. Full Catalog Access**
+- **Strategic Decision:** Brilliant trust-builder
+- **User Benefit:** Can evaluate exercise quality immediately
+- **Conversion Impact:** No "bait and switch" feeling
+- **Competitive Advantage:** Most platforms lock catalog behind paywall
+
+**2. 1 Reusable Session**
+- **Implementation:** Users can edit Session 1 unlimited times (cannot create Session 2)
+- **User Experience:** Enough to demonstrate core value
+- **Strategic Benefit:** Forces focus on quality over quantity
+- **Conversion Point:** When users want to plan progressive training blocks
+
+**3. 10 Favorites**
+- **Sweet Spot:** Enough for discovering go-to exercises
+- **Not Too Generous:** Creates clear upgrade incentive
+- **User Behavior:** Casual users rarely hit limit, active users upgrade
+
+### ⚠️ Areas for UX Improvement:
+
+**1. Limitation Discovery**
+**Current:** Users don't know they're limited until they hit the wall
+**Impact:** Surprise/frustration at limitation point
 **Recommendation:**
-- Add optional "Take a quick tour" button
-- Implement tooltips on first visit to catalog/planner
-- Add "Help" or "Getting Started" link in navbar
+- Add session counter: "FREE: 1/1 session used" in planner header
+- Add favorites counter: "8/10 favorites" in catalog
+- Show 🔒 icon on locked sessions 2-12 before click
+- Preview locked features BEFORE user clicks them
+
+**2. Limitation Messaging**
+**Current State (Assumed):**
+- Session 2+ shows generic lock overlay
+- "Upgrade to unlock" + "View plans" link
+- No emotional appeal or benefit clarity
+
+**Recommended Improvement:**
+```diff
+- Current: "Upgrade to unlock"
++ Better: "Unlock all 12 sessions to plan your full season"
+
+- Current: Generic lock icon
++ Better: "Plan progressive training blocks with 12 sessions"
+         "Track improvement across your season"
+         [Upgrade to Premium] [Join a Club]
+```
+
+**3. Stats Feature - No Preview**
+**Current:** Stats completely hidden (user clicks → blocked)
+**Issue:** Users don't know what they're missing
+**Best Practice:** Show preview with blur/overlay (Spotify/LinkedIn model)
+
+**Recommended Mockup:**
+- Show sample stats chart with blur effect
+- Overlay: "🔒 Unlock session analytics with Premium"
+- Sub-text: "Track player engagement, drill effectiveness, and session progression"
+- CTA: "Upgrade Now" or "Join a Club"
+
+**Code Location:** `app/planner/stats/page.tsx` (add preview mode)
 
 ---
 
-#### **Step 4: Exploring Features (Free Tier)**
+#### **Upgrade Attempt** (/upgrade)
+
 **Current State:**
-- **Catalog Access:** ✅ Full access to 100+ exercises
-- **Session Planner:** ⚠️ Limited to 1 session
-- **Favorites:** ⚠️ Limited to 10 exercises
-- **Stats:** ❌ Blocked (premium only)
-- **Export:** ❌ Blocked (premium only)
+```
+- Pricing display: $29/month for Pro Access
+- Features listed: Full planner, analytics, unlimited favorites
+- Two paths:
+  1. "View Checkout" → /upgrade/checkout (Individual Premium)
+  2. "Join a Club" → Inline code entry
+- "Register Your Club" CTA at bottom
+```
 
-**Assessment:** ⚠️ MIXED
+**Assessment:** ✅ Layout excellent, ⚠️ Checkout is mockup (correct for startup)
 
-**What Works:**
-- Full catalog access is generous and builds trust
-- 1 session is enough to experience core value
-- 10 favorites is reasonable for testing
+**Checkout Page Status:**
+- Shows "Coming soon" message (appropriate for pre-launch)
+- Stripe webhook exists but is placeholder
+- No actual payment processing (intentional)
 
-**What Doesn't Work:**
-- **No clear indication of limitation UNTIL hit** - users may feel "baited and switched"
-- No preview or teaser of premium features (stats, exports)
-- Limitation messaging is generic, not motivating
+**Pre-Launch Recommendation:**
+Instead of "Coming soon", create **high-fidelity mockup**:
+- Design full checkout UI (for user testing)
+- Add "Waitlist" signup for early access
+- Capture emails of interested users
+- A/B test pricing/messaging before going live
 
-**Critical Gap:** **When user hits limitation, there's no compelling upgrade CTA**
-
----
-
-#### **Step 5: Discovering Limitations**
-**Current Scenario A:** User tries to create 2nd session
-- **Expected:** Modal/message: "You've used your 1 free session"
-- **Actual:** (Need to verify implementation)
-- **Should Show:**
-  - Clear explanation of limitation
-  - Preview of premium: "Premium users get 12 sessions"
-  - Compelling CTA: "Upgrade for $29/month" or "Join a club for free access"
-  - Dismiss option to continue with free tier
-
-**Current Scenario B:** User tries to favorite 11th exercise
-- **Expected:** Modal/message: "You've reached your 10-favorite limit"
-- **Should Show:**
-  - "Premium users get unlimited favorites"
-  - CTA to upgrade
-
-**Current Scenario C:** User clicks "Stats" tab in planner
-- **Expected:** Blocked with upgrade prompt
-- **Should Show:**
-  - Preview of what stats look like (screenshot or demo data)
-  - Compelling value prop for analytics
-  - Upgrade CTA
-
-**CRITICAL FINDING:** Need to audit how limitations are currently presented in the UI. This is the most important conversion moment.
+**Code Locations:**
+- Upgrade page: `app/upgrade/page.tsx:9-257`
+- Checkout: `app/upgrade/checkout/page.tsx`
 
 ---
 
-#### **Step 6: Attempting to Upgrade (Individual Premium)**
-**Current State:**
-- User clicks "Free" badge in navbar → `/upgrade`
-- Or finds `/upgrade` from navigation
-- Upgrade page shows:
-  - Pricing: $29/month for Pro Access
-  - Features: Full planner, analytics, unlimited favorites
-  - TWO paths:
-    1. "View Checkout" → `/upgrade/checkout` (Individual Premium)
-    2. "Join a Club" → Enter invite code
-  - CTA: "Register Your Club" at bottom
-
-**Assessment:** ✅ Layout is good, ❌ **CRITICAL BLOCKER**
-
-**The Problem:**
-- Checkout page shows "Coming soon" message
-- Payment integration is incomplete (Stripe webhooks stubbed)
-- **User cannot actually upgrade to Individual Premium**
-
-**Impact:** 🔴 **HIGH PRIORITY BUG**
-- Users who want to pay cannot
-- Lost revenue
-- Frustrated users may churn
-
-**Recommendation:**
-1. **If payment ready soon:** Add waitlist signup
-2. **If payment not ready:** Remove "View Checkout" button entirely and show "Coming Soon" badge with email signup
-3. **Best practice:** Implement Stripe checkout ASAP as top priority
-
----
-
-#### **Step 7: Using the Platform (Free Tier)**
-**Current State:**
-- User can browse catalog indefinitely
-- Can plan 1 session (reusable? or one-time? - needs clarification)
-- Can save 10 favorites
-- Cannot access stats
-
-**Questions for Clarification:**
-1. **Is the 1 session limit permanent or per season?**
-   - If permanent: User can only ever plan 1 session (very limited)
-   - If per season: User gets 1 new session each season (more reasonable)
-   - If reusable: User can edit/reuse 1 session slot (most generous)
-
-2. **What happens when user tries to edit a full session?**
-   - Can they edit existing session?
-   - Does editing "consume" the session?
-
-3. **Are favorites persistent or do they reset?**
-   - Likely persistent, but good to confirm
-
-**Recommendation:** Clarify session limit logic in code audit
-
----
-
-### 🎯 Journey 2: Club Coach (Free → Club Member via Code)
+### 🎯 Journey 2: Club Coach (FREE → Club Member)
 
 #### **Path A: Has Code at Signup**
 
-**Step 1: Signup with Code**
-- User checks "I have a club access code" during signup
-- Creates account (still starts as FREE)
-- Redirected to `/join-club` (NOT `/planner?welcome=true`)
+**Flow:**
+```
+1. Signup page (/signup)
+2. Check "I have a club access code"
+3. Create account (starts as FREE)
+4. Redirect to /join-club (NOT /planner)
+5. Enter 6-character code (auto-uppercase)
+6. API validates code
+7. Success screen with club name
+8. Shows unlocked features
+9. CTAs: "Browse Drills" | "Start Planning"
+```
 
-**Step 2: Enter Code**
-- Simple, focused page: "Join Your Club"
-- Enter code input (6-character, uppercase)
-- Submit → API validates
-- Success → Welcome screen with club name
-- Shows unlocked features (12 sessions, unlimited favorites, stats)
-- CTAs: "Browse Drills" or "Start Planning"
-
-**Assessment:** ✅ EXCELLENT
-- Clear, focused flow
-- Immediate feedback on success
-- No unnecessary steps
+**Assessment:** ✅ **PERFECTLY DESIGNED**
 
 **Strengths:**
-- Auto-uppercase input reduces errors
+- Focused flow (no distractions after checking box)
+- Skips free welcome modal (different path)
 - Clear success state with feature list
-- Dual CTAs respect user intent
+- Instant gratification (immediate full access)
+
+**Code Location:** `app/join-club/page.tsx:10-254`
 
 ---
 
-#### **Path B: No Code at Signup (Later Joins Club)**
+#### **Path B: Receives Code After Signup**
 
-**Step 1: Signup as Free**
-- Goes through standard free signup
-- Sees welcome modal for free users
-- Uses platform with free limitations
+**User Scenario:**
+- Coach signs up FREE (uses platform with 1 session)
+- Days/weeks later: Receives code from club admin
+- Needs to enter code and upgrade
 
-**Step 2: Receives Club Code Later**
-- Coach receives code from club admin
-- Multiple entry points:
-  1. `/profile` page → "Club Membership" section → Enter code
-  2. `/upgrade` page → "Join a Club" → Enter code
-  3. `/join-club` direct link
+**Entry Points (Multiple):**
+1. `/profile` → "Club Membership" section
+2. `/upgrade` → "Join a Club" card
+3. `/join-club` direct link
+4. (Recommended) Banner for FREE users: "Have a club code?"
 
-**Step 3: Enter Code**
-- Same flow as Path A
-- Account converted from FREE → clubCoach
-- Immediate access to all premium features
+**Assessment:** ✅ **Good multi-path design**, ⚠️ Discoverability gap
 
-**Assessment:** ✅ GOOD, ⚠️ Minor discoverability issue
+**Gap:** Coaches who receive code via email/WhatsApp may not know WHERE to enter it
 
-**Gap:** Users may not know WHERE to enter code if they receive it after signup
 **Recommendation:**
-- Add "Have a club code?" prompt in navbar for FREE users
-- Add banner on planner page: "Have a club code? Unlock full access"
+- Add persistent banner for FREE users (dismissible):
+  - "Part of a club? Enter your access code to unlock premium features →"
+- Add helper tooltip on FREE badge in navbar
+- Track how many codes are generated vs redeemed (measure gap)
 
 ---
 
-#### **Edge Case: Club Coach Without Club Subscription**
-**Current State:**
-- Club admin signs up → Club starts in "trial" status
-- Coaches join and get full access immediately
-- What happens when trial ends?
+#### **Code Redemption System**
 
-**Question:** How long is trial? What happens after?
-- Trial badge shown on club dashboard
-- No apparent trial expiration logic in UI
-- Super admin can manually activate/deactivate clubs
+**Implementation (Code Verified):**
 
-**Gap:** No self-service subscription for clubs
-**Impact:** Every club requires manual admin intervention
+**Code Generation:**
+- 6 characters, alphanumeric
+- Excludes confusing chars (no O/0, I/l, etc.)
+- Format: `ABCDEFGHJKLMNPQRSTUVWXYZ23456789`
+- Expires in 7 days
+- Email-specific (security)
+
+**Validation Logic:**
+```typescript
+1. Code exists in clubInvites collection
+2. Not expired (< 7 days old)
+3. Not already used
+4. Email matches invite email (if specified)
+5. Club still exists and active
+```
+
+**On Success:**
+- Update user: accountType → "clubCoach"
+- Set clubId and clubRole → "coach"
+- Add to clubs/{clubId}/members collection
+- Mark invite as used (timestamp + userId)
+- Refresh entitlements (immediate full access)
+
+**Assessment:** ✅ **Robust, secure implementation**
+
+**Code Locations:**
+- Generation: `app/club/dashboard/page.tsx:129-175`
+- Redemption: `app/api/redeem-invite/route.ts`
 
 ---
 
 ### 🎯 Journey 3: Club Admin
 
-#### **Step 1: Discovering Club Signup**
-**Current Entry Points:**
-1. From `/signup` → See "Setting up a club?" box at bottom
-2. Direct navigation to `/club/signup`
+#### **Discovery & Entry** (/club/signup)
 
-**Assessment:** ✅ Clear pathway from individual signup
+**Entry Points:**
+1. From `/signup` → "Setting up a club?" callout box
+2. Direct navigation (from marketing, etc.)
+
+**Assessment:** ✅ Clear pathway separation
 
 ---
 
-#### **Step 2: Club Registration (2-Step Form)**
+#### **Club Registration** (2-Step Form)
 
-**Step 1 of 2: Club Information**
-- Simple form: Club name only
-- Visual step indicator (1 → 2)
+**Step 1: Club Information**
+```
+- Single field: Club name
+- Visual step indicator (●━○)
 - Value proposition shown:
-  - Full 12-session planner for all coaches
-  - Unlimited favorites and stats
-  - Easy invite system
-  - Admin dashboard
-- "Back to signup options" link for easy exit
+  • Full 12-session planner for all coaches
+  • Unlimited favorites and stats
+  • Easy invite system with codes
+  • Admin dashboard to manage team
+- Back link to signup options
+```
 
-**Step 2 of 2: Admin Account**
-- First name, Last name, Email, Password
-- Shows club name from step 1
-- Back button returns to step 1 (preserves data)
-- Creates:
-  1. Club (with trial status)
-  2. Admin user account
-  3. Admin as first club member
+**Step 2: Admin Account**
+```
+- Fields: First name, Last name, Email, Password
+- Shows selected club name from step 1
+- Back button (preserves step 1 data)
+- On submit:
+  1. Creates club with subscriptionStatus: "trial"
+  2. Creates admin user account
+  3. Adds admin as first club member
+  4. Redirects to /club/dashboard?welcome=true
+```
 
-**Assessment:** ✅ EXCELLENT
-- Progressive disclosure (don't ask everything at once)
-- Clear value prop upfront
-- Easy to navigate backward
-- Visual progress indicator
+**Assessment:** ✅ **EXEMPLARY FORM DESIGN**
 
-**Minor Suggestion:**
-- Add estimated time: "2 minutes to complete"
+**Strengths:**
+- Progressive disclosure (don't overwhelm with all fields at once)
+- Visual progress indicator sets expectations
+- Value prop upfront (motivates completion)
+- Easy navigation backward (doesn't lose data)
+- Clear transformation: Club → Admin → Ready
 
----
+**Best Practices Applied:**
+- Form broken into logical steps
+- Each step has single focus
+- Can review previous step
+- Clear "what happens next" messaging
 
-#### **Step 3: Club Dashboard Welcome**
-**Current State:**
-- Redirect to `/club/dashboard?welcome=true`
-- Welcome modal appears:
-  - Title: "{Club Name} is ready!"
-  - Next steps (numbered):
-    1. Generate invite codes
-    2. Share codes with coaches
-    3. Manage roster
-  - Security tip: Codes are single-use
-  - CTA: "Get Started"
-
-**Assessment:** ✅ EXCELLENT
-- Clear, actionable guidance
-- Sets expectations correctly
-- Numbered steps are easy to follow
+**Code Location:** `app/club/signup/page.tsx:12-268`
 
 ---
 
-#### **Step 4: Managing Club (Dashboard)**
+#### **Welcome Experience** (/club/dashboard?welcome=true)
 
-**Team Roster Section:**
-- Shows active coaches
-- Shows pending invites (with expiration countdown)
-- "Invite Coach" button (prominent, primary color)
+**Welcome Modal:**
+```
+Title: "{ClubName} is ready!"
+Subtitle: "You're now the admin. Let's get your team set up."
 
-**Invite Flow:**
-- Click "Invite Coach"
-- Form expands inline
-- Enter coach email
-- Generate code (6-char, excludes confusing chars)
-- Code displayed with expiry (7 days)
-- Can cancel unused invites
+Next Steps:
+1. Generate invite codes for coaches
+2. Share codes with coaches (they sign up & enter code)
+3. Manage roster here as coaches join
 
-**Exercise Access Mode Section:**
-- Three options:
-  1. **EyeQ Only** - Smart LED cone exercises
-  2. **Plastic Only** - Traditional cone exercises
-  3. **Coach Choice** - Coaches toggle themselves
-- Updates in real-time
-- Clear explanation of each option
+Security tip: "Each code is single-use and email-specific"
+CTA: "Get Started"
+```
 
-**How-To Guide Section:**
-- Step-by-step instructions for inviting
-- Reminder that codes are email-specific
+**Assessment:** ✅ **EXCELLENT ACTIVATION**
 
-**Assessment:** ✅ EXCELLENT IMPLEMENTATION
+**Strengths:**
+- Celebrates success (club name in title)
+- Sets clear expectations (3 numbered steps)
+- Educates on security (single-use codes)
+- Action-oriented CTA
+
+**Code Location:** `app/components/WelcomeModal.tsx:86-136`
+
+---
+
+#### **Club Dashboard** (/club/dashboard)
+
+### **Dashboard Sections:**
+
+**1. Team Roster**
+```
+- Shows: Active coaches + Pending invites
+- Active coaches (green badge):
+  • Email
+  • Role (admin/coach)
+  • Generated code (if available)
+  • "Remove" button (except admin)
+- Pending invites (amber badge):
+  • Email
+  • Code
+  • Expiration date
+  • "Cancel" button
+- Empty state: "No coaches yet. Click 'Invite Coach'..."
+```
+
+**2. Invite Coach (Inline Form)**
+```
+Trigger: "Invite Coach" button (prominent, primary color)
+Form expands inline:
+  - Email input (required, validated)
+  - Note: "Code only works for this email"
+  - CTAs: "Generate Access Code" | "Cancel"
+On success:
+  - Code displayed in pending invites list
+  - Form collapses
+  - Admin can copy/share code manually
+```
+
+**3. Exercise Access Mode (Club Policy)**
+```
+Radio button selector:
+○ EyeQ Only - Smart LED cone exercises only
+○ Plastic Only - Traditional cone exercises only
+● Coach Choice - Each coach toggles (default)
+
+Updates in real-time to club document
+Cascades to all club coaches immediately
+```
+
+**4. How-To Guide**
+```
+Step-by-step instructions:
+1. Click "Invite Coach" and enter email
+2. Share generated code with them
+3. They sign up and enter code
+Note: Code is single-use and email-specific
+```
+
+**Assessment:** ✅ **OUTSTANDING IMPLEMENTATION**
 
 **Strengths:**
 - Inline form prevents navigation disruption
-- Email-specific codes increase security
-- Visual distinction between active coaches (green) and pending invites (amber)
-- Exercise type policy is a powerful, unique feature
-- Can remove coaches (with confirmation)
+- Clear visual distinction (active=green, pending=amber)
+- Exercise policy is unique competitive feature
+- Confirmation before removing coaches
+- Empty states guide next action
 
-**Minor Improvements:**
-1. Add bulk invite option (CSV upload?)
-2. Add "Copy code" button for easy sharing
-3. Add email notification option (auto-send code to coach)
-4. Show "invited by" and "joined date" for each coach
+**Pre-Launch Opportunities:**
+1. Add "Copy Code" button (clipboard API) 🚀 **Quick Win**
+2. Add bulk invite (CSV upload) - nice to have
+3. Add auto-email invitation - future enhancement
+4. Show "Last active" for coaches - engagement metric
+
+**Code Location:** `app/club/dashboard/page.tsx:40-517`
 
 ---
 
-#### **Step 5: Ongoing Management**
-**Current State:**
-- No subscription management interface
-- Trial badge shown but no expiration date
+#### **Subscription Management (Current: Manual)**
+
+**Current State in Startup Mode:**
+- Club dashboard shows "Trial" badge
+- No expiration date shown
 - No payment method entry
 - No billing history
-- No upgrade to paid subscription button
+- No self-service upgrade
 
-**Assessment:** ❌ **CRITICAL GAP**
+**Why This Is Correct for Startup:**
+- ✅ Allows testing without payment complexity
+- ✅ Super admin controls everything (appropriate for small scale)
+- ✅ Can manually activate clubs case-by-case
+- ✅ No credit card processing liability during testing
 
-**What's Missing:**
-1. **Subscription status clarity:**
-   - When does trial end?
-   - How to add payment method?
-   - What happens when trial expires?
+**Verified Implementation:**
+- Clubs created with `subscriptionStatus: "trial"`
+- No automatic expiration logic (trials are indefinite)
+- Super admin can manually change to "active" or "inactive"
+- When subscription is "inactive", all coaches downgraded to FREE
 
-2. **Billing management:**
-   - No way to view/update payment method
-   - No invoices or billing history
-   - No usage-based pricing visibility (if applicable)
+**Code Locations:**
+- Club creation: `app/api/create-club/route.ts:50`
+- Manual activation: `app/api/admin/upgrade/route.ts:104-112`
 
-3. **Self-service upgrades:**
-   - Cannot activate paid subscription without super admin
-   - No pricing information for clubs
-   - No "Upgrade to Paid" flow
+---
 
-**Impact:** 🔴 **HIGH** - Every club requires manual intervention, limiting scale
+**Pre-Launch Mockup Recommendation:**
 
-**Recommendation:**
-1. Add "Subscription" tab to club dashboard
-2. Show trial expiration countdown
-3. Add "Enter Payment Method" flow
-4. Integrate Stripe for club subscriptions
-5. Display pricing (per coach? flat fee?)
-6. Auto-upgrade flow before trial expires
+Even without real payment processing, create **high-fidelity mockup** of subscription tab:
+
+```
+[Mockup Design]
+-----------------
+Subscription Status: Trial
+Trial Period: No expiration (pre-launch mode)
+
+[Future: Add Payment Method]
+(Greyed out with "Available at launch" badge)
+
+Current Features:
+✓ Unlimited coaches
+✓ Full session planning
+✓ Analytics for all coaches
+✓ Exercise type policy control
+
+[Coming Soon: Pricing]
+Expected: $XX/month flat rate
+```
+
+**Purpose:** User testing and feedback on pricing before launch
 
 ---
 
 ### 🎯 Journey 4: Super Admin
 
-#### **Step 1: Access**
-- Login with obrinkmann@gmail.com
+#### **Access & Role**
+- Hardcoded email: obrinkmann@gmail.com
 - Navbar shows "Admin" badge
-- "Admin Hub" link appears in navigation
+- "Admin Hub" link in navigation
 
-**Assessment:** ✅ Simple, ⚠️ Hardcoded email is not scalable
+**Assessment:** ✅ **Appropriate for single-admin startup**
+**Future Note:** Add role-based system when multiple admins needed
 
 ---
 
-#### **Step 2: Admin Dashboard (`/admin`)**
+#### **Admin Dashboard** (/admin)
 
-**Three Tabs:**
+### **Three Management Tabs:**
 
-**Exercises Tab:**
-- Add new exercises (comprehensive form with all metadata)
+**1. Exercises Tab**
+```
+Functions:
+- Add new exercise (comprehensive form)
 - Edit existing exercises
 - Delete exercises
-- All fields: ID, Title, Age Group, Difficulty, Duration, Decision Theme, Player Involvement, Game Moment, Overview, Description, Image
+- Fields: ID, Title, Age Group, Difficulty, Duration,
+  Decision Theme, Player Involvement, Game Moment,
+  Overview, Description, Image, Exercise Type (eyeq/plastic)
+```
 
-**Assessment:** ✅ GOOD
-**Gap:** No bulk operations, no import/export
-
----
-
-**Clubs Tab:**
-- Table showing all clubs:
-  - Name
-  - Contact Email
-  - Member count
-  - Subscription status (trial/active/inactive)
-  - Account status (active/suspended)
-- Actions per club:
-  - Activate/Deactivate subscription
-  - Suspend/Unsuspend (with reason)
-  - Delete (removes club, invites, resets coaches to free)
-
-**Assessment:** ✅ FUNCTIONAL, ⚠️ Basic
-
-**Strengths:**
-- Clear overview of all clubs
-- Suspend with reason (good for compliance)
-- Delete has cascade logic (resets coaches)
-
-**Gaps:**
-- No search/filter
-- No pagination (won't scale to 100+ clubs)
-- No export to CSV
-- No bulk actions
-- No financial reporting (MRR, churn, etc.)
-- No communication tools (email club admins)
+**Assessment:** ✅ **Comprehensive content management**
+**Pre-Launch Opportunity:** Add markdown preview for descriptions
 
 ---
 
-**Coaches Tab:**
-- Table showing all coaches:
-  - Name
-  - Email
-  - Account Type
-  - Club affiliation
-  - Status
-- Actions per coach:
-  - Upgrade to Individual Premium
-  - Downgrade to Free
-  - Suspend/Unsuspend
-  - Delete
+**2. Clubs Tab**
+```
+Table showing:
+- Name, Contact Email, Member Count
+- Subscription Status (trial/active/inactive)
+- Account Status (active/suspended)
 
-**Assessment:** ✅ FUNCTIONAL, ⚠️ Basic
+Actions per club:
+- Activate (set subscription to "active")
+- Deactivate (set to "inactive")
+- Suspend/Unsuspend (with reason field)
+- Delete (cascades: removes club, invites, resets coaches to free)
+```
 
-**Strengths:**
-- Can manually override subscription
-- Suspend with reason
+**Assessment:** ✅ **Functional for startup scale**
+**Future Enhancements (Post-Launch):**
+- Search/filter (needed at 50+ clubs)
+- Pagination (needed at 100+ clubs)
+- Export to CSV
+- Bulk operations
+- Financial reporting (MRR, churn)
 
-**Gaps:**
-- Cannot upgrade coach if already in club (correct business logic)
-- No search/filter
-- No pagination
-- No bulk operations
-- No impersonation for debugging
-- No activity logs (when did user last login?)
+**Code Location:** `app/admin/page.tsx:236-580`
 
 ---
 
-#### **Step 3: Manual Operations**
+**3. Coaches Tab**
+```
+Table showing:
+- Name, Email, Account Type
+- Club (if member), Status
+
+Actions per coach:
+- Upgrade to Individual Premium (if not in club)
+- Downgrade to Free
+- Suspend/Unsuspend (with reason)
+- Delete account
+```
+
+**Assessment:** ✅ **Good for manual management**
+**Pre-Launch Polish:**
+- Add filter by account type
+- Add "last login" date (engagement tracking)
+
+**Code Location:** `app/admin/page.tsx:582-850`
+
+---
+
+#### **Manual Operations (Startup Mode)**
+
 **Current Reality:**
 - Super admin manually activates club subscriptions
 - No automated trial expiration
-- No payment webhooks triggering status changes
-- Manual upgrade/downgrade only
+- No payment webhooks (Stripe is placeholder)
+- All upgrades/downgrades are manual
 
-**Assessment:** ❌ **NOT SCALABLE**
+**Assessment:** ✅ **PERFECT for pre-launch**
 
-**Recommendation:**
-1. Implement Stripe webhooks properly
-2. Automate trial expiration warnings
-3. Automate subscription status updates
-4. Add self-service paths to reduce admin burden
+**Why This Works:**
+- You can control who gets access (quality control)
+- Personal touch with early adopters
+- Gather feedback before automating
+- Test pricing models manually
+- No payment processing complexity
 
----
-
-## Part 3: Critical Findings & Friction Points
-
-### 🔴 High Priority Issues
-
-#### 1. **Payment Integration Incomplete**
-**Location:** `/upgrade/checkout` page
-**Impact:** Individual coaches cannot upgrade to Premium
-**Evidence:** Checkout shows "coming soon" message
-**Revenue Impact:** Direct revenue loss
-
-**Recommendation:**
-- [ ] Complete Stripe integration ASAP
-- [ ] Implement checkout flow
-- [ ] Setup webhooks for subscription lifecycle
-- [ ] Test full payment flow
-- [ ] Add payment method management
-
-**Priority:** 🔴 **URGENT**
+**When to Automate:** After 20-50 clubs or at official launch
 
 ---
 
-#### 2. **No Club Self-Service Subscription**
-**Location:** Club dashboard
-**Impact:** Every club requires manual activation by super admin
-**Scalability:** Cannot scale beyond small number of clubs
+## Part 3: Pre-Launch Focus Areas
 
-**Recommendation:**
-- [ ] Add pricing page for clubs
-- [ ] Add payment method entry to club dashboard
-- [ ] Implement club subscription checkout
-- [ ] Add trial expiration warnings
-- [ ] Auto-upgrade before trial ends
+### 🎨 Priority 1: UX Polish & Mockups (High Impact, Low Effort)
 
-**Priority:** 🔴 **HIGH**
+#### **Quick Wins (1-3 hours each)**
 
----
+**1. Add Session/Favorites Counters**
+```typescript
+Location: app/planner/page.tsx header
+Add: "FREE: 1/1 sessions used" badge
+Style: Subtle, informational (not annoying)
+```
 
-#### 3. **Limitation Discovery is Poor**
-**Location:** Throughout app (planner, favorites, stats)
-**Impact:** Users hit walls without understanding why or how to fix
-**Conversion Impact:** Missed upgrade opportunities
+**2. Add "Copy Code" Button**
+```typescript
+Location: app/club/dashboard/page.tsx
+When: Admin generates invite code
+Function: Copy to clipboard with success toast
+Tech: navigator.clipboard.writeText()
+```
 
-**Current State:**
-- Users don't know they're limited until they hit limit
-- Limitation messages are generic
-- No compelling CTAs to upgrade
+**3. Improve Lock Overlay Messaging**
+```diff
+// app/planner/page.tsx:119
+- <p className="text-sm font-medium text-gray-600">Upgrade to unlock</p>
++ <p className="text-sm font-medium text-gray-600">Plan your full season</p>
++ <p className="text-xs text-gray-500 mt-1">Unlock 11 more sessions with Premium</p>
+```
 
-**Recommendation:**
-- [ ] Add "Free: 1/1 session used" indicator in planner header
-- [ ] Add "10/10 favorites" indicator in catalog
-- [ ] Show "🔒 Premium" badges on locked features
-- [ ] Improve limitation modal messaging with:
-  - Clear explanation
-  - Visual preview of premium feature
-  - Dual CTA: "Upgrade" or "Join Club"
-- [ ] Add upgrade prompts BEFORE limitation hit (soft sell)
+**4. Add "Have Club Code?" Banner**
+```typescript
+Location: app/planner/page.tsx (for FREE users only)
+Condition: accountType === "free"
+Design: Dismissible blue banner at top
+Message: "Part of a club? Enter your code to unlock premium →"
+CTA: Link to /join-club
+```
 
-**Priority:** 🟡 **MEDIUM-HIGH**
-
----
-
-### 🟡 Medium Priority Issues
-
-#### 4. **No Guided Onboarding After Welcome Modal**
-**Impact:** Users may feel lost after closing welcome modal
-**Evidence:** No tooltips, no progressive disclosure, no help system
-
-**Recommendation:**
-- [ ] Add optional product tour (use library like Shepherd.js or Intro.js)
-- [ ] Add contextual tooltips on first visit to each page
-- [ ] Add "Help" button in navbar linking to:
-  - Getting started guide
-  - Video tutorials
-  - FAQ
-- [ ] Add empty states with guidance ("No sessions yet? Create your first!")
-
-**Priority:** 🟡 **MEDIUM**
+**5. Email Validation Feedback**
+```typescript
+Location: app/signup/page.tsx
+Add: Real-time email format validation
+UI: Green checkmark when valid, red X when invalid
+Reduces signup errors
+```
 
 ---
 
-#### 5. **Club Code Entry Points Not Discoverable**
-**Impact:** Coaches who receive code after signup may not know where to enter it
+#### **Medium Effort Polish (1-2 days each)**
 
-**Recommendation:**
-- [ ] Add persistent banner for FREE users: "Have a club code? Enter it here"
-- [ ] Add "Enter Club Code" button in navbar for free users
-- [ ] Add reminder in profile page
-- [ ] Send email to free users highlighting club code option
+**6. Stats Preview with Blur Overlay**
+```typescript
+Location: app/planner/stats/page.tsx
+Current: Complete block with generic message
+Better: Show sample stats chart with blur effect
+Overlay: "🔒 Unlock Analytics with Premium"
+Include: Feature benefits, upgrade CTA
+Reference: Spotify/LinkedIn preview model
+```
 
-**Priority:** 🟡 **MEDIUM**
+**7. Feature Comparison Table**
+```tsx
+Location: app/upgrade/page.tsx
+Design: Side-by-side FREE | PREMIUM | CLUB
+Include: All features with ✓/✗ indicators
+Highlight: What user gains by upgrading
+Mobile: Responsive stacking
+```
 
----
+**8. Payment Mockup (High-Fidelity)**
+```
+Location: app/upgrade/checkout/page.tsx
+Instead of: "Coming soon" message
+Create: Full checkout UI mockup
+Include:
+  - Plan summary (Pro Access - $29/month)
+  - Payment method entry (greyed out)
+  - Billing address fields (placeholder)
+  - "Start Subscription" button (shows "Pre-launch" tooltip)
+  - "Join waitlist" CTA (capture emails)
+Purpose: User testing, validate pricing, collect interest
+```
 
-#### 6. **Admin Interface Lacks Scalability Features**
-**Impact:** Won't work well with 50+ clubs or 500+ coaches
-
-**Recommendation:**
-- [ ] Add search/filter to all admin tables
-- [ ] Add pagination
-- [ ] Add bulk operations (bulk suspend, bulk email, etc.)
-- [ ] Add export to CSV
-- [ ] Add analytics dashboard:
-  - MRR (Monthly Recurring Revenue)
-  - Active users
-  - Churn rate
-  - Popular exercises
-- [ ] Add activity logs (audit trail)
-
-**Priority:** 🟡 **MEDIUM** (lower if current scale is small)
-
----
-
-### 🟢 Low Priority Issues
-
-#### 7. **Super Admin Hardcoded Email**
-**Impact:** Cannot add additional super admins
-**Technical Debt:** Not sustainable long-term
-
-**Recommendation:**
-- [ ] Create `role` field in user database
-- [ ] Add super admin role assignment in admin panel
-- [ ] Remove hardcoded email check
-- [ ] Add role-based access control (RBAC)
-
-**Priority:** 🟢 **LOW** (unless multiple admins needed soon)
-
----
-
-#### 8. **No Email Notifications**
-**Impact:** Manual communication required for all events
-
-**Missing Notifications:**
-- Welcome email after signup
-- Club invite code via email
-- Trial expiration warning
-- Payment receipt
-- Payment failure
-- Feature announcements
-
-**Recommendation:**
-- [ ] Integrate email service (SendGrid, Postmark, Resend)
-- [ ] Create email templates
-- [ ] Trigger emails for key events
-- [ ] Add email preferences page
-
-**Priority:** 🟢 **LOW-MEDIUM** (depends on support burden)
+**9. Guided Product Tour (Optional)**
+```typescript
+Library: Shepherd.js or Intro.js
+Trigger: Optional button in welcome modal
+Steps:
+  1. "This is the drill catalog" (point to catalog link)
+  2. "Save your favorites here" (point to heart icon)
+  3. "Plan sessions here" (point to planner)
+  4. "Your plan syncs automatically" (point to sync indicator)
+Skippable: Always
+Resumable: Store progress in localStorage
+```
 
 ---
 
-## Part 4: FREE Tier Assessment
+### 🧪 Priority 2: User Testing Preparation
 
-### Current FREE Tier Limitations
+#### **Pre-Launch Testing Checklist**
 
-| Feature | FREE | Club Coach | Individual Premium |
-|---------|------|------------|-------------------|
-| Exercise Catalog | ✅ Full (100+) | ✅ Full (filtered by policy) | ✅ Full |
-| Session Planner | ⚠️ 1 session | ✅ 12 sessions | ✅ 12 sessions |
-| Favorites | ⚠️ 10 max | ✅ Unlimited | ✅ Unlimited |
-| Stats/Analytics | ❌ Locked | ✅ Unlocked | ✅ Unlocked |
-| Export | ❌ Locked | ✅ Unlocked | ✅ Unlocked |
+**1. Onboarding Flow Testing**
+- [ ] Record 5 first-time signups (screen recording)
+- [ ] Ask: "What can you do with FREE account?"
+- [ ] Measure: Time to first session created
+- [ ] Track: Drop-off points in signup flow
 
----
+**2. Limitation Messaging Testing**
+- [ ] Watch users hit session 2 lock
+- [ ] Ask: "What would you do now?"
+- [ ] Measure: Click-through rate to /upgrade
+- [ ] A/B test: Different lock messages
 
-### Is the FREE Tier Meaningful?
+**3. Value Proposition Testing**
+- [ ] Show /upgrade page to coaches
+- [ ] Ask: "Is this worth $29/month?"
+- [ ] Ask: "What's missing from FREE that you need?"
+- [ ] Validate: FREE tier isn't too generous OR too restrictive
 
-**✅ What Works:**
+**4. Club Admin Flow Testing**
+- [ ] Watch admin create club
+- [ ] Watch admin generate invite
+- [ ] Ask: "How would you share this code?"
+- [ ] Measure: Time from signup to first coach invited
 
-1. **Full Catalog Access**
-   - EXCELLENT decision
-   - Builds trust immediately
-   - Users can evaluate exercise quality
-   - No "bait and switch" feeling
-   - Allows meaningful exploration
-
-2. **1 Session Planner**
-   - Enough to experience core value
-   - Users can try the main feature
-   - Not too restrictive for casual users
-
-3. **10 Favorites**
-   - Reasonable for discovering favorites
-   - Most users won't hit this immediately
-   - Clear upgrade incentive when hit
-
-**⚠️ What Needs Improvement:**
-
-1. **Session Limit Clarity**
-   - **CRITICAL QUESTION:** Is 1 session permanent or reusable?
-   - If permanent (can only create 1 session ever): TOO restrictive
-   - If reusable (can edit/replace 1 session): Much better
-   - **Recommendation:** Make it reusable if not already
-
-2. **No Preview of Premium Features**
-   - Stats are completely hidden
-   - Users don't know what they're missing
-   - **Recommendation:** Show sample stats with blur/overlay + "Unlock with Premium" CTA
-
-3. **Limitation Messaging**
-   - Generic "Upgrade to premium" messages
-   - No emotional appeal
-   - No urgency or benefit clarity
-   - **Recommendation:** Improve copywriting:
-     - ❌ "This feature requires premium"
-     - ✅ "Unlock session analytics to track player engagement and session effectiveness. See which drills resonate most."
-
-4. **No Time-Limited Trial of Premium**
-   - Could offer 7-day or 14-day trial of ALL features
-   - Increases conversion significantly
-   - **Recommendation:** Add "Start 14-day trial" option on upgrade page
+**5. Pricing Validation**
+- [ ] Interview 10 target customers
+- [ ] Ask: "What would you pay for this?" (don't tell price first)
+- [ ] Test: $29, $39, $49 individual pricing
+- [ ] Test: Flat rate club pricing tiers
 
 ---
 
-### Upgrade Incentives: Are They Clear?
+### 📊 Priority 3: Analytics & Tracking
 
-**Current State:**
-- Upgrade mentioned in welcome modal footer
-- "Free" badge in navbar is clickable → `/upgrade`
-- Upgrade page exists and explains benefits
-- Limitation modals (presumably) mention upgrade
+#### **Key Metrics to Implement (Pre-Launch)**
 
-**Assessment:** ⚠️ MODERATE - Could be stronger
+**Conversion Funnels:**
+```
+Individual Coach:
+  Landing → Signup Started → Signup Complete →
+  First Session Created → Session 2 Attempted →
+  Upgrade Page Visited → (Waitlist Signup)
 
-**What's Good:**
-- Multiple touchpoints for upgrade
-- Clear pricing ($29/month)
-- Benefits listed clearly
+Club Admin:
+  Landing → Club Signup Started → Club Created →
+  First Invite Sent → First Coach Joined →
+  2+ Coaches Active
+```
 
-**What's Missing:**
-- No in-app urgency or FOMO
-- No social proof (testimonials, # of users)
-- No success stories
-- No feature comparison table in-app
-- No trial period
-- No annual discount option
+**Engagement Metrics:**
+```
+- Sessions created per user
+- Favorites saved per user
+- Time to first session (activation metric)
+- Return rate (Day 1, Day 7, Day 30)
+- FREE users who hit limitations (session 2, 11th favorite)
+- Click-through rate on upgrade CTAs
+```
 
-**Recommendations:**
+**Tools:** Google Analytics 4, Mixpanel, or Amplitude
 
-1. **Add Urgency Elements:**
-   - "Join 500+ coaches already using Premium"
-   - "Limited time: Get 2 months free with annual plan"
-
-2. **Add Social Proof:**
-   - Testimonials from coaches
-   - Star rating
-   - "Featured at X academy" badges
-
-3. **Add Comparison Table:**
-   - Side-by-side FREE vs PREMIUM vs CLUB
-   - In upgrade page and when hitting limitations
-
-4. **Add Trial:**
-   - "Try Premium free for 14 days"
-   - No credit card required
-   - Auto-downgrade after trial
-
-5. **Improve In-App Prompts:**
-   - When viewing catalog: "Premium users can save unlimited favorites"
-   - When finishing 1st session: "Great! Premium users can plan 11 more sessions this season"
-   - Smart, contextual prompts (not annoying)
+**Code Location:** `app/components/AnalyticsProvider.tsx` (exists)
 
 ---
 
-### Is FREE Tier Joyful?
+### 💼 Priority 4: Waitlist & Pre-Launch Marketing
 
-**Definition of Joyful:** User can accomplish meaningful goals, feel successful, and understand value without feeling constantly blocked or frustrated.
+#### **Waitlist Implementation**
 
-**Current Assessment:** ⚠️ **MOSTLY JOYFUL, with caveats**
+**Purpose:** Capture interest before payment goes live
+
+**Where to Add:**
+1. `/upgrade/checkout` - "Join waitlist for launch notification"
+2. Limitation modals - "Get notified when Premium launches"
+3. Homepage (if exists) - "Sign up for early access"
+
+**Data to Capture:**
+- Email
+- Account type (individual coach or club admin)
+- Number of coaches (if club)
+- Desired features (survey)
+
+**Implementation:**
+```typescript
+// Simple Firestore collection
+interface WaitlistEntry {
+  email: string;
+  accountType: "individual" | "club";
+  timestamp: Date;
+  source: "checkout" | "limitation" | "homepage";
+  surveyResponses?: {
+    coachCount?: number;
+    needsMost?: string;
+    willingToPay?: string;
+  };
+}
+```
+
+**Follow-Up:**
+- Automated welcome email
+- Weekly updates on progress
+- Early access invitation when launched
+- Special launch discount for waitlist
+
+---
+
+## Part 4: FREE Tier Deep Dive
+
+### Current FREE Tier (Code Verified)
+
+**Implementation:**
+```typescript
+// app/types/account.ts:62-67
+FREE_ENTITLEMENTS = {
+  maxSessions: 1,          // Can edit unlimited, can't create 2nd
+  maxFavorites: 10,        // Hard cap
+  canAccessStats: false,   // Completely blocked
+  canExport: false         // Blocked
+}
+```
+
+**Enforcement:**
+```typescript
+// app/planner/page.tsx:109
+const isLocked = week.week > entitlements.maxSessions;
+// Sessions 2-12 show lock overlay for FREE users
+```
+
+---
+
+### Assessment: Is This the Right FREE Tier?
+
+**Based on Platform Purpose:**
+Football EyeQ helps coaches plan **progressive, season-long training** with professional drills.
+
+**Core User Need:**
+- Plan structured sessions that build on each other
+- Access high-quality, research-backed drills
+- Save time and improve training effectiveness
+
+---
+
+### ✅ Recommendation: **KEEP CURRENT LIMITS**
+
+**Why 1 Session Works:**
+
+**Pros:**
+- ✅ Forces users to experience core value (session planning)
+- ✅ The session is **reusable** (edit unlimited) - this is key
+- ✅ Creates clear upgrade moment (when user wants session 2)
+- ✅ Already implemented and working well
+- ✅ Low-friction testing (users can try immediately)
+
+**How It Works in Practice:**
+- Week 1: User plans first session, uses it for training
+- Week 2: User edits Session 1 for new drills (reuses slot)
+- Week 3: User wants to plan ahead → needs Session 2 → locked → **upgrade moment**
+
+**Strategic Value:**
+- Users CAN use the platform meaningfully (1 session is functional)
+- Users CANNOT plan full season (need 12 sessions) → upgrade pressure
+- Balances "try before buy" with "must upgrade to do real work"
+
+---
+
+**Why NOT Increase to 3 Sessions:**
+
+While 3 sessions would allow progressive training blocks, it:
+- ❌ Reduces upgrade urgency significantly
+- ❌ Requires code changes
+- ❌ May enable "good enough" for casual users (lost conversions)
+- ❌ Doesn't align with "1 free slot" pattern (confuses value prop)
+
+**Verdict:** Keep 1 session, focus on **improving HOW users discover limitation** (better messaging, not more sessions)
+
+---
+
+### Why 10 Favorites Works:
+
+**Analysis:**
+- Average session uses 5-6 drills
+- 10 favorites = ~2 sessions worth of drills
+- Enough for exploration and personalization
+- Not enough for long-term use (upgrade incentive)
+
+**User Behavior Projection:**
+- **Casual users:** Unlikely to hit 10 (won't upgrade anyway)
+- **Active users:** Hit 10 quickly (these are your converters)
+- **Sweet spot:** Separates engaged users from browsers
+
+**Verdict:** ✅ **Keep at 10 favorites**
+
+---
+
+### 🎯 The Real Opportunity: Improve Limitation Experience
+
+Instead of changing limits, improve **how users experience them**:
+
+**1. Progressive Disclosure**
+- Show locked sessions 2-12 upfront (set expectations early)
+- Add counter: "1/1 FREE session" in planner header
+- Add favorites counter: "8/10 favorites" before hitting limit
+
+**2. Benefit-Focused Messaging**
+```diff
+Current:
+  "Upgrade to unlock"
+
+Better:
+  "Plan Your Full Season"
+  "Unlock 11 more sessions to create progressive training blocks"
+  "See how drills build on each other across 12 weeks"
+  [Upgrade to Premium $29/mo] [Join a Club for Free]
+```
+
+**3. Feature Previews**
+- Show blurred stats charts (create desire)
+- Show sample session analytics (demonstrate value)
+- Preview export formats (show what they get)
+
+**4. Soft Prompts Before Hard Blocks**
+```
+When user is on Session 1:
+  Soft banner: "Planning ahead? Unlock 11 more sessions →"
+  (Not blocking, just informing)
+
+When user saves 8th favorite:
+  Tooltip: "2 more favorites left. Upgrade for unlimited →"
+  (Warning before hitting limit)
+```
+
+---
+
+### Joyfulness Score: 7.5/10 ⭐
 
 **Joyful Elements:**
-- ✅ Can browse all exercises (discovery is fun)
-- ✅ Can plan 1 session (accomplishes a goal)
-- ✅ Can save favorites (personalization)
-- ✅ Clean, modern UI
-- ✅ No intrusive ads or aggressive upsells
-- ✅ Welcome modal is encouraging, not pushy
+- ✅ Can browse ALL exercises (builds trust, enables discovery)
+- ✅ Can plan 1 session and edit it freely (functional use)
+- ✅ Can save favorites (personalization, control)
+- ✅ Clean, modern UI (aesthetic joy)
+- ✅ No aggressive upselling (respectful)
+- ✅ Welcome modal is encouraging (positive tone)
 
-**Frustration Points:**
-- ⚠️ 1 session may feel too limiting for active coaches
-- ⚠️ Hitting 10-favorite limit feels arbitrary
-- ❌ Stats completely locked with no preview
-- ⚠️ Not clear what premium unlocks until you explore
+**Friction Points:**
+- ⚠️ Can't see what stats look like (mystery creates doubt, not desire)
+- ⚠️ Limitation messaging is generic (transactional, not motivational)
+- ⚠️ No way to "taste" premium features (no trial option)
+- ⚠️ Hitting limit feels sudden (no warning)
 
-**Verdict:** **6.5/10 Joyfulness**
-
-**To Reach 9/10:**
-1. Make session slot reusable (edit/overwrite)
-2. Show previews of locked features with blur/overlay
-3. Add 7-day "trial" of all features for new users
-4. Soften limitation messaging (less transactional, more helpful)
-5. Add educational value in free tier (tips, videos, guides)
+**To Reach 9/10 Joy:**
+1. Add stats preview (blur overlay with sample data)
+2. Improve limitation copy (benefits, not restrictions)
+3. Add soft prompts before hard blocks (progressive disclosure)
+4. Consider: 7-day "all features" trial for new users (complexity vs benefit)
 
 ---
 
-## Part 5: Recommendations Summary
+### 14-Day Trial Discussion
 
-### 🚀 Quick Wins (Implement This Week)
+**User Asked:** "How complicated to implement?"
 
-1. **Add "Copy Code" button to club dashboard**
-   - When admin generates invite code, add copy button
-   - Reduces friction in sharing codes
-   - Estimated effort: 1 hour
+**Implementation Complexity: 3-4 days**
 
-2. **Add upgrade CTA to navbar for free users**
-   - Change "Free" badge to "Free • Upgrade" or add sparkle ✨ icon
-   - Make it more prominent
-   - Estimated effort: 1 hour
+**What's Needed:**
+```typescript
+1. Add trial fields to user profile:
+   - trialStartedAt: Date
+   - trialEndsAt: Date
+   - hasUsedTrial: boolean
 
-3. **Add "Have a club code?" banner for free users**
-   - Persistent banner at top of planner for free users
-   - "Have a club code? Unlock premium features →"
-   - Estimated effort: 2 hours
+2. Modify entitlements logic:
+   - Check if user is in trial period
+   - If yes: Grant PREMIUM_ENTITLEMENTS
+   - If trial expired: Downgrade to FREE_ENTITLEMENTS
 
-4. **Improve limitation modal copy**
-   - Rewrite generic "upgrade required" messages
-   - Add benefit-focused copy
-   - Add visual preview of locked feature
-   - Estimated effort: 3 hours
+3. Add trial UI:
+   - Trial countdown banner ("X days left in trial")
+   - Email notifications (3 days before expiry)
+   - Expiration modal ("Trial ended. Upgrade to keep access")
 
-5. **Add email validation to signup**
-   - Real-time validation with checkmark
-   - Reduces signup errors
-   - Estimated effort: 1 hour
+4. Edge cases:
+   - User joins club during trial (no downgrade)
+   - User upgrades during trial (cancel countdown)
+   - User deletes account during trial (cleanup)
+```
 
----
+**Pros:**
+- ✅ Significantly increases conversion (industry data: 25-40% lift)
+- ✅ Users experience FULL value before paying
+- ✅ Removes "what am I missing?" doubt
+- ✅ Common pattern (users expect it)
 
-### 🎯 High-Impact Features (Implement This Month)
+**Cons:**
+- ❌ Implementation complexity (3-4 days of dev work)
+- ❌ Edge cases to handle (club join during trial, etc.)
+- ❌ May create "loss aversion" frustration when trial ends
+- ❌ Users may not use intensively within 14 days
 
-1. **Complete Individual Premium Payment Flow** 🔴 URGENT
-   - Integrate Stripe checkout
-   - Implement webhooks
-   - Add payment method management
-   - Test full subscription lifecycle
-   - Estimated effort: 2-3 days
+**Recommendation for Startup Mode:**
 
-2. **Add Club Self-Service Subscription** 🔴 HIGH
-   - Add subscription tab to club dashboard
-   - Show trial expiration date
-   - Add payment method entry
-   - Implement checkout flow
-   - Send trial expiration emails
-   - Estimated effort: 3-4 days
+**Phase 1 (Pre-Launch):** ❌ **Don't implement trial**
+- Focus on UX polish and mockups
+- Current FREE tier is sufficient for testing
+- Avoid complexity before validating pricing
 
-3. **Implement Feature Preview for Locked Content**
-   - Show blurred stats with "Unlock" overlay
-   - Add hover previews in catalog
-   - Show sample data for analytics
-   - Estimated effort: 1-2 days
+**Phase 2 (Post-Launch, if needed):** ✅ **Consider trial**
+- If conversion rate is low (<10% FREE → Premium)
+- If users cite "not sure what I'm missing" as objection
+- After 3-6 months of data collection
 
-4. **Add Guided Product Tour**
-   - Optional tour on first login
-   - Tooltips on key features
-   - Dismissible and resumable
-   - Use library like Shepherd.js
-   - Estimated effort: 2-3 days
-
-5. **Add Feature Comparison Table**
-   - Inline comparison FREE vs PREMIUM vs CLUB
-   - Add to /upgrade page
-   - Add to limitation modals
-   - Estimated effort: 1 day
+**Alternative:** "Trial Days" for specific user segments
+- Give 14-day trial to coaches referred by active club admins
+- Give trial to users who come from partner organizations
+- Manual trial grants (super admin can enable for testing)
 
 ---
 
-### 🔮 Future Enhancements (Roadmap)
+## Part 5: Payment & Subscription (Startup Mode)
 
-1. **Email Notification System**
-   - Welcome emails
-   - Invite code emails
-   - Trial expiration warnings
-   - Payment receipts
-   - Feature announcements
+### Current State: Mockup/Placeholder Approach ✅
 
-2. **Admin Dashboard Enhancements**
-   - Search and filter
-   - Pagination
-   - Bulk operations
-   - Analytics dashboard (MRR, churn, active users)
-   - Export to CSV
+**Assessment:** This is **correct strategy** for pre-launch
 
-3. **14-Day Premium Trial**
-   - All users get 14-day access to premium
-   - Auto-downgrade after trial
-   - Credit card optional (or required)
-
-4. **Annual Subscription Discount**
-   - Offer annual plans at discount
-   - "Save 20% with annual billing"
-
-5. **Social Proof Elements**
-   - Testimonials
-   - User count
-   - Success stories
-   - Case studies
-
-6. **Player/Athlete Portal** (Future Persona)
-   - Players can view assigned sessions
-   - Track progress
-   - View training history
-   - Low priority - focus on coaches first
+**Why Mockups Make Sense:**
+- ✅ Validate UX/UI before building infrastructure
+- ✅ Test pricing without payment processor fees
+- ✅ Avoid credit card compliance (PCI-DSS) during testing
+- ✅ Manually control who gets access (quality over automation)
+- ✅ Faster iteration on pricing/packaging
 
 ---
 
-## Part 6: Updated User Journey Maps (Ideal State)
+### Individual Premium Payment
 
-### 🎯 Recommended Journey: Individual Coach
+**Current Implementation:**
+```
+/upgrade → Shows $29/month pricing
+/upgrade/checkout → "Coming soon" message
+Stripe webhook exists but is placeholder
+No actual payment processing
+```
 
-1. **Discovery**
-   - Land on homepage
-   - See clear value prop + social proof
-   - CTA: "Start Free" (no credit card)
+**Pre-Launch Recommendation:**
 
-2. **Signup** (2 min)
-   - Simple form (name, email, password)
-   - Optional: "I have a club code"
-   - Email validation in real-time
-   - Optional: Social auth (Google/Apple)
+**Option A: High-Fidelity Mockup (Recommended)**
+Create full checkout UI with:
+- Payment method entry fields (greyed out)
+- Billing address form (disabled)
+- Plan summary and total
+- "Start Subscription" button → Shows "Available at launch" tooltip
+- **"Join Waitlist" CTA** → Capture emails for launch notification
 
-3. **Welcome & Activation** (5 min)
-   - Welcome modal with 3 next steps
-   - Optional: "Take a 2-minute tour"
-   - First-time tooltips guide key features
-   - **Auto-start 14-day Premium trial** ✨
+**Purpose:**
+- User testing (validate pricing, UX flow)
+- Collect waitlist (marketing asset)
+- Identify friction points before building
 
-4. **Exploration** (1-2 weeks)
-   - Browse catalog (100+ exercises)
-   - Save favorites (unlimited during trial)
-   - Plan multiple sessions (12 during trial)
-   - View stats and analytics
-   - Feel the full product value
-
-5. **Trial Expiration** (Day 12)
-   - Email: "Your trial ends in 2 days"
-   - In-app banner: "2 days left - Upgrade to keep access"
-   - CTA: "Upgrade Now" or "Join a Club"
-
-6. **Conversion Decision** (Day 14)
-   - **Option A:** Upgrade to Premium ($29/month)
-   - **Option B:** Enter club code
-   - **Option C:** Continue with FREE (downgrade)
-
-7. **Premium User** (Ongoing)
-   - Full access to all features
-   - Manage subscription in profile
-   - Receive product updates
-   - Optional: Refer other coaches
+**Option B: Simple Waitlist**
+Replace checkout page with:
+- "Premium launching soon!"
+- Email signup form
+- Expected features list
+- Pricing preview
+- Launch notification opt-in
 
 ---
 
-### 🎯 Recommended Journey: Club Coach
+### Club Subscription Payment
 
-**Path A: Has Code**
-1. Signup → Check "I have a club code"
-2. Redirected to code entry
-3. Enter code → Join club
-4. Full access immediately
-5. Welcome modal shows unlocked features
-6. Start using platform
+**Current Implementation:**
+```
+Clubs start with subscriptionStatus: "trial"
+No expiration (indefinite until manual activation)
+Super admin manually sets to "active"
+No payment method entry
+No billing
+```
 
-**Path B: No Code Yet**
-1. Signup as free
-2. **14-day Premium trial** (same as individual)
-3. Use platform fully during trial
-4. Day 12: "Your trial ends soon. Ask your club admin for a code to continue with full access"
-5. Receives code from admin
-6. Enters code → Joins club
-7. Seamless transition, no data loss
+**Pre-Launch Recommendation:**
 
-**Path C: Club Joins Later**
-1. Using free tier (after trial expired)
-2. Receives email: "Your club {Name} has joined Football EyeQ!"
-3. Auto-upgraded to club member
-4. Celebration modal: "Welcome to {Club Name}!"
+**Keep Manual Activation** for startup phase:
+- ✅ Personal touch with early club adopters
+- ✅ Negotiate custom pricing if needed
+- ✅ Test different models (flat rate vs per-coach)
+- ✅ Gather feedback before automating
 
----
+**Add to Club Dashboard (Mockup):**
+```tsx
+<SubscriptionTab>
+  <h3>Subscription Status</h3>
+  <Badge>Trial (Pre-Launch)</Badge>
 
-### 🎯 Recommended Journey: Club Admin
+  <p>Your club has full access during our pre-launch phase.</p>
 
-1. **Discovery**
-   - See "Register Your Club" CTA on signup or homepage
+  <div className="future-pricing">
+    <h4>Expected Pricing (When We Launch)</h4>
+    <p>Flat rate: $XX/month for unlimited coaches</p>
+    <small>Pricing subject to change. Early adopters may receive special rates.</small>
+  </div>
 
-2. **Club Signup** (3 min)
-   - Step 1: Club name
-   - Step 2: Admin info
-   - Auto-create club + admin account
-   - **Start 30-day club trial** (more generous than individual)
+  <Button disabled>
+    Add Payment Method
+    <Tooltip>Available at launch</Tooltip>
+  </Button>
+</SubscriptionTab>
+```
 
-3. **Welcome & Setup** (10 min)
-   - Welcome modal with next steps
-   - Guided tour of dashboard
-   - Add first 3 coaches (inline prompts)
-   - Set exercise type policy
-
-4. **Inviting Coaches**
-   - Email-specific invite codes
-   - **Option to auto-send email** with code ✨
-   - Track pending invites
-   - Get notified when coach joins
-
-5. **Trial Management** (Days 1-30)
-   - Dashboard shows: "Trial ends in X days"
-   - Day 20: Email warning
-   - Day 25: In-app banner
-   - Day 27: Final reminder
-
-6. **Subscription Activation** (Day 25-30)
-   - Click "Activate Subscription"
-   - See pricing (per coach or flat rate)
-   - Enter payment method
-   - Confirm and activate
-   - Receipt emailed
-
-7. **Ongoing Management**
-   - Add/remove coaches
-   - Manage exercise policy
-   - View billing history
-   - Update payment method
-   - Download invoices
+**Purpose:**
+- Set expectations (this is temporary)
+- Test pricing messaging
+- Prepare users for future payment
 
 ---
 
-## Part 7: Final Recommendations Checklist
+### Pricing Model Validation
 
-### Immediate Actions (This Week)
-- [ ] Audit limitation messaging in codebase
-- [ ] Clarify: Is 1 session limit reusable or one-time?
-- [ ] Add "Copy code" button to club dashboard
-- [ ] Improve free tier badge in navbar
-- [ ] Add "Have a club code?" banner for free users
+**User Confirmed:** Flat rate for clubs (not per-coach)
 
-### Critical Blockers (This Month)
-- [ ] Complete Stripe integration for Individual Premium
-- [ ] Add club self-service subscription flow
-- [ ] Implement payment webhooks
-- [ ] Add trial expiration logic and notifications
-- [ ] Test full payment lifecycle
+**Recommendation:** Test pricing transparency
 
-### UX Improvements (Next Sprint)
-- [ ] Add feature previews for locked content
-- [ ] Implement guided product tour
-- [ ] Add tooltips for first-time users
-- [ ] Create feature comparison table
-- [ ] Improve limitation modal copy and design
+**Survey Early Clubs:**
+- What would you expect to pay for unlimited coaches?
+- Would you prefer per-coach or flat rate?
+- What's your current coaching software budget?
 
-### Nice-to-Haves (Backlog)
-- [ ] Add 14-day premium trial for all new users
-- [ ] Implement email notification system
-- [ ] Add social proof elements
-- [ ] Create annual subscription option
-- [ ] Add bulk operations to admin panel
-- [ ] Build analytics dashboard for super admin
+**Competitive Analysis:**
+- Research similar platforms
+- Identify pricing range
+- Test $99, $149, $199 flat rates
+
+**Early Adopter Strategy:**
+- Lock in first 20 clubs at discounted "founder rate"
+- Create urgency for early signup
+- Build case studies and testimonials
 
 ---
 
-## Part 8: Answers to Original Questions
+## Part 6: Recommendations Summary
+
+### 🚀 This Week (Quick Wins - 1-3 hours each)
+
+**1. Add "Copy Code" Button**
+- Location: Club dashboard when invite code generated
+- Tech: Clipboard API with success toast
+- Impact: Reduces friction in code sharing
+
+**2. Add Session Counter**
+- Location: Planner header
+- Display: "FREE: 1/1 session used" badge
+- Impact: Sets expectations, prompts upgrade awareness
+
+**3. Add "Have Club Code?" Banner**
+- Location: Planner page (FREE users only)
+- Design: Dismissible blue banner
+- Message: "Part of a club? Enter code to unlock premium →"
+- Impact: Improves code redemption discovery
+
+**4. Improve Lock Overlay Copy**
+- Location: Sessions 2-12 lock screens
+- Change: "Upgrade to unlock" → "Plan your full season with 12 sessions"
+- Add: Dual CTA (Upgrade | Join Club)
+- Impact: Better conversion messaging
+
+**5. Email Validation UI**
+- Location: Signup forms
+- Add: Real-time validation with visual feedback
+- Impact: Reduces signup errors
+
+---
+
+### 🎯 Next 2 Weeks (Medium Impact - 1-2 days each)
+
+**6. Payment Checkout Mockup**
+- Location: /upgrade/checkout
+- Create: High-fidelity UI mockup
+- Include: Waitlist signup
+- Purpose: User testing, collect interest
+
+**7. Stats Preview with Blur**
+- Location: /planner/stats
+- Show: Sample stats chart with blur overlay
+- Add: Compelling unlock CTA
+- Purpose: Create desire for premium feature
+
+**8. Feature Comparison Table**
+- Location: /upgrade page
+- Design: FREE | PREMIUM | CLUB side-by-side
+- Make: Mobile-responsive
+- Impact: Clarifies value proposition
+
+**9. Club Subscription Mockup**
+- Location: Club dashboard (new "Subscription" tab)
+- Show: Trial status, future pricing, payment placeholder
+- Purpose: Set expectations, test pricing
+
+**10. Waitlist System**
+- Locations: Checkout, limitation modals, homepage
+- Capture: Email, account type, needs
+- Purpose: Marketing list for launch
+
+---
+
+### 🔮 Pre-Launch Roadmap (Before Going Live)
+
+**User Testing (2-4 weeks)**
+- [ ] 10 individual coach signups (observe onboarding)
+- [ ] 5 club admin signups (observe invite flow)
+- [ ] Limitation testing (watch users hit session 2)
+- [ ] Pricing surveys (validate $29 individual, $XX club)
+
+**Analytics Implementation**
+- [ ] Conversion funnels (signup → activation → upgrade)
+- [ ] Engagement metrics (sessions created, favorites saved)
+- [ ] Drop-off points (where users abandon)
+
+**Content & Polish**
+- [ ] Guided product tour (optional)
+- [ ] Help documentation (FAQ, guides)
+- [ ] Email templates (welcome, trial expiry, etc.)
+- [ ] Social proof (if available - testimonials, logos)
+
+**Payment Integration (When Ready to Launch)**
+- [ ] Stripe account setup
+- [ ] Checkout implementation
+- [ ] Webhook handlers (subscription lifecycle)
+- [ ] Payment method management
+- [ ] Billing history display
+- [ ] Invoice generation
+- [ ] Refund handling
+- [ ] Failed payment retry logic
+
+**Launch Preparation**
+- [ ] Pricing finalized (based on testing)
+- [ ] Trial strategy decision (yes/no, duration)
+- [ ] Legal (terms, privacy, payment terms)
+- [ ] Support system (help desk, chat, email)
+- [ ] Launch communications (email waitlist)
+
+---
+
+## Part 7: Answers to Original Questions
 
 ### Q1: Are there three personas or should we add more?
 
-**Answer:** The three core personas are **validated and correct:**
+**Answer:** ✅ **Three core personas are complete and correct:**
 1. Individual Coach (no club)
 2. Club Coach
 3. Club Admin
 
-**Super Admin is Persona 4** (correctly identified).
+**Super Admin is Persona 4** (correctly implemented for single-admin startup)
 
-**Recommended Addition:** Consider **Persona 5: Player/Athlete** for future roadmap, but **NOT now**. Focus on perfecting the coach experience first. Add player-facing features in Phase 2.
+**Missing Persona?** ❌ **No** - Do NOT add player/athlete persona now. Focus on perfecting coach experience before expanding scope.
 
 ---
 
 ### Q2: Can (1) and (2) join free at any time?
 
-**Answer:** ✅ **YES** - Both can sign up for free accounts without barriers. This is correctly implemented.
+**Answer:** ✅ **YES** - Both can sign up for free accounts with zero friction. Excellently implemented.
 
 ---
 
 ### Q3: Can (1) upgrade to Premier through payment?
 
-**Answer:** ⚠️ **PARTIALLY** - The flow exists but payment integration is incomplete. The upgrade page shows pricing but checkout is blocked with "coming soon."
+**Answer:** ⚠️ **YES (UI exists), but payment is mockup** - This is **correct for startup mode**.
 
-**Action Required:** Complete Stripe integration ASAP.
+**Recommendation:** Create high-fidelity checkout mockup + waitlist instead of "coming soon" message.
 
 ---
 
 ### Q4: Can (2) upgrade to premium via club code?
 
-**Answer:** ✅ **YES** - Club code redemption works well. Multiple entry points (signup, profile, upgrade page, join-club page).
+**Answer:** ✅ **YES** - Club code redemption works excellently. Multiple entry points, secure validation, immediate access.
+
+**Minor enhancement:** Add "Have a code?" banner for discoverability.
 
 ---
 
 ### Q5: Can (3) sign up for free?
 
-**Answer:** ✅ **YES** - Club admin signup is free and well-designed (2-step process).
+**Answer:** ✅ **YES** - Club admin signup is free with excellent 2-step form design.
 
 ---
 
 ### Q6: Should club coaches have limitations without club subscription?
 
-**Answer:** **YES, but with trial period**
+**Answer:** ✅ **YES, handled correctly**
 
-**Current State:** Coaches in clubs with inactive subscriptions should theoretically be limited, but trial logic is unclear.
+**Current Logic:**
+- Club created → subscriptionStatus: "trial" (indefinite in startup mode)
+- If subscription becomes "inactive" → All club coaches downgraded to FREE
+- This is **perfect for pre-launch**
 
-**Recommendation:**
-- Club starts with 30-day trial (all coaches get full access)
-- After trial, if no payment: Club suspended → All coaches downgraded to FREE
-- Before suspension: 3 email warnings to admin
-- Coaches notified when club subscription ends
+**Post-Launch:** Implement trial expiration (30 days?) with email warnings before downgrade.
 
 ---
 
 ### Q7: Is admin page easy for (3) to manage club?
 
-**Answer:** ✅ **YES** for basic management, ❌ **NO** for subscription
+**Answer:** ✅ **YES** for core management, ⚠️ Missing subscription self-service
 
 **What Works:**
-- Inviting coaches is easy
-- Viewing roster is clear
-- Exercise policy control is unique and useful
-- Removing coaches works well
+- Inviting coaches is intuitive
+- Roster display is clear
+- Exercise policy control is unique
+- Remove coaches works with confirmation
 
-**What's Missing:**
-- No subscription management
-- No payment method entry
-- No billing history
-- No usage analytics (how many coaches are active?)
+**What's Missing (Intentionally for startup):**
+- Subscription management (manual is correct for now)
+- Payment method entry (add mockup)
+- Billing history (post-launch)
+
+**Pre-Launch Enhancement:** Add mockup of "Subscription" tab with pricing preview.
 
 ---
 
 ### Q8: Is admin page easy for (4) to manage all clubs?
 
-**Answer:** ⚠️ **FUNCTIONAL but not scalable**
+**Answer:** ✅ **YES** for startup scale (<50 clubs)
 
 **What Works:**
-- Can view all clubs/coaches
-- Can manually activate/suspend
-- Can upgrade/downgrade accounts
-- Exercise management is comprehensive
+- View all clubs/coaches
+- Manual activation/suspension
+- Exercise management
+- Coach upgrade/downgrade
 
-**What Doesn't Scale:**
-- No search or filter
-- No pagination
+**What Doesn't Scale (Post-Launch concern):**
+- No search/filter (needed at 50+ clubs)
+- No pagination (needed at 100+ clubs)
+- No analytics/reporting (MRR, churn)
 - No bulk operations
-- No analytics or reporting
-- Manual subscription management required for every club
+
+**Recommendation:** Add these AFTER launch when you have scale problems (don't over-engineer now).
 
 ---
 
 ### Q9: Are FREE limitations meaningful?
 
-**Answer:** ✅ **YES, mostly**
+**Answer:** ✅ **YES** - 1 reusable session + 10 favorites is well-balanced
 
-**Meaningful Limitations:**
-- 1 session creates urgency without blocking exploration
-- 10 favorites is reasonable before upgrade needed
+**Meaningful Because:**
+- Users can accomplish real work (plan 1 session, edit freely)
+- Clear upgrade incentive (when need session 2 for progressive training)
 - Full catalog access builds trust
+- Not too generous (would kill conversions)
+- Not too restrictive (allows proper evaluation)
 
-**Recommended Improvements:**
-- Make 1 session slot reusable (edit/overwrite)
-- Add trial period (14 days all features)
-- Show previews of locked features
-- Soften limitation messaging
+**Recommendation:** ✅ **Keep current limits**, focus on improving limitation messaging/UX.
 
 ---
 
 ### Q10: Do limitations create a joyful entry point?
 
-**Answer:** ⚠️ **MOSTLY joyful - 7/10**
+**Answer:** ⭐ **7.5/10 Joyfulness** - Mostly joyful with clear improvement path
 
-**Joyful Elements:**
-- Full catalog access (huge trust builder)
-- Clean, modern UI
+**Joyful:**
+- Full catalog access (massive trust builder)
+- Clean UI
+- Encouraging onboarding
 - No aggressive upselling
-- Welcoming onboarding
 
-**Friction Points:**
-- Session limit may feel restrictive
-- No preview of premium features
-- Generic limitation messages
-- No trial period
+**Can Improve:**
+- Better limitation messaging (benefits > restrictions)
+- Feature previews (show what's locked)
+- Progressive disclosure (warn before blocking)
+- Stats preview (create desire)
 
-**To Reach 9/10 Joy:**
-1. Add 14-day full trial
-2. Preview locked features
-3. Improve limitation copy
-4. Add success tips and guidance
-5. Celebrate small wins ("You planned your first session! 🎉")
+**To reach 9/10:** Implement UX polish recommendations (stats preview, better copy, soft prompts).
+
+---
+
+## Part 8: Session Limit Deep Dive
+
+### Code Verification Results
+
+**FREE Tier Implementation:**
+```typescript
+// app/types/account.ts:62-67
+FREE_ENTITLEMENTS = {
+  maxSessions: 1,
+  maxFavorites: 10,
+  canAccessStats: false,
+  canExport: false
+}
+```
+
+**How It Actually Works:**
+
+**User Can:**
+- ✅ Create Session 1
+- ✅ Edit Session 1 unlimited times
+- ✅ Save different drills to Session 1
+- ✅ Plan and re-plan Session 1 weekly
+
+**User Cannot:**
+- ❌ Create Session 2
+- ❌ Create Session 3-12
+- ❌ Plan multiple sessions in advance
+
+**Why This Is Good:**
+1. **Reusability** means it's not "one-time use" (would be too restrictive)
+2. **Weekly coaches** can use FREE tier indefinitely (edit Session 1 each week)
+3. **Upgrade trigger** is when coaches want to plan ahead or see progression
+
+**Strategic Analysis:**
+
+This creates two user behaviors:
+
+**Behavior A: Weekly User (May Not Convert)**
+- Plans Session 1 Monday
+- Delivers training session Wednesday
+- Edits Session 1 for next week
+- Repeats weekly
+- **Never hits limitation** because they don't plan ahead
+
+**Behavior B: Season Planner (Will Convert)**
+- Wants to plan full 12-week season
+- Wants to see progressive training arc
+- Tries to create Session 2 → **BLOCKED**
+- This is your ideal customer → **Upgrades**
+
+**The Question:** Do you want to convert Behavior A?
+
+**Options:**
+
+**Option 1: Keep 1 Reusable Session (Current)**
+- Pros: Already implemented, simple to explain
+- Cons: Weekly users can freeload indefinitely
+- Who Converts: Season planners only
+- Conversion Rate: Lower (but higher quality leads)
+
+**Option 2: Change to "1 Session Per Season" (Not Reusable)**
+- Pros: Forces upgrade after 1 use
+- Cons: Too restrictive, bad user experience
+- Who Converts: No one (they leave instead)
+- Conversion Rate: Lower (people churn before converting)
+
+**Option 3: Increase to 3 Sessions**
+- Pros: Demonstrates progressive planning
+- Cons: Reduces urgency significantly
+- Who Converts: Still only season planners
+- Conversion Rate: Lower (3 sessions may be "good enough" for some)
+
+**Option 4: Add "Session Age Limit" (Complex)**
+- FREE users can only keep sessions for 30 days
+- After 30 days, must upgrade or delete
+- Pros: Converts weekly users eventually
+- Cons: Complex to implement, confusing to explain, feels punitive
+
+---
+
+### Recommendation: Keep 1 Reusable Session ✅
+
+**Rationale:**
+
+**1. Already Optimized**
+- Current implementation is working as designed
+- No evidence it's broken or underperforming
+- Simple to explain ("1 free session")
+
+**2. Right Target Audience**
+- Season planners are your ideal customers (higher LTV)
+- Weekly users may not value premium features anyway
+- Quality > quantity of conversions
+
+**3. Generous FREE Tier is Brand Asset**
+- "Use it free forever" is powerful marketing message
+- Builds goodwill and word-of-mouth
+- Trust-based relationship with users
+
+**4. Avoid Premature Optimization**
+- You're in pre-launch (don't have conversion data yet)
+- Test current limits before changing
+- Can always restrict later (can't easily un-restrict)
+
+---
+
+### What to Do Instead:
+
+**Focus on improving conversion OF season planners:**
+
+1. **Make Limitation Visible Earlier**
+   - Show Sessions 2-12 as locked from day 1
+   - Add "1/12 sessions available on FREE" messaging
+   - Set expectation upfront
+
+2. **Improve Lock Screen Messaging**
+   - Emphasize progressive planning value
+   - Show example: "Plan Session 1 → Session 2 → Session 3 for progressive skill development"
+   - Dual CTA: Individual upgrade OR club join
+
+3. **Add Soft Prompts**
+   - When user finishes Session 1: "Great! Season planners unlock 11 more sessions →"
+   - Context-aware: "Planning a 12-week season? Unlock all sessions"
+
+4. **Preview Multi-Session Benefits**
+   - Show sample season plan (12 sessions with progression)
+   - Demonstrate how drills build on each other
+   - Create desire through visualization
 
 ---
 
 ## Conclusion
 
-Football EyeQ has a **strong foundation** with clear persona separation and thoughtful feature gating. The user journey from signup to activation is **well-designed** for all personas.
+### 🎉 Overall Assessment: **Strong Foundation, Ready for Polish**
 
-**Key Priorities:**
-
-1. **🔴 URGENT:** Complete payment integration (Individual Premium & Club subscriptions)
-2. **🔴 HIGH:** Add self-service subscription management
-3. **🟡 MEDIUM:** Improve FREE tier experience with trials and feature previews
-4. **🟡 MEDIUM:** Enhance admin scalability (search, pagination, analytics)
-5. **🟢 LOW:** Add email notifications and social proof
-
-With these improvements, Football EyeQ will provide a **best-in-class user journey** that converts free users, delights club admins, and scales efficiently.
+Football EyeQ has:
+- ✅ **Excellent persona architecture** (4 distinct user types, well-separated)
+- ✅ **Thoughtful feature gating** (FREE tier is balanced)
+- ✅ **Professional UX patterns** (signup flows, onboarding, dashboards)
+- ✅ **Appropriate startup approach** (manual subscription, mockup payments)
+- ✅ **Unique competitive features** (club exercise policy, invite codes)
 
 ---
 
-**Next Steps:**
-1. Review and prioritize recommendations
-2. Clarify business questions (trial length, pricing model, session limit logic)
-3. Create implementation roadmap
-4. Begin with high-impact, low-effort quick wins
-5. Schedule payment integration as top priority
+### 🎯 Pre-Launch Priorities (In Order)
+
+**Week 1-2: UX Polish (Quick Wins)**
+1. Add "Copy Code" button (1 hour)
+2. Add session counter (1 hour)
+3. Add "Have club code?" banner (2 hours)
+4. Improve lock screen messaging (2 hours)
+5. Email validation UI (1 hour)
+
+**Week 3-4: User Testing**
+1. Watch 10 individual coach signups
+2. Watch 5 club admin flows
+3. Test limitation messaging
+4. Validate pricing
+
+**Week 5-6: Mockups & Waitlist**
+1. High-fidelity payment checkout mockup
+2. Club subscription tab mockup
+3. Waitlist system
+4. Stats preview with blur
+
+**Month 2: Analytics & Refinement**
+1. Implement conversion funnels
+2. Track engagement metrics
+3. Iterate based on data
+4. Prepare for launch
+
+**Month 3: Launch Preparation**
+1. Stripe integration
+2. Payment webhooks
+3. Subscription management
+4. Email system
+5. Support setup
 
 ---
 
-*End of Audit*
+### 📊 Success Metrics to Track
+
+**Pre-Launch (Startup Mode):**
+- Signups per week
+- Activation rate (% who create first session)
+- Club admin signups
+- Coaches invited per club
+- Waitlist signups
+
+**Post-Launch:**
+- FREE → Premium conversion rate (target: 10-15%)
+- Time to conversion (target: <30 days)
+- Club subscription rate
+- Churn rate (target: <5% monthly)
+- MRR growth
+
+---
+
+### ✅ Final Verdict
+
+**Current State:** 8/10 for pre-launch phase
+
+**Strengths:**
+- User journeys are well-designed
+- Persona separation is clean
+- FREE tier is balanced
+- Code quality is professional
+
+**Opportunities:**
+- UX polish (messaging, previews, discoverability)
+- Payment mockups for testing
+- User testing and validation
+- Analytics implementation
+
+**Readiness:** ✅ **Ready for user testing** after quick wins are implemented
+
+---
+
+## Next Steps
+
+1. **Review this audit** - Identify priorities
+2. **Implement quick wins** - Low effort, high impact (Week 1-2)
+3. **Start user testing** - Observe real coaches using the platform
+4. **Validate pricing** - Survey potential customers
+5. **Create payment mockups** - Test checkout UX
+6. **Build waitlist** - Marketing asset for launch
+7. **Iterate based on feedback** - Refine before scaling
+
+---
+
+**Questions for You:**
+
+1. Which quick wins should I implement first? (I can start coding now)
+2. Do you have users I can watch for testing? (Even internal stakeholders)
+3. What's your target launch date? (Helps prioritize roadmap)
+4. What's your biggest concern about current user journey? (I can deep-dive)
+
+---
+
+*End of Audit - Updated for Startup/Pre-Launch Mode*
