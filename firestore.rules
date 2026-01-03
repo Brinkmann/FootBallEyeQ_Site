@@ -193,16 +193,35 @@ service cloud.firestore {
     // Super admin can read all (for analytics)
     // ============================================
     match /planners/{userId} {
-      allow read: if isAuthenticated() && 
+      allow read: if isAuthenticated() &&
         (userId == request.auth.uid || isSuperAdmin());
-      
-      allow create: if isAuthenticated() && 
+
+      allow create: if isAuthenticated() &&
         userId == request.auth.uid;
-      
-      allow update: if isAuthenticated() && 
+
+      allow update: if isAuthenticated() &&
         userId == request.auth.uid;
-      
-      allow delete: if isAuthenticated() && 
+
+      allow delete: if isAuthenticated() &&
+        userId == request.auth.uid;
+    }
+
+    // ============================================
+    // USER PREFERENCES COLLECTION
+    // Users can only access their own preferences (doc ID = user UID)
+    // Super admin can read all (for analytics)
+    // ============================================
+    match /userPreferences/{userId} {
+      allow read: if isAuthenticated() &&
+        (userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isAuthenticated() &&
+        userId == request.auth.uid;
+
+      allow update: if isAuthenticated() &&
+        userId == request.auth.uid;
+
+      allow delete: if isAuthenticated() &&
         userId == request.auth.uid;
     }
 
