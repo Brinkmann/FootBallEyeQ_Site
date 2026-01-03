@@ -9,6 +9,8 @@ const formatSegment = (segment: string) =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 
+const NON_LINKABLE_SEGMENTS = ["club", "admin", "learn"];
+
 export default function Breadcrumbs() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
@@ -19,7 +21,8 @@ export default function Breadcrumbs() {
 
   const crumbs = segments.map((segment, index) => {
     const href = `/${segments.slice(0, index + 1).join("/")}`;
-    return { label: formatSegment(segment), href };
+    const isLinkable = !NON_LINKABLE_SEGMENTS.includes(segment.toLowerCase());
+    return { label: formatSegment(segment), href, isLinkable };
   });
 
   return (
@@ -33,7 +36,7 @@ export default function Breadcrumbs() {
         {crumbs.map((crumb, index) => (
           <li key={crumb.href} className="flex items-center gap-2">
             <span className="text-gray-400">/</span>
-            {index === crumbs.length - 1 ? (
+            {index === crumbs.length - 1 || !crumb.isLinkable ? (
               <span className="text-gray-800 font-medium">{crumb.label}</span>
             ) : (
               <Link href={crumb.href} className="hover:text-[#e63946] hover:underline">
