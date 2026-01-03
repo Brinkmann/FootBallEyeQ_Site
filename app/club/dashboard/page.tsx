@@ -34,6 +34,7 @@ interface ClubInvite {
   email?: string;
   createdAt: Date;
   expiresAt: Date;
+  usedBy?: string;
 }
 
 export default function ClubDashboardPage() {
@@ -112,8 +113,11 @@ export default function ClubDashboardPage() {
           email: doc.data().email,
           createdAt: doc.data().createdAt?.toDate(),
           expiresAt: doc.data().expiresAt?.toDate(),
+          usedBy: doc.data().usedBy,
         }));
-        setInvites(invitesList.filter((i) => !i.expiresAt || i.expiresAt > new Date()));
+        setInvites(invitesList.filter((i) => 
+          !i.usedBy && (!i.expiresAt || i.expiresAt > new Date())
+        ));
       } catch (error) {
         console.error("Failed to load club data:", error);
       } finally {
@@ -196,6 +200,45 @@ export default function ClubDashboardPage() {
       setExerciseTypePolicy(oldPolicy);
     } finally {
       setPolicyLoading(false);
+    }
+  };
+
+  const handleRemoveMember = async (memberId: string, memberEmail: string) => {
+    if (!clubId) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to remove ${memberEmail} from the club? They will lose access to club features and their account will be downgraded to Free.`
+    );
+    
+    if (!confirmed) return;
+
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please log in again.");
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/club/remove-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ clubId, memberId, memberEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMembers(members.filter((m) => m.id !== memberId));
+      } else {
+        alert(data.error || "Failed to remove member. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to remove member:", error);
+      alert("Failed to remove member. Please try again.");
     }
   };
 
@@ -311,9 +354,19 @@ export default function ClubDashboardPage() {
                         <p className="text-xs text-gray-500 capitalize">{member.role}</p>
                       </div>
                     </div>
-                    <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
-                      Active
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+                        Active
+                      </span>
+                      {member.role !== "admin" && (
+                        <button
+                          onClick={() => handleRemoveMember(member.id, member.email)}
+                          className="text-xs text-red-500 hover:text-red-700 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
 
