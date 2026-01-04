@@ -214,14 +214,29 @@ export default function StatsPage() {
   };
 
   const isLocked = !entitlementsLoading && !entitlements.canAccessStats;
+  const [showLockOverlay, setShowLockOverlay] = useState(false);
+
+  // Show preview for 4 seconds before displaying lock overlay
+  useEffect(() => {
+    if (isLocked) {
+      const timer = setTimeout(() => {
+        setShowLockOverlay(true);
+      }, 4000); // 4 seconds
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowLockOverlay(false);
+    }
+  }, [isLocked]);
 
   return (
     <div className="min-h-screen bg-background relative">
       <NavBar />
       <Breadcrumbs />
 
-      {/* Stats content - hidden when locked */}
-      <div className={`px-4 sm:px-6 py-6 ${isLocked ? 'pointer-events-none select-none' : ''}`}>
+      {/* Stats content - completely hidden when locked, only show screenshot */}
+      {!isLocked && (
+        <div className="px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Session Selection Stats</h1>
@@ -432,7 +447,8 @@ export default function StatsPage() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Blurred Stats Preview Background - Only shown when locked */}
       {isLocked && (
@@ -445,8 +461,8 @@ export default function StatsPage() {
         </div>
       )}
 
-      {/* FOMO Lock Overlay */}
-      {isLocked && (
+      {/* FOMO Lock Overlay - Shows after 4 second preview */}
+      {showLockOverlay && (
         <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center px-4">
           <div className="max-w-2xl w-full text-center">
             {/* Pulsing Lock Icon */}
