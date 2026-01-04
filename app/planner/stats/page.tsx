@@ -450,13 +450,13 @@ export default function StatsPage() {
         </div>
       )}
 
-      {/* Blurred Stats Preview Background - Only shown when locked */}
+      {/* Stats Preview Screenshot - Shown clear for 4 seconds before lock */}
       {isLocked && (
         <div className="fixed inset-0 z-40 overflow-hidden">
           <img
             src="/images/stats-preview.png"
             alt="Stats preview"
-            className="w-full h-full object-cover object-top blur-sm opacity-70"
+            className="w-full h-full object-cover object-top"
           />
         </div>
       )}
