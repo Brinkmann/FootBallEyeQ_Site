@@ -213,93 +213,15 @@ export default function StatsPage() {
     return text.slice(0, maxLength).trim() + "...";
   };
 
-  if (!entitlementsLoading && !entitlements.canAccessStats) {
-    return (
-      <div className="min-h-screen bg-background">
-        <NavBar />
-        <Breadcrumbs />
-        <div className="px-4 sm:px-6 py-6">
-          <div className="max-w-2xl mx-auto text-center py-16">
-            {/* Lock Icon */}
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: '#F0EFEA' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-10 h-10" style={{ color: '#A10115' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-2xl font-bold mb-3" style={{ color: '#A10115' }}>
-              Session Stats Locked
-            </h1>
-
-            {/* Description - What they get */}
-            <p className="text-gray-600 mb-4 max-w-lg mx-auto">
-              Unlock detailed analytics about your training plan, including:
-            </p>
-            <ul className="text-sm text-gray-600 mb-6 max-w-md mx-auto text-left space-y-2">
-              <li className="flex items-start gap-2">
-                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Exercise balance across your season</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Difficulty and age group distribution</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Session-by-session insights and drill tracking</span>
-              </li>
-            </ul>
-
-            {/* Two paths message */}
-            <p className="text-sm text-gray-500 mb-6">
-              Unlock by upgrading or joining through your club
-            </p>
-
-            {/* Two-button CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto mb-6">
-              <Link
-                href="/upgrade"
-                className="px-6 py-3 text-sm font-semibold text-white rounded-lg transition-all hover:shadow-lg text-center"
-                style={{ backgroundColor: '#D72C16' }}
-              >
-                Upgrade Plan
-              </Link>
-              <Link
-                href="/join-club"
-                className="px-6 py-3 text-sm font-medium rounded-lg transition-all border-2 text-center"
-                style={{ borderColor: '#F0EFEA', color: '#6B7280' }}
-              >
-                Have a Club Code?
-              </Link>
-            </div>
-
-            {/* Back link */}
-            <Link
-              href="/planner"
-              className="text-sm hover:underline"
-              style={{ color: '#6B7280' }}
-            >
-              ← Back to Planner
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const isLocked = !entitlementsLoading && !entitlements.canAccessStats;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       <NavBar />
       <Breadcrumbs />
 
-      <div className="px-4 sm:px-6 py-6">
+      {/* Stats content - blurred when locked */}
+      <div className={`px-4 sm:px-6 py-6 transition-all duration-300 ${isLocked ? 'blur-sm opacity-50 pointer-events-none select-none' : ''}`}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Session Selection Stats</h1>
@@ -511,6 +433,106 @@ export default function StatsPage() {
           )}
         </div>
       </div>
+
+      {/* FOMO Lock Overlay */}
+      {isLocked && (
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+          <div className="max-w-2xl w-full text-center">
+            {/* Pulsing Lock Icon */}
+            <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse" style={{ backgroundColor: '#F0EFEA' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12" style={{ color: '#A10115' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </div>
+
+            {/* FOMO Heading */}
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: '#A10115' }}>
+              This Could Be Yours 👀
+            </h1>
+
+            {/* Emotional hook */}
+            <p className="text-lg text-gray-700 mb-6 font-medium">
+              Other coaches are using these analytics right now to build better training plans.
+            </p>
+
+            {/* What they see behind the blur */}
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 mb-6 border-2" style={{ borderColor: '#F0EFEA' }}>
+              <p className="text-sm font-semibold mb-4" style={{ color: '#A10115' }}>
+                Behind this screen, you&apos;re missing:
+              </p>
+              <ul className="text-sm text-gray-700 space-y-3 text-left max-w-lg mx-auto">
+                <li className="flex items-start gap-3">
+                  <svg className="w-6 h-6 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <div>
+                    <strong className="block">Visual analytics dashboard</strong>
+                    <span className="text-xs opacity-80">See difficulty balance, age distribution, and theme coverage at a glance</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-6 h-6 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <strong className="block">Session-by-session tracking</strong>
+                    <span className="text-xs opacity-80">Know exactly which drills you&apos;ve used and when, so you never repeat yourself</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-6 h-6 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <div>
+                    <strong className="block">Quick-remove from all sessions</strong>
+                    <span className="text-xs opacity-80">Made a mistake? Remove an exercise from your entire season in one click</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Social proof */}
+            <p className="text-sm text-gray-600 mb-6 italic">
+              &quot;I wish I&apos;d had this when I was planning my season manually&quot; - Every coach who upgrades
+            </p>
+
+            {/* Two paths with urgency */}
+            <p className="text-sm font-semibold mb-4" style={{ color: '#6B7280' }}>
+              Get instant access by upgrading or joining through your club
+            </p>
+
+            {/* Two-button CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto mb-6">
+              <Link
+                href="/upgrade"
+                className="px-8 py-4 text-base font-bold text-white rounded-xl transition-all hover:shadow-2xl hover:scale-105 text-center transform"
+                style={{ backgroundColor: '#D72C16' }}
+              >
+                Unlock Now - $29/mo
+              </Link>
+              <Link
+                href="/join-club"
+                className="px-8 py-4 text-base font-semibold rounded-xl transition-all hover:shadow-xl hover:scale-105 border-2 text-center transform"
+                style={{ borderColor: '#D72C16', color: '#6B7280' }}
+              >
+                Have a Club Code?
+              </Link>
+            </div>
+
+            {/* Back link */}
+            <Link
+              href="/planner"
+              className="text-sm hover:underline inline-flex items-center gap-1"
+              style={{ color: '#6B7280' }}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Planner
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
