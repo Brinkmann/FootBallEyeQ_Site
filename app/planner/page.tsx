@@ -115,9 +115,9 @@ export default function SeasonPlanningPage() {
                   <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50/80 z-10"></div>
 
                   {/* Content */}
-                  <div className="relative z-20 flex flex-col items-center justify-center text-center p-8 min-h-[280px]">
+                  <div className="relative z-20 flex flex-col items-center justify-center text-center p-6 min-h-[280px]">
                     {/* Lock icon */}
-                    <div className="mb-4 p-3 rounded-full" style={{ backgroundColor: '#F0EFEA' }}>
+                    <div className="mb-3 p-3 rounded-full" style={{ backgroundColor: '#F0EFEA' }}>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8" style={{ color: '#A10115' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
@@ -129,20 +129,27 @@ export default function SeasonPlanningPage() {
                     </h4>
 
                     {/* Description */}
-                    <p className="text-sm leading-relaxed mb-6 px-2" style={{ color: '#6B7280' }}>
-                      Upgrade to unlock all 12 sessions
+                    <p className="text-xs leading-relaxed mb-4 px-1" style={{ color: '#6B7280' }}>
+                      Unlock by upgrading or joining through your club
                     </p>
 
-                    {/* CTA Button */}
-                    <Link
-                      href="/upgrade"
-                      className="px-6 py-2.5 text-sm font-semibold text-white rounded-lg transition-all hover:shadow-lg"
-                      style={{ backgroundColor: '#D72C16' }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#A10115'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#D72C16'}
-                    >
-                      Upgrade Plan
-                    </Link>
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col gap-2 w-full px-2">
+                      <Link
+                        href="/upgrade"
+                        className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-all hover:shadow-lg text-center"
+                        style={{ backgroundColor: '#D72C16' }}
+                      >
+                        Upgrade Plan
+                      </Link>
+                      <Link
+                        href="/join-club"
+                        className="px-4 py-2 text-xs font-medium rounded-lg transition-all border-2 text-center"
+                        style={{ borderColor: '#F0EFEA', color: '#6B7280' }}
+                      >
+                        Have a Club Code?
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );
