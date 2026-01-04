@@ -220,8 +220,8 @@ export default function StatsPage() {
       <NavBar />
       <Breadcrumbs />
 
-      {/* Stats content - blurred when locked */}
-      <div className={`px-4 sm:px-6 py-6 transition-all duration-300 ${isLocked ? 'blur-sm opacity-50 pointer-events-none select-none' : ''}`}>
+      {/* Stats content - hidden when locked */}
+      <div className={`px-4 sm:px-6 py-6 ${isLocked ? 'pointer-events-none select-none' : ''}`}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Session Selection Stats</h1>
@@ -436,7 +436,7 @@ export default function StatsPage() {
 
       {/* FOMO Lock Overlay */}
       {isLocked && (
-        <div className="fixed inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 bg-background z-50 flex items-center justify-center px-4">
           <div className="max-w-2xl w-full text-center">
             {/* Pulsing Lock Icon */}
             <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse" style={{ backgroundColor: '#F0EFEA' }}>
@@ -447,7 +447,7 @@ export default function StatsPage() {
 
             {/* FOMO Heading */}
             <h1 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: '#A10115' }}>
-              This Could Be Yours 👀
+              This Could Be Yours
             </h1>
 
             {/* Emotional hook */}
