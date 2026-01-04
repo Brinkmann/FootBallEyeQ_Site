@@ -16,9 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://firebase.googleapis.com" crossOrigin="anonymous" />
-        <link rel="prefetch" href="/catalog" as="document" />
-        <link rel="prefetch" href="/planner" as="document" />
+        <link rel="preconnect" href="https://footballeyeq-39b68.firebaseapp.com" crossOrigin="anonymous" />
       </head>
       <body className="bg-background text-foreground min-h-screen flex flex-col">
         <AppProviders>{children}</AppProviders>

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { aboutLinks, coreLinks, learnLinks, pricingLink, supportLinks } from "./navigation";
 import CookiePreferences from "./CookiePreferences";
 
@@ -57,7 +58,13 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-2">
-            <img src="/brand/logo-icon.png" alt="Football EyeQ" className="h-6 w-auto opacity-80" />
+            <Image
+              src="/brand/logo-icon.png"
+              alt="Football EyeQ"
+              width={114}
+              height={114}
+              className="h-6 w-auto opacity-80"
+            />
             <span className="text-white font-semibold">Football EyeQ</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-3 text-gray-500 text-sm">
