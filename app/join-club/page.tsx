@@ -243,7 +243,7 @@ export default function JoinClubPage() {
                 <p className="font-medium">To get access through your club:</p>
                 <ol className="list-decimal list-inside space-y-2 ml-2">
                   <li>Contact your club administrator and request an invite code</li>
-                  <li>Make sure they have the email you used to sign up: <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-gray-200">{user?.email}</span></li>
+                  <li>Make sure they have the email you used to sign up: <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-gray-200">{auth.currentUser?.email}</span></li>
                   <li>Your club admin can generate invite codes from their dashboard</li>
                   <li>Once you receive your code, <Link href="/join-club" className="text-primary hover:underline font-medium">enter it here</Link></li>
                 </ol>
