@@ -369,7 +369,7 @@ export default function ProfilePage() {
           ) : (
             <form onSubmit={handleRedeemInvite} className="flex flex-col gap-4">
               <p className="text-sm text-foreground-secondary">
-                If you have an invite code from your club, enter it below to join.
+                Have an invite code from your club? <Link href="/join-club" className="text-accent hover:underline font-medium">Enter it here</Link> to unlock full access.
               </p>
               <div>
                 <label className="block text-sm text-foreground-secondary mb-1">Invite Code</label>
