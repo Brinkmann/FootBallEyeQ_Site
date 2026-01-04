@@ -56,11 +56,15 @@ export default function NavBar() {
   const [moreOpen, setMoreOpen] = useState(false);
 
   let tabs = [...coreLinks];
-  
+
+  if (accountType === "free") {
+    tabs = [...tabs, { label: "Enter Club Code", href: "/join-club" }];
+  }
+
   if (isClubAdmin) {
     tabs = [...tabs, { label: "My Club", href: "/club/dashboard" }];
   }
-  
+
   if (isSuperAdmin) {
     tabs = [...tabs, { label: "Admin Hub", href: "/admin" }];
   }

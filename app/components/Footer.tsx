@@ -18,7 +18,7 @@ const footerColumns = [
   },
   {
     title: "Support",
-    links: [...supportLinks, pricingLink],
+    links: [...supportLinks, pricingLink, { label: "Have a Club Code?", href: "/join-club" }],
   },
   {
     title: "Legal",

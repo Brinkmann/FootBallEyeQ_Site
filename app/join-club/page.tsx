@@ -232,15 +232,30 @@ export default function JoinClubPage() {
               </ul>
             </div>
 
-            <div className="text-center text-sm text-gray-500">
+            <div className="border-t border-gray-200 pt-6 mt-6">
+              <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-blue-600">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                </svg>
+                Don&apos;t have a code yet?
+              </h3>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3 text-sm text-gray-700">
+                <p className="font-medium">To get access through your club:</p>
+                <ol className="list-decimal list-inside space-y-2 ml-2">
+                  <li>Contact your club administrator and request an invite code</li>
+                  <li>Make sure they have the email you used to sign up: <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-gray-200">{auth.currentUser?.email}</span></li>
+                  <li>Your club admin can generate invite codes from their dashboard</li>
+                  <li>Once you receive your code, <Link href="/join-club" className="text-primary hover:underline font-medium">enter it here</Link></li>
+                </ol>
+              </div>
+            </div>
+
+            <div className="text-center text-sm text-gray-500 mt-6">
               <p>
-                Don&apos;t have a code?{" "}
                 <Link href="/planner" className="text-primary hover:underline">
                   Continue with free access
                 </Link>
-              </p>
-              <p className="mt-2">
-                or{" "}
+                {" "}or{" "}
                 <Link href="/upgrade" className="text-primary hover:underline">
                   explore other options
                 </Link>
