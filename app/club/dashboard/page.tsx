@@ -315,7 +315,7 @@ export default function ClubDashboardPage() {
                   New to Club Management?
                 </h3>
                 <p className="text-sm text-gray-700 mb-3">
-                  Here's how to get your team started with Football EyeQ:
+                  Here&apos;s how to get your team started with Football EyeQ:
                 </p>
               </div>
             </div>
@@ -331,7 +331,7 @@ export default function ClubDashboardPage() {
               </div>
               <div className="flex gap-2">
                 <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>3.</span>
-                <span><strong>Set your club's drill policy</strong> to control whether coaches can access EyeQ or Team-oriented drills</span>
+                <span><strong>Set your club&apos;s drill policy</strong> to control whether coaches can access EyeQ or Team-oriented drills</span>
               </div>
               <div className="flex gap-2">
                 <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>4.</span>
