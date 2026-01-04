@@ -147,8 +147,8 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
               )}
               </button>
               {showLimitMessage && (
-                <div className="absolute right-0 top-full mt-1 z-50 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg">
-                  Favorites limit reached ({maxFavorites}). Upgrade for unlimited favorites.
+                <div className="absolute right-0 top-full mt-1 z-50 w-56 p-3 bg-gray-900 text-white text-xs rounded shadow-lg leading-relaxed">
+                  You've reached your 10 favorites limit! 💔 Upgrade to save unlimited drills and never lose track of your best exercises.
                 </div>
               )}
             </div>

@@ -110,20 +110,47 @@ export default function SeasonPlanningPage() {
             
             if (isLocked) {
               return (
-                <div key={week.week} className="bg-card rounded shadow p-4 border border-divider opacity-60 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100/80 rounded z-10">
-                    <div className="text-center p-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mx-auto mb-2 text-gray-400">
+                <div key={week.week} className="relative bg-white rounded-lg shadow border-2 overflow-hidden" style={{ borderColor: '#F0EFEA' }}>
+                  {/* Lock overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50/80 z-10"></div>
+
+                  {/* Content */}
+                  <div className="relative z-20 flex flex-col items-center justify-center text-center p-6 min-h-[280px]">
+                    {/* Lock icon */}
+                    <div className="mb-3 p-3 rounded-full" style={{ backgroundColor: '#F0EFEA' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8" style={{ color: '#A10115' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
-                      <p className="text-sm font-medium text-gray-600">Upgrade to unlock</p>
-                      <Link href="/upgrade" className="text-xs text-primary hover:underline mt-1 inline-block">
-                        View plans
+                    </div>
+
+                    {/* Heading */}
+                    <h4 className="text-base font-bold mb-2" style={{ color: '#A10115' }}>
+                      Session {week.week}
+                    </h4>
+
+                    {/* Description */}
+                    <p className="text-xs leading-relaxed mb-4 px-1" style={{ color: '#6B7280' }}>
+                      Unlock by upgrading or joining through your club
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col gap-2 w-full px-2">
+                      <Link
+                        href="/upgrade"
+                        className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-all hover:shadow-lg text-center"
+                        style={{ backgroundColor: '#D72C16' }}
+                      >
+                        Upgrade Plan
+                      </Link>
+                      <Link
+                        href="/join-club"
+                        className="px-4 py-2 text-xs font-medium rounded-lg transition-all border-2 text-center"
+                        style={{ borderColor: '#F0EFEA', color: '#6B7280' }}
+                      >
+                        Have a Club Code?
                       </Link>
                     </div>
                   </div>
-                  <h4 className="font-bold text-foreground mb-2">Session {week.week}</h4>
-                  <p className="text-sm text-gray-400">Locked</p>
                 </div>
               );
             }

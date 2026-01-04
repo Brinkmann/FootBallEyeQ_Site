@@ -50,6 +50,7 @@ export default function ClubDashboardPage() {
   const [inviteLoading, setInviteLoading] = useState(false);
   const [exerciseTypePolicy, setExerciseTypePolicy] = useState<ExerciseTypePolicy>("coach-choice");
   const [policyLoading, setPolicyLoading] = useState(false);
+  const [showHelpBanner, setShowHelpBanner] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -125,6 +126,33 @@ export default function ClubDashboardPage() {
 
     return () => unsub();
   }, [router]);
+
+  // Check if help banner should be shown (first 7 days, not dismissed)
+  useEffect(() => {
+    const dismissed = localStorage.getItem("clubAdminBannerDismissed");
+    if (dismissed === "true") {
+      setShowHelpBanner(false);
+      return;
+    }
+
+    const firstVisit = localStorage.getItem("clubAdminFirstVisit");
+    const now = new Date().getTime();
+
+    if (!firstVisit) {
+      // First time visiting - record timestamp
+      localStorage.setItem("clubAdminFirstVisit", now.toString());
+      setShowHelpBanner(true);
+    } else {
+      // Check if within 7 days
+      const daysSinceFirst = (now - parseInt(firstVisit)) / (1000 * 60 * 60 * 24);
+      setShowHelpBanner(daysSinceFirst < 7);
+    }
+  }, []);
+
+  const dismissHelpBanner = () => {
+    localStorage.setItem("clubAdminBannerDismissed", "true");
+    setShowHelpBanner(false);
+  };
 
   const generateInviteCode = () => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -263,6 +291,62 @@ export default function ClubDashboardPage() {
       <WelcomeModal type="clubAdmin" clubName={clubName} />
 
       <div className="max-w-4xl mx-auto p-6">
+        {/* Help Banner for New Admins */}
+        {showHelpBanner && (
+          <div className="mb-6 rounded-lg border-2 p-5 relative" style={{ backgroundColor: '#FFF5F5', borderColor: '#F0EFEA' }}>
+            <button
+              onClick={dismissHelpBanner}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
+              aria-label="Dismiss help banner"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="flex items-start gap-3 mb-4">
+              <div className="p-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#F0EFEA' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5" style={{ color: '#A10115' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-base mb-1" style={{ color: '#A10115' }}>
+                  New to Club Management?
+                </h3>
+                <p className="text-sm text-gray-700 mb-3">
+                  Here's how to get your team started with Football EyeQ:
+                </p>
+              </div>
+            </div>
+
+            <div className="ml-11 space-y-2.5 text-sm text-gray-700">
+              <div className="flex gap-2">
+                <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>1.</span>
+                <span><strong>Generate invite codes</strong> below for each coach on your team</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>2.</span>
+                <span><strong>Share codes via email</strong> - each coach needs to sign up first, then enter their code</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>3.</span>
+                <span><strong>Set your club's drill policy</strong> to control whether coaches can access EyeQ or Team-oriented drills</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold min-w-[20px]" style={{ color: '#D72C16' }}>4.</span>
+                <span><strong>Manage your roster</strong> by viewing active members and removing coaches when needed</span>
+              </div>
+            </div>
+
+            <p className="ml-11 mt-3 text-xs text-gray-500 italic">
+              This banner will disappear in 7 days or when you dismiss it.
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="max-w-4xl mx-auto px-6 pb-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-foreground">{clubName}</h1>
