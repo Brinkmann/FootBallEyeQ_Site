@@ -440,14 +440,14 @@ export default function StatsPage() {
           <img
             src="/images/stats-preview.png"
             alt="Stats preview"
-            className="w-full h-full object-cover object-top blur-md opacity-40"
+            className="w-full h-full object-cover object-top blur-sm opacity-70"
           />
         </div>
       )}
 
       {/* FOMO Lock Overlay */}
       {isLocked && (
-        <div className="fixed inset-0 bg-white/85 z-50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center px-4">
           <div className="max-w-2xl w-full text-center">
             {/* Pulsing Lock Icon */}
             <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse" style={{ backgroundColor: '#F0EFEA' }}>
