@@ -51,6 +51,7 @@ export default function ClubDashboardPage() {
   const [exerciseTypePolicy, setExerciseTypePolicy] = useState<ExerciseTypePolicy>("coach-choice");
   const [policyLoading, setPolicyLoading] = useState(false);
   const [showHelpBanner, setShowHelpBanner] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -231,11 +232,11 @@ export default function ClubDashboardPage() {
 
   const handleRemoveMember = async (memberId: string, memberEmail: string) => {
     if (!clubId) return;
-    
+
     const confirmed = window.confirm(
       `Are you sure you want to remove ${memberEmail} from the club? They will lose access to club features and their account will be downgraded to Free.`
     );
-    
+
     if (!confirmed) return;
 
     try {
@@ -265,6 +266,17 @@ export default function ClubDashboardPage() {
     } catch (error) {
       console.error("Failed to remove member:", error);
       alert("Failed to remove member. Please try again.");
+    }
+  };
+
+  const copyToClipboard = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy code:', err);
+      alert('Failed to copy code. Please try again.');
     }
   };
 
@@ -451,6 +463,13 @@ export default function ClubDashboardPage() {
                                 <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded border border-gray-300 text-primary font-bold">
                                   {memberInvite.code}
                                 </span>
+                                <button
+                                  onClick={() => copyToClipboard(memberInvite.code)}
+                                  className="text-xs text-blue-600 hover:text-blue-800 font-medium transition"
+                                  title="Copy code to clipboard"
+                                >
+                                  {copiedCode === memberInvite.code ? '✓ Copied!' : 'Copy'}
+                                </button>
                                 <span className="text-xs text-gray-500 capitalize">{member.role}</span>
                               </div>
                             ) : (
@@ -492,6 +511,13 @@ export default function ClubDashboardPage() {
                             <span className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-amber-300 text-primary font-bold">
                               {invite.code}
                             </span>
+                            <button
+                              onClick={() => copyToClipboard(invite.code)}
+                              className="text-xs text-blue-600 hover:text-blue-800 font-medium transition"
+                              title="Copy code to clipboard"
+                            >
+                              {copiedCode === invite.code ? '✓ Copied!' : 'Copy'}
+                            </button>
                             <span className="text-xs text-amber-600">
                               Expires {invite.expiresAt?.toLocaleDateString()}
                             </span>
