@@ -219,30 +219,75 @@ export default function StatsPage() {
         <NavBar />
         <Breadcrumbs />
         <div className="px-4 sm:px-6 py-6">
-          <div className="max-w-xl mx-auto text-center py-16">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-gray-400">
+          <div className="max-w-2xl mx-auto text-center py-16">
+            {/* Lock Icon */}
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: '#F0EFEA' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-10 h-10" style={{ color: '#A10115' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-3">Session Stats Locked</h1>
-            <p className="text-gray-600 mb-6">
-              Upgrade to access detailed analytics about your training plan, including exercise balance, difficulty spread, and session insights.
+
+            {/* Heading */}
+            <h1 className="text-2xl font-bold mb-3" style={{ color: '#A10115' }}>
+              Session Stats Locked
+            </h1>
+
+            {/* Description - What they get */}
+            <p className="text-gray-600 mb-4 max-w-lg mx-auto">
+              Unlock detailed analytics about your training plan, including:
             </p>
-            <Link
-              href="/upgrade"
-              className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-hover transition font-medium"
-            >
-              Upgrade to Unlock
-            </Link>
-            <div className="mt-4">
+            <ul className="text-sm text-gray-600 mb-6 max-w-md mx-auto text-left space-y-2">
+              <li className="flex items-start gap-2">
+                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Exercise balance across your season</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Difficulty and age group distribution</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#D72C16' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Session-by-session insights and drill tracking</span>
+              </li>
+            </ul>
+
+            {/* Two paths message */}
+            <p className="text-sm text-gray-500 mb-6">
+              Unlock by upgrading or joining through your club
+            </p>
+
+            {/* Two-button CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto mb-6">
               <Link
-                href="/planner"
-                className="text-sm text-gray-500 hover:text-gray-700"
+                href="/upgrade"
+                className="px-6 py-3 text-sm font-semibold text-white rounded-lg transition-all hover:shadow-lg text-center"
+                style={{ backgroundColor: '#D72C16' }}
               >
-                Back to Planner
+                Upgrade Plan
+              </Link>
+              <Link
+                href="/join-club"
+                className="px-6 py-3 text-sm font-medium rounded-lg transition-all border-2 text-center"
+                style={{ borderColor: '#F0EFEA', color: '#6B7280' }}
+              >
+                Have a Club Code?
               </Link>
             </div>
+
+            {/* Back link */}
+            <Link
+              href="/planner"
+              className="text-sm hover:underline"
+              style={{ color: '#6B7280' }}
+            >
+              ← Back to Planner
+            </Link>
           </div>
         </div>
       </div>
