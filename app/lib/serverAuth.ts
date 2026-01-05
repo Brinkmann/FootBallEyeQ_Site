@@ -58,6 +58,7 @@ export async function getUserProfile(uid: string, email?: string): Promise<UserP
     const isSuperAdmin = email === SUPER_ADMIN_EMAIL;
 
     const normalizedAccountType = data.accountType === "club_admin" ? "clubCoach" : data.accountType;
+    const normalizedClubRole = data.clubRole === true ? "admin" : data.clubRole;
 
     return {
       uid: data.uid || uid,
@@ -67,7 +68,7 @@ export async function getUserProfile(uid: string, email?: string): Promise<UserP
       organization: data.organization,
       accountType: normalizedAccountType || "free",
       clubId: data.clubId,
-      clubRole: data.clubRole,
+      clubRole: normalizedClubRole,
       admin: isSuperAdmin || data.admin || false,
       createdAt: data.createdAt?.toDate?.() || new Date(),
       accountStatus: data.accountStatus,

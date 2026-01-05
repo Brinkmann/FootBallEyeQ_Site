@@ -68,7 +68,9 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         const accountStatusParsed = AccountStatusSchema.safeParse(userData.accountStatus);
         const userAccountStatus = accountStatusParsed.success ? accountStatusParsed.data : "active";
         
-        const clubRoleParsed = ClubRoleSchema.safeParse(userData.clubRole);
+        const normalizedClubRole =
+          userData.clubRole === true ? "admin" : userData.clubRole;
+        const clubRoleParsed = ClubRoleSchema.safeParse(normalizedClubRole);
         const isAdmin = clubRoleParsed.success && clubRoleParsed.data === "admin";
         
         setAccountType(userAccountType);
