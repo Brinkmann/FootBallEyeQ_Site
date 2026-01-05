@@ -12,7 +12,7 @@ import { useExerciseType } from "../components/ExerciseTypeProvider";
 import Link from "next/link";
 
 // Module-level cache to avoid re-fetching catalog data across client navigations
-let cachedExercises: Exercise[] | null = null;
+let cachedExercises: Exercise[] = [];
 let cachedAt: number | null = null;
 const CATALOG_CACHE_TTL_MS = 60_000; // align with API s-maxage
 
@@ -123,7 +123,7 @@ export default function CatalogPage() {
 
     try {
       const now = Date.now();
-      if (cachedExercises && cachedAt && now - cachedAt < CATALOG_CACHE_TTL_MS) {
+      if (cachedAt && now - cachedAt < CATALOG_CACHE_TTL_MS) {
         setExercises(cachedExercises);
         setIsLoading(false);
         return;
