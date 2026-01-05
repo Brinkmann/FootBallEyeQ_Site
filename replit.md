@@ -28,7 +28,8 @@ The design incorporates a clear navigation structure with a prominent navbar and
 - **Firebase Admin SDK:** Single initialization file at `app/utils/firebaseAdmin.ts` with singleton pattern to prevent duplicate app errors in Vercel's warm serverless functions.
 
 **Feature Specifications:**
-- **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, Profile, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, and Tag Explanation Guide.
+- **Pages:** Home, Drill Catalogue, Session Planner, Session Stats (premium), Upgrade, Club Signup, Club Dashboard, Profile, Getting Started, educational pages (Why Scanning, How It Works, Ecosystem, Use Cases), Contact, Resources, and Tag Explanation Guide.
+- **Getting Started Page:** Comprehensive onboarding guide at `/getting-started` with persona-based journeys for Individual Coaches, Club Coaches (with/without code), and Club Admins. Includes direct links to all relevant pages, platform usage guidance (first steps, on-field delivery, season maintenance), and instructions for using favourites and stats.
 - **Profile Page:** Displays editable first/last name, read-only account details (email, account type, member since), and club membership section. Coaches can enter invite codes to join clubs; club admins and super admin see club info but not the invite entry. Shows club's exercise type policy when applicable.
 - **Navigation:** Navbar includes Drill Catalogue, Session Planner, Tag Guide, and a "Learn" dropdown. Role-specific tabs for "My Club" (club admins) and "Admin Hub" (super admin).
 - **Post-Signup Onboarding:** Contextual welcome modals and redirects guide users based on their account type.
@@ -52,6 +53,9 @@ The `firestore.rules` file contains comprehensive security rules for all collect
 **Server-Side APIs (for secure operations):**
 - `/api/create-club` - Creates a new club with the user as admin (POST, requires Bearer token)
 - `/api/redeem-invite` - Redeems an invite code to join a club (POST, requires Bearer token)
+- `/api/club/create-invite` - Club admin generates access codes for coaches (POST, requires Bearer token). Validates email, checks for existing members/invites, returns existing invite if valid one exists for same email
+- `/api/club/delete-invite` - Club admin cancels a pending invite (POST, requires Bearer token)
+- `/api/club/remove-member` - Club admin removes a coach from the club (POST, requires Bearer token)
 - `/api/exercises` - Fetches exercises server-side with caching (GET)
 - `/api/admin/upgrade` - Super admin upgrades/downgrades users or clubs (POST, requires Bearer token)
 - `/api/webhooks/stripe` - Stripe webhook placeholder for future payment integration (POST)

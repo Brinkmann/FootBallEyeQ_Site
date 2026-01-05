@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, FormEvent, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/Firebase/auth";
 import { useAnalytics } from "@/app/components/AnalyticsProvider";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { trackEvent } = useAnalytics();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -30,7 +31,11 @@ export default function LoginPage() {
         userId: user.uid,
       }).catch(() => {});
 
-      router.push("/planner");
+      const redirectTo = searchParams.get("redirect");
+      const safeRedirect = redirectTo && redirectTo.startsWith("/") ? redirectTo : "/planner";
+      
+      // Use window.location for full page navigation to ensure cookies are sent with the request
+      window.location.href = safeRedirect;
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login failed:", err.message);
@@ -194,6 +199,14 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="text-gray-500">Loading...</div></div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
 
