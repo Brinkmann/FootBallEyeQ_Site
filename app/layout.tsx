@@ -14,7 +14,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head></head>
       <body className="bg-background text-foreground min-h-screen flex flex-col">
         <AppProviders>{children}</AppProviders>
       </body>
