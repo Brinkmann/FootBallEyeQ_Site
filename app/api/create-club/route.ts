@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     if (!existingSignup.empty) {
       const signupDoc = existingSignup.docs[0];
       batch.update(signupDoc.ref, {
-        accountType: "club_admin",
+        accountType: "clubCoach",
         clubId: clubRef.id,
         clubRole: "admin",
         organization: clubName.trim(),
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         lname: lastName || "",
         admin: false,
         organization: clubName.trim(),
-        accountType: "club_admin",
+        accountType: "clubCoach",
         accountStatus: "active",
         clubId: clubRef.id,
         clubRole: "admin",

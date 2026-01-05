@@ -59,8 +59,10 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
 
       if (!snapshot.empty) {
         const userData = snapshot.docs[0].data();
-        
-        const accountTypeParsed = AccountTypeSchema.safeParse(userData.accountType);
+
+        const normalizedAccountType =
+          userData.accountType === "club_admin" ? "clubCoach" : userData.accountType;
+        const accountTypeParsed = AccountTypeSchema.safeParse(normalizedAccountType);
         const userAccountType = accountTypeParsed.success ? accountTypeParsed.data : "free";
         
         const accountStatusParsed = AccountStatusSchema.safeParse(userData.accountStatus);
