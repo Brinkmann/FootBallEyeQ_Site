@@ -12,11 +12,9 @@ import {
   query,
   where,
   getDocs,
-  addDoc,
   deleteDoc,
   doc,
   updateDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import { ExerciseTypePolicy } from "../../types/account";
 
@@ -52,6 +50,8 @@ export default function ClubDashboardPage() {
   const [policyLoading, setPolicyLoading] = useState(false);
   const [showHelpBanner, setShowHelpBanner] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -155,49 +155,68 @@ export default function ClubDashboardPage() {
     setShowHelpBanner(false);
   };
 
-  const generateInviteCode = () => {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let code = "";
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-  };
-
   const handleCreateInvite = async () => {
     if (!clubId || !inviteEmail.trim()) return;
     setInviteLoading(true);
+    setInviteError(null);
+    setInviteSuccess(null);
 
     try {
-      const normalizedEmail = inviteEmail.trim().toLowerCase();
-      const code = generateInviteCode();
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
+      const user = auth.currentUser;
+      if (!user) {
+        setInviteError("Please log in again to continue.");
+        setInviteLoading(false);
+        return;
+      }
 
-      const inviteDoc = await addDoc(collection(db, "clubInvites"), {
-        clubId,
-        clubName,
-        code,
-        email: normalizedEmail,
-        createdAt: serverTimestamp(),
-        expiresAt,
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/club/create-invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          clubId,
+          clubName,
+          email: inviteEmail.trim(),
+        }),
       });
 
-      setInvites([
-        ...invites,
-        {
-          id: inviteDoc.id,
-          code,
-          email: normalizedEmail,
-          createdAt: new Date(),
-          expiresAt,
-        },
-      ]);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setInviteError(data.error || "Failed to create access code. Please try again.");
+        return;
+      }
+
+      const invite = data.invite;
+      const existingInvite = invites.find(i => i.id === invite.id);
+      
+      if (!existingInvite) {
+        setInvites([
+          ...invites,
+          {
+            id: invite.id,
+            code: invite.code,
+            email: invite.email,
+            createdAt: new Date(invite.createdAt),
+            expiresAt: new Date(invite.expiresAt),
+          },
+        ]);
+      }
+
+      if (data.existing) {
+        setInviteSuccess(`An active invite already exists for ${invite.email}. The code is: ${invite.code}`);
+      } else {
+        setInviteSuccess(`Access code ${invite.code} created for ${invite.email}`);
+      }
 
       setInviteEmail("");
       setShowInviteForm(false);
     } catch (error) {
       console.error("Failed to create invite:", error);
+      setInviteError("Something went wrong. Please try again.");
     } finally {
       setInviteLoading(false);
     }
@@ -377,7 +396,10 @@ export default function ClubDashboardPage() {
               </p>
             </div>
             <button
-              onClick={() => setShowInviteForm(true)}
+              onClick={() => {
+                setShowInviteForm(true);
+                setInviteSuccess(null);
+              }}
               className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -387,15 +409,37 @@ export default function ClubDashboardPage() {
             </button>
           </div>
 
+          {inviteSuccess && !showInviteForm && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 flex items-center justify-between">
+              <span>{inviteSuccess}</span>
+              <button
+                onClick={() => setInviteSuccess(null)}
+                className="text-green-500 hover:text-green-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {showInviteForm && (
             <div className="mb-6 p-4 bg-primary-light rounded-lg border border-primary/20">
               <h3 className="font-medium text-foreground mb-3">Create invite for new coach</h3>
+              {inviteError && (
+                <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                  {inviteError}
+                </div>
+              )}
               <div className="mb-3">
                 <label className="block text-sm text-gray-600 mb-1">Coach email address <span className="text-red-500">*</span></label>
                 <input
                   type="email"
                   value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
+                  onChange={(e) => {
+                    setInviteEmail(e.target.value);
+                    if (inviteError) setInviteError(null);
+                  }}
                   placeholder="coach@example.com"
                   className="w-full p-3 rounded-lg border border-divider bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   required
@@ -413,6 +457,7 @@ export default function ClubDashboardPage() {
                 <button
                   onClick={() => {
                     setShowInviteForm(false);
+                    setInviteError(null);
                     setInviteEmail("");
                   }}
                   className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 border border-divider rounded-lg"
