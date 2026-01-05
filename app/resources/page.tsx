@@ -51,15 +51,47 @@ export default function ResourcesPage() {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
+            <Link 
+              href="/getting-started"
+              data-aos="fade-up"
+              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group"
+            >
+              <div 
+                className="p-6 text-white"
+                style={{ background: 'linear-gradient(135deg, #A10115 0%, #D72C16 100%)' }}
+              >
+                <div className="text-3xl mb-2">🚀</div>
+                <h3 className="text-xl font-bold">Getting Started</h3>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 mb-6">New to Football EyeQ? Choose your role and follow step-by-step onboarding with direct links.</p>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-center text-gray-700">
+                    <span className="w-2 h-2 bg-[#A10115] rounded-full mr-3"></span>
+                    Individual Coach Journey
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <span className="w-2 h-2 bg-[#A10115] rounded-full mr-3"></span>
+                    Club Coach Onboarding
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <span className="w-2 h-2 bg-[#A10115] rounded-full mr-3"></span>
+                    Club Admin Setup
+                  </li>
+                </ul>
+                <div 
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium group-hover:gap-3 transition-all"
+                  style={{ backgroundColor: '#A1011520', color: '#A10115' }}
+                >
+                  Start Here
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+
             {[
-              {
-                title: "Getting Started",
-                icon: "🚀",
-                color: "#A10115",
-                desc: "New to Football EyeQ? Start here with our beginner guides and setup tutorials.",
-                items: ["Quick Start Guide", "Platform Overview", "First Session Tips"],
-                status: "Coming Soon"
-              },
               {
                 title: "Training Guides",
                 icon: "📘",
@@ -80,7 +112,7 @@ export default function ResourcesPage() {
               <div 
                 key={i}
                 data-aos="fade-up"
-                data-aos-delay={i * 100}
+                data-aos-delay={(i + 1) * 100}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
                 <div 
