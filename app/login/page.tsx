@@ -33,7 +33,9 @@ function LoginForm() {
 
       const redirectTo = searchParams.get("redirect");
       const safeRedirect = redirectTo && redirectTo.startsWith("/") ? redirectTo : "/planner";
-      router.push(safeRedirect);
+      
+      // Use window.location for full page navigation to ensure cookies are sent with the request
+      window.location.href = safeRedirect;
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login failed:", err.message);
