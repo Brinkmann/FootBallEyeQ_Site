@@ -12,8 +12,17 @@ function generateInviteCode(): string {
 }
 
 function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  if (!email || email.length > 254) return false;
+  const parts = email.split("@");
+  if (parts.length !== 2) return false;
+  const [local, domain] = parts;
+  if (!local || local.length > 64 || !domain || domain.length > 253) return false;
+  if (local.startsWith(".") || local.endsWith(".")) return false;
+  if (domain.startsWith(".") || domain.endsWith(".") || domain.startsWith("-")) return false;
+  const dotIndex = domain.lastIndexOf(".");
+  if (dotIndex < 1 || dotIndex === domain.length - 1) return false;
+  if (/\s/.test(email)) return false;
+  return true;
 }
 
 export async function POST(request: NextRequest) {
