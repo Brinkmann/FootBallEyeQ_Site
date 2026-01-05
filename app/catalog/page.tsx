@@ -11,6 +11,11 @@ import { useFavoritesContext } from "../components/FavoritesProvider";
 import { useExerciseType } from "../components/ExerciseTypeProvider";
 import Link from "next/link";
 
+// Module-level cache to avoid re-fetching catalog data across client navigations
+let cachedExercises: Exercise[] | null = null;
+let cachedAt: number | null = null;
+const CATALOG_CACHE_TTL_MS = 60_000; // align with API s-maxage
+
 // Module-level flag: true if catalog has been visited this session (persists across SPA navigations)
 let catalogVisitedThisSession = false;
 
@@ -117,7 +122,14 @@ export default function CatalogPage() {
     setLoadError(null);
 
     try {
-      const res = await fetch(`/api/exercises?ts=${Date.now()}`, { cache: "no-store" });
+      const now = Date.now();
+      if (cachedExercises && cachedAt && now - cachedAt < CATALOG_CACHE_TTL_MS) {
+        setExercises(cachedExercises);
+        setIsLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/exercises");
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -125,7 +137,9 @@ export default function CatalogPage() {
       }
 
       const data = await res.json();
-      setExercises(data.exercises || []);
+      cachedExercises = data.exercises || [];
+      cachedAt = now;
+      setExercises(cachedExercises);
     } catch (error) {
       console.error("Error fetching exercises:", error);
       setLoadError(error instanceof Error ? error.message : "Failed to load drills");
