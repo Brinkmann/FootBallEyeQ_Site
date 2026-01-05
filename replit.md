@@ -54,6 +54,7 @@ The `firestore.rules` file contains comprehensive security rules for all collect
 - `/api/create-club` - Creates a new club with the user as admin (POST, requires Bearer token)
 - `/api/redeem-invite` - Redeems an invite code to join a club (POST, requires Bearer token)
 - `/api/club/create-invite` - Club admin generates access codes for coaches (POST, requires Bearer token). Validates email, checks for existing members/invites, returns existing invite if valid one exists for same email
+- `/api/club/delete-invite` - Club admin cancels a pending invite (POST, requires Bearer token)
 - `/api/club/remove-member` - Club admin removes a coach from the club (POST, requires Bearer token)
 - `/api/exercises` - Fetches exercises server-side with caching (GET)
 - `/api/admin/upgrade` - Super admin upgrades/downgrades users or clubs (POST, requires Bearer token)

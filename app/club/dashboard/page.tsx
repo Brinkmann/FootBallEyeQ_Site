@@ -12,7 +12,6 @@ import {
   query,
   where,
   getDocs,
-  deleteDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
@@ -224,10 +223,32 @@ export default function ClubDashboardPage() {
 
   const handleDeleteInvite = async (inviteId: string) => {
     try {
-      await deleteDoc(doc(db, "clubInvites", inviteId));
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please log in again to continue.");
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/club/delete-invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ inviteId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        alert(data.error || "Failed to cancel invite. Please try again.");
+        return;
+      }
+
       setInvites(invites.filter((i) => i.id !== inviteId));
     } catch (error) {
       console.error("Failed to delete invite:", error);
+      alert("Failed to cancel invite. Please try again.");
     }
   };
 
