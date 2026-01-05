@@ -59,14 +59,18 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
 
       if (!snapshot.empty) {
         const userData = snapshot.docs[0].data();
-        
-        const accountTypeParsed = AccountTypeSchema.safeParse(userData.accountType);
+
+        const normalizedAccountType =
+          userData.accountType === "club_admin" ? "clubCoach" : userData.accountType;
+        const accountTypeParsed = AccountTypeSchema.safeParse(normalizedAccountType);
         const userAccountType = accountTypeParsed.success ? accountTypeParsed.data : "free";
         
         const accountStatusParsed = AccountStatusSchema.safeParse(userData.accountStatus);
         const userAccountStatus = accountStatusParsed.success ? accountStatusParsed.data : "active";
         
-        const clubRoleParsed = ClubRoleSchema.safeParse(userData.clubRole);
+        const normalizedClubRole =
+          userData.clubRole === true ? "admin" : userData.clubRole;
+        const clubRoleParsed = ClubRoleSchema.safeParse(normalizedClubRole);
         const isAdmin = clubRoleParsed.success && clubRoleParsed.data === "admin";
         
         setAccountType(userAccountType);
