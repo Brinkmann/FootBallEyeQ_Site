@@ -13,6 +13,7 @@ export class CatalogPage {
   readonly loadingSpinner: Locator;
   readonly errorMessage: Locator;
   readonly noResultsMessage: Locator;
+  readonly emptyStateMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,6 +29,7 @@ export class CatalogPage {
     this.loadingSpinner = page.locator('.animate-spin');
     this.errorMessage = page.locator('.bg-red-50.border.border-red-200');
     this.noResultsMessage = page.locator('text=No drills match your search');
+    this.emptyStateMessage = page.locator('text=No drills match your search, text=No exercises found, text=No drills available').first();
   }
 
   async navigate() {
