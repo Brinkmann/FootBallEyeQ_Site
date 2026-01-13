@@ -1,6 +1,7 @@
 /**
- * Test data and fixtures for Playwright tests
- * This file contains test user accounts and other test data
+ * Test Data Fixtures for E2E Tests
+ *
+ * These test users are created by running: npm run setup-test-users
  */
 
 export interface TestUser {
@@ -22,57 +23,57 @@ export const testUsers = {
     password: 'TestFree123!',
     name: 'Test Free Coach',
     firstName: 'Test',
-    lastName: 'Free',
+    lastName: 'Free Coach',
     accountType: 'Free' as const,
-    organization: 'Test Free Organization',
+    organization: 'Test Organization',
   },
-  
+
   premiumCoach: {
     email: 'premium-coach@test.football-eyeq.com',
     password: 'TestPremium123!',
     name: 'Test Premium Coach',
     firstName: 'Test',
-    lastName: 'Premium',
+    lastName: 'Premium Coach',
     accountType: 'IndividualPremium' as const,
-    organization: 'Test Premium Organization',
+    organization: 'Test Organization',
   },
-  
+
   clubCoach: {
     email: 'club-coach@test.football-eyeq.com',
     password: 'TestClub123!',
     name: 'Test Club Coach',
     firstName: 'Test',
-    lastName: 'ClubCoach',
+    lastName: 'Club Coach',
     accountType: 'ClubCoach' as const,
-    organization: 'Test Club',
-    clubId: 'test-club-001',
+    organization: 'Test Football Club',
+    clubId: 'test-club-e2e',
   },
-  
+
   clubAdmin: {
     email: 'club-admin@test.football-eyeq.com',
     password: 'TestAdmin123!',
     name: 'Test Club Admin',
     firstName: 'Test',
-    lastName: 'Admin',
+    lastName: 'Club Admin',
     accountType: 'ClubAdmin' as const,
-    organization: 'Test Club',
-    clubId: 'test-club-001',
+    organization: 'Test Football Club',
+    clubId: 'test-club-e2e',
   },
-  
-  // Aliases for backward compatibility and convenience
+
+  // Aliases for backward compatibility with existing tests
   validUser: {
     email: 'premium-coach@test.football-eyeq.com',
     password: 'TestPremium123!',
     name: 'Test Premium Coach',
     firstName: 'Test',
-    lastName: 'Premium',
+    lastName: 'Premium Coach',
     accountType: 'IndividualPremium' as const,
-    organization: 'Test Premium Organization',
+    organization: 'Test Organization',
   },
-  
+
   // Invalid user for error testing (should NOT exist in database)
   invalidUser: {
-    email: 'nonexistent@test.football-eyeq.com',
+    email: 'invalid-user@test.football-eyeq.com',
     password: 'WrongPassword123!',
     name: 'Invalid User',
     firstName: 'Invalid',
@@ -81,32 +82,43 @@ export const testUsers = {
   },
 };
 
-// Navigation links based on actual routes
+export const testClub = {
+  id: 'test-club-e2e',
+  name: 'Test Football Club',
+  exerciseTypePolicy: 'coachChoice',
+};
+
+// Navigation links for testing navigation flows
 export const navigationLinks = {
   header: {
     catalog: '/catalog',
     planner: '/planner',
+    tagGuide: '/tag-guide',
+    clubCode: '/club-code',
     resources: '/resources',
-    joinClub: '/join-club',
+    testimonials: '/testimonials',
+    faq: '/faq',
+    contact: '/contact',
+    pricing: '/pricing',
+    login: '/login',
+    signup: '/signup',
+  },
+  learn: {
+    whyScanning: '/why-scanning',
+    howItWorks: '/how-it-works',
+    ecosystem: '/ecosystem',
+    useCases: '/use-cases',
   },
   footer: {
-    about: '/about',
-    contact: '/contact',
+    catalog: '/catalog',
     privacy: '/privacy',
     terms: '/terms',
-    faq: '/faq',
+    cookies: '/cookies',
   },
   auth: {
     login: '/login',
     signup: '/signup',
     profile: '/profile',
-  },
-  learn: {
-    howItWorks: '/how-it-works',
-    gettingStarted: '/getting-started',
-    explanation: '/explanation',
-    ecosystem: '/ecosystem',
-    whyScanning: '/why-scanning',
   },
   club: {
     signup: '/club/signup',

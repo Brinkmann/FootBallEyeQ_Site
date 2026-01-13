@@ -155,8 +155,7 @@ export const waitForNavigation = async (page: Page, expectedPath: string, timeou
 };
 
 /**
- * Clear all cookies and storage
- * CRITICAL: Includes SecurityError handling for localStorage/sessionStorage
+ * Clear all cookies and storage (with SecurityError handling for Playwright)
  */
 export const clearSession = async (page: Page) => {
   await page.context().clearCookies();
@@ -164,12 +163,15 @@ export const clearSession = async (page: Page) => {
     try {
       localStorage.clear();
     } catch (e) {
-      // Ignore SecurityError when accessing storage from different origin
+      // SecurityError in Playwright test contexts - safely ignore
+      console.log('localStorage.clear() blocked by security policy');
     }
+
     try {
       sessionStorage.clear();
     } catch (e) {
-      // Ignore SecurityError when accessing storage from different origin
+      // SecurityError in Playwright test contexts - safely ignore
+      console.log('sessionStorage.clear() blocked by security policy');
     }
   });
 };
