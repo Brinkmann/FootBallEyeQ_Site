@@ -1,82 +1,103 @@
 /**
- * Test user data
+ * Test Data Fixtures for E2E Tests
+ * 
+ * These test users are created by running: npm run setup-test-users
  */
+
 export const testUsers = {
-  validUser: {
-    firstName: 'John',
-    lastName: 'Coach',
-    email: 'john.coach@example.com',
-    password: 'SecurePassword123!'
+  freeCoach: {
+    email: 'free-coach@test.football-eyeq.com',
+    password: 'TestFree123!',
+    name: 'Test Free Coach',
+    firstName: 'Test',
+    lastName: 'Free Coach',
+    accountType: 'Free',
+    organization: 'Test Organization',
   },
-  newUser: {
-    firstName: 'Jane',
-    lastName: 'Trainer',
-    email: 'jane.trainer@example.com',
-    password: 'AnotherSecure123!'
+  premiumCoach: {
+    email: 'premium-coach@test.football-eyeq.com',
+    password: 'TestPremium123!',
+    name: 'Test Premium Coach',
+    firstName: 'Test',
+    lastName: 'Premium Coach',
+    accountType: 'IndividualPremium',
+    organization: 'Test Organization',
+  },
+  clubCoach: {
+    email: 'club-coach@test.football-eyeq.com',
+    password: 'TestClub123!',
+    name: 'Test Club Coach',
+    firstName: 'Test',
+    lastName: 'Club Coach',
+    accountType: 'ClubCoach',
+    organization: 'Test Football Club',
+    clubId: 'test-club-e2e',
+  },
+  clubAdmin: {
+    email: 'club-admin@test.football-eyeq.com',
+    password: 'TestAdmin123!',
+    name: 'Test Club Admin',
+    firstName: 'Test',
+    lastName: 'Club Admin',
+    accountType: 'ClubAdmin',
+    organization: 'Test Football Club',
+    clubId: 'test-club-e2e',
+  },
+  // Aliases for backward compatibility with existing tests
+  validUser: {
+    email: 'premium-coach@test.football-eyeq.com',
+    password: 'TestPremium123!',
+    name: 'Test Premium Coach',
+    firstName: 'Test',
+    lastName: 'Premium Coach',
+    accountType: 'IndividualPremium',
+    organization: 'Test Organization',
   },
   invalidUser: {
-    email: 'invalid@example.com',
-    password: 'WrongPassword123!'
-  }
+    email: 'invalid-user@test.football-eyeq.com',
+    password: 'WrongPassword123!',
+    name: 'Invalid User',
+    firstName: 'Invalid',
+    lastName: 'User',
+  },
 };
 
-/**
- * Test drill data
- */
-export const testDrills = {
-  rondoAwareness: '001 - Rondo Awareness',
-  counterPressSprint: '014 - Counter-Press Sprint',
-  firstTouchFinishing: '102 - First-Touch Finishing'
+export const testClub = {
+  id: 'test-club-e2e',
+  name: 'Test Football Club',
+  exerciseTypePolicy: 'coachChoice',
 };
 
-/**
- * Navigation links for testing
- */
+// Navigation links for testing navigation flows
 export const navigationLinks = {
-  core: [
-    { name: 'Drill Catalogue', path: '/catalog' },
-    { name: 'Session Planner', path: '/planner' },
-    { name: 'Tag Guide', path: '/explanation' }
-  ],
-  learn: [
-    { name: 'Why Scanning', path: '/why-scanning' },
-    { name: 'How It Works', path: '/how-it-works' },
-    { name: 'Ecosystem', path: '/ecosystem' },
-    { name: 'Use Cases', path: '/use-cases' }
-  ],
-  footer: [
-    { name: 'Privacy Policy', path: '/privacy' },
-    { name: 'Terms of Service', path: '/terms' }
-  ]
+  header: {
+    catalog: '/catalog',
+    planner: '/planner',
+    tagGuide: '/tag-guide',
+    clubCode: '/club-code',
+    resources: '/resources',
+    testimonials: '/testimonials',
+    faq: '/faq',
+    contact: '/contact',
+    pricing: '/pricing',
+    login: '/login',
+    signup: '/signup',
+  },
+  learn: {
+    whyScanning: '/why-scanning',
+    howItWorks: '/how-it-works',
+    ecosystem: '/ecosystem',
+    useCases: '/use-cases',
+  },
+  footer: {
+    catalog: '/catalog',
+    privacy: '/privacy',
+    terms: '/terms',
+    cookies: '/cookies',
+  },
 };
 
-/**
- * Filter options for catalog testing
- */
-export const catalogFilters = {
-  ageGroups: [
-    'Youth Development Phase (U11-U14)',
-    'Game Training Phase (U15-U18)',
-    'Performance Phase (U19-Senior)'
-  ],
-  difficulties: [
-    'Basic',
-    'Moderate',
-    'Advanced'
-  ],
-  gameMoments: [
-    'Build-Up',
-    'Counter Attack',
-    'Final Third Decision'
-  ]
-};
-
-/**
- * Session numbers for planner testing
- */
-export const sessionNumbers = {
-  first: 1,
-  second: 2,
-  locked: 2,  // For free tier
-  total: 12
-};
+// Helper to get user by type
+export function getTestUser(type: keyof typeof testUsers) {
+  return testUsers[type];
+}
