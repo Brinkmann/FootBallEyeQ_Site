@@ -1,161 +1,75 @@
 import { Page, Locator } from '@playwright/test';
 
-/**
- * NavigationComponent handles all navigation-related interactions
- */
 export class NavigationComponent {
   readonly page: Page;
-  readonly logo: Locator;
-  readonly loginButton: Locator;
-  readonly signupButton: Locator;
+  readonly logoLink: Locator;
+  readonly loginLink: Locator;
+  readonly signupLink: Locator;
   readonly logoutButton: Locator;
-  readonly profileButton: Locator;
-  readonly mobileMoreButton: Locator;
-
-  // Main navigation links
-  readonly catalogLink: Locator;
-  readonly plannerLink: Locator;
-  readonly tagGuideLink: Locator;
-
-  // Learn dropdown links
-  readonly learnDropdown: Locator;
-  readonly whyScanningLink: Locator;
-  readonly howItWorksLink: Locator;
-  readonly ecosystemLink: Locator;
-  readonly useCasesLink: Locator;
-
-  // Footer links
-  readonly footerCatalogLink: Locator;
-  readonly footerPlannerLink: Locator;
-  readonly footerPrivacyLink: Locator;
-  readonly footerTermsLink: Locator;
+  readonly profileLink: Locator;
+  readonly catalogTab: Locator;
+  readonly plannerTab: Locator;
+  readonly userName: Locator;
+  readonly accountTypeBadge: Locator;
 
   constructor(page: Page) {
     this.page = page;
-
-    // Header elements
-    this.logo = page.getByRole('link', { name: 'Football EyeQ' }).first();
-    this.loginButton = page.getByRole('link', { name: 'Login' });
-    this.signupButton = page.getByRole('link', { name: 'Sign Up' });
-    this.logoutButton = page.getByRole('button', { name: 'Log out' });
-    this.profileButton = page.locator('a[href="/profile"]');
-    this.mobileMoreButton = page.getByRole('button', { name: 'More' });
-
-    // Main navigation
-    this.catalogLink = page.getByRole('link', { name: 'Drill Catalogue' }).or(page.getByRole('link', { name: 'Catalogue' }));
-    this.plannerLink = page.getByRole('link', { name: 'Session Planner' }).or(page.getByRole('link', { name: 'Planner' }));
-    this.tagGuideLink = page.getByRole('link', { name: 'Tag Guide' });
-
-    // Learn dropdown
-    this.learnDropdown = page.getByRole('button', { name: 'Learn' });
-    this.whyScanningLink = page.getByRole('link', { name: 'Why Scanning' });
-    this.howItWorksLink = page.getByRole('link', { name: 'How It Works' });
-    this.ecosystemLink = page.getByRole('link', { name: 'Ecosystem' });
-    this.useCasesLink = page.getByRole('link', { name: 'Use Cases' });
-
-    // Footer links
-    this.footerCatalogLink = page.locator('footer').getByRole('link', { name: 'Drill Catalogue' });
-    this.footerPlannerLink = page.locator('footer').getByRole('link', { name: 'Session Planner' });
-    this.footerPrivacyLink = page.locator('footer').getByRole('link', { name: 'Privacy Policy' });
-    this.footerTermsLink = page.locator('footer').getByRole('link', { name: 'Terms of Service' });
+    // Based on actual selectors from app/components/Navbar.tsx
+    this.logoLink = page.locator('a[href="/"]', { hasText: 'Football EyeQ' }).first();
+    this.loginLink = page.locator('a[href="/login"]', { hasText: 'Login' });
+    this.signupLink = page.locator('a[href="/signup"]', { hasText: 'Sign Up' });
+    this.logoutButton = page.locator('button', { hasText: 'Log out' });
+    this.profileLink = page.locator('a[href="/profile"]');
+    this.catalogTab = page.locator('a[href="/catalog"]');
+    this.plannerTab = page.locator('a[href="/planner"]');
+    this.userName = page.locator('.text-gray-700.text-sm').filter({ hasText: /[A-Za-z]+ [A-Za-z]+/ });
+    this.accountTypeBadge = page.locator('.px-2.py-1.text-xs.font-medium').first();
   }
 
-  /**
-   * Click on the logo to go to homepage
-   */
-  async clickLogo() {
-    await this.logo.click();
+  async isLoggedIn(): Promise<boolean> {
+    return await this.logoutButton.isVisible({ timeout: 3000 }).catch(() => false);
   }
 
-  /**
-   * Navigate to catalog page
-   */
-  async goToCatalog() {
-    await this.catalogLink.click();
+  async isLoggedOut(): Promise<boolean> {
+    const loginVisible = await this.loginLink.isVisible({ timeout: 3000 }).catch(() => false);
+    const signupVisible = await this.signupLink.isVisible({ timeout: 3000 }).catch(() => false);
+    return loginVisible && signupVisible;
   }
 
-  /**
-   * Navigate to planner page
-   */
-  async goToPlanner() {
-    await this.plannerLink.click();
+  async getUserName(): Promise<string> {
+    return await this.userName.textContent() || '';
   }
 
-  /**
-   * Navigate to login page
-   */
-  async goToLogin() {
-    await this.loginButton.click();
+  async getAccountType(): Promise<string> {
+    return await this.accountTypeBadge.textContent() || '';
   }
 
-  /**
-   * Navigate to signup page
-   */
-  async goToSignup() {
-    await this.signupButton.click();
-  }
-
-  /**
-   * Click logout button
-   */
   async logout() {
     await this.logoutButton.click();
+    // Wait for the logout to complete
+    await this.page.waitForLoadState('networkidle');
   }
 
-  /**
-   * Check if user is logged in
-   */
-  async isLoggedIn(): Promise<boolean> {
-    try {
-      await this.logoutButton.waitFor({ state: 'visible', timeout: 2000 });
-      return true;
-    } catch {
-      return false;
-    }
+  async navigateToCatalog() {
+    await this.catalogTab.click();
+    await this.page.waitForURL('**/catalog');
   }
 
-  /**
-   * Open mobile menu (if on mobile viewport)
-   */
-  async openMobileMenu() {
-    if (await this.mobileMoreButton.isVisible()) {
-      await this.mobileMoreButton.click();
-    }
+  async navigateToPlanner() {
+    await this.plannerTab.click();
+    await this.page.waitForURL('**/planner');
   }
 
-  /**
-   * Open Learn dropdown (desktop)
-   */
-  async openLearnDropdown() {
-    await this.learnDropdown.hover();
+  async navigateToProfile() {
+    await this.profileLink.click();
+    await this.page.waitForURL('**/profile');
   }
 
-  /**
-   * Navigate to a Learn section link
-   */
-  async goToWhyScanning() {
-    const isMobile = await this.mobileMoreButton.isVisible();
-    if (isMobile) {
-      await this.openMobileMenu();
-    } else {
-      await this.openLearnDropdown();
-    }
-    await this.whyScanningLink.click();
+  async clickLogin() {
+    await this.loginLink.click();
   }
 
-  /**
-   * Click footer link to catalog
-   */
-  async clickFooterCatalog() {
-    await this.footerCatalogLink.scrollIntoViewIfNeeded();
-    await this.footerCatalogLink.click();
-  }
-
-  /**
-   * Click footer privacy link
-   */
-  async clickFooterPrivacy() {
-    await this.footerPrivacyLink.scrollIntoViewIfNeeded();
-    await this.footerPrivacyLink.click();
+  async clickSignup() {
+    await this.signupLink.click();
   }
 }

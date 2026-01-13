@@ -156,11 +156,20 @@ export const waitForNavigation = async (page: Page, expectedPath: string, timeou
 
 /**
  * Clear all cookies and storage
+ * CRITICAL: Includes SecurityError handling for localStorage/sessionStorage
  */
 export const clearSession = async (page: Page) => {
   await page.context().clearCookies();
   await page.evaluate(() => {
-    localStorage.clear();
-    sessionStorage.clear();
+    try {
+      localStorage.clear();
+    } catch (e) {
+      // Ignore SecurityError when accessing storage from different origin
+    }
+    try {
+      sessionStorage.clear();
+    } catch (e) {
+      // Ignore SecurityError when accessing storage from different origin
+    }
   });
 };

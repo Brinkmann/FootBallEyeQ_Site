@@ -1,179 +1,120 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { NavigationComponent } from './NavigationComponent';
 
-/**
- * CatalogPage represents the drill catalogue page
- */
-export class CatalogPage extends BasePage {
-  readonly navigation: NavigationComponent;
+export class CatalogPage {
+  readonly page: Page;
+  readonly pageTitle: Locator;
   readonly searchInput: Locator;
-  readonly filtersButton: Locator;
-  readonly closeFiltersButton: Locator;
-  readonly eyeqTab: Locator;
-  readonly plasticTab: Locator;
-  readonly drillCards: Locator;
-  readonly emptyStateMessage: Locator;
-  readonly retryButton: Locator;
-
-  // Filter elements
-  readonly ageGroupFilter: Locator;
-  readonly difficultyFilter: Locator;
-  readonly gameMomentFilter: Locator;
+  readonly favoritesButton: Locator;
+  readonly filterButton: Locator;
+  readonly exerciseCards: Locator;
+  readonly loadMoreButton: Locator;
+  readonly clearFiltersButton: Locator;
+  readonly resultsCount: Locator;
+  readonly loadingSpinner: Locator;
+  readonly errorMessage: Locator;
+  readonly noResultsMessage: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.navigation = new NavigationComponent(page);
-
-    // Main catalog elements
-    this.searchInput = page.getByPlaceholder('Search or type to filter...');
-    this.filtersButton = page.getByRole('button', { name: 'Filters' });
-    this.closeFiltersButton = page.getByRole('button', { name: 'Close' });
-    this.eyeqTab = page.getByText('EyeQ', { exact: false });
-    this.plasticTab = page.getByText('Plastic', { exact: false });
-    this.drillCards = page.getByRole('heading').filter({ hasText: /^[\d]/ });
-    this.emptyStateMessage = page.getByText("We couldn't load drills right now.");
-    this.retryButton = page.getByRole('button', { name: 'Retry loading drills' });
-
-    // Filter elements
-    this.ageGroupFilter = page.getByRole('button', { name: 'Age Group' });
-    this.difficultyFilter = page.getByRole('button', { name: 'Difficulty' });
-    this.gameMomentFilter = page.getByRole('button', { name: 'Game Moment' });
+    this.page = page;
+    // Based on actual selectors from app/catalog/page.tsx
+    this.pageTitle = page.locator('h1', { hasText: 'Drill Catalogue' });
+    this.searchInput = page.locator('input[placeholder*="Search"]');
+    this.favoritesButton = page.locator('button').filter({ has: page.locator('svg').filter({ has: page.locator('path[d*="11.645"]') }) });
+    this.filterButton = page.locator('button').filter({ hasText: /filter/i });
+    this.exerciseCards = page.locator('.bg-card.border.border-divider.rounded-2xl.shadow-md');
+    this.loadMoreButton = page.locator('button', { hasText: 'Load more drills' });
+    this.clearFiltersButton = page.locator('button', { hasText: 'Clear all filters' });
+    this.resultsCount = page.locator('text=Showing').locator('..');
+    this.loadingSpinner = page.locator('.animate-spin');
+    this.errorMessage = page.locator('.bg-red-50.border.border-red-200');
+    this.noResultsMessage = page.locator('text=No drills match your search');
   }
 
-  /**
-   * Navigate to the catalog page
-   */
   async navigate() {
-    await this.goto('/catalog');
+    await this.page.goto('/catalog');
+    await this.page.waitForLoadState('networkidle');
   }
 
-  /**
-   * Search for drills
-   */
+  async waitForDrillsToLoad() {
+    await this.loadingSpinner.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
+    await this.exerciseCards.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  }
+
   async search(query: string) {
     await this.searchInput.fill(query);
+    await this.page.waitForTimeout(500);
   }
 
-  /**
-   * Clear search
-   */
   async clearSearch() {
     await this.searchInput.clear();
+    await this.page.waitForTimeout(500);
   }
 
-  /**
-   * Open filters panel
-   */
-  async openFilters() {
-    await this.filtersButton.click();
+  async clickFavoritesButton() {
+    await this.favoritesButton.click();
   }
 
-  /**
-   * Close filters panel
-   */
-  async closeFilters() {
-    await this.closeFiltersButton.click();
+  async getExerciseCount(): Promise<number> {
+    return await this.exerciseCards.count();
   }
 
-  /**
-   * Select a specific filter option
-   */
-  async selectFilter(filterName: string, optionName: string) {
-    const filterButton = this.page.getByRole('button', { name: filterName });
-    await filterButton.click();
-
-    const option = this.page.getByRole('button', { name: new RegExp(optionName, 'i') });
-    await option.click();
+  async getResultsText(): Promise<string> {
+    return await this.resultsCount.textContent() || '';
   }
 
-  /**
-   * Switch to EyeQ drills
-   */
-  async switchToEyeQ() {
-    await this.eyeqTab.click();
+  async clickLoadMore() {
+    await this.loadMoreButton.click();
+    await this.page.waitForTimeout(500);
   }
 
-  /**
-   * Switch to Plastic drills
-   */
-  async switchToPlastic() {
-    await this.plasticTab.click();
+  async isLoadMoreVisible(): Promise<boolean> {
+    return await this.loadMoreButton.isVisible({ timeout: 3000 }).catch(() => false);
   }
 
-  /**
-   * Get a drill card by title
-   */
-  getDrillByTitle(title: string): Locator {
-    return this.page.getByRole('heading', { name: new RegExp(title) });
+  async clearAllFilters() {
+    await this.clearFiltersButton.click();
   }
 
-  /**
-   * Click "Add to Plan" for the first drill
-   */
-  async addFirstDrillToPlan() {
-    const addButton = this.page.getByRole('button', { name: 'Add to Plan' }).first();
-    await addButton.scrollIntoViewIfNeeded();
+  async hasNoResults(): Promise<boolean> {
+    return await this.noResultsMessage.isVisible({ timeout: 3000 }).catch(() => false);
+  }
+
+  async hasError(): Promise<boolean> {
+    return await this.errorMessage.isVisible({ timeout: 3000 }).catch(() => false);
+  }
+
+  async getFirstExerciseCard() {
+    return this.exerciseCards.first();
+  }
+
+  async getExerciseCard(index: number) {
+    return this.exerciseCards.nth(index);
+  }
+
+  async getExerciseTitle(index: number): Promise<string> {
+    const card = this.exerciseCards.nth(index);
+    const title = card.locator('h2');
+    return await title.textContent() || '';
+  }
+
+  async favoriteExercise(index: number) {
+    const card = this.exerciseCards.nth(index);
+    const favoriteBtn = card.locator('button[aria-label*="favorite"]');
+    await favoriteBtn.click();
+  }
+
+  async addExerciseToPlan(index: number, sessionNumber: number) {
+    const card = this.exerciseCards.nth(index);
+    const addButton = card.locator('button', { hasText: 'Add to Plan' });
     await addButton.click();
-  }
-
-  /**
-   * Select a session when adding to plan
-   */
-  async selectSession(sessionNumber: number) {
-    const sessionButton = this.page.getByRole('button', { name: `Session ${sessionNumber}` });
+    await this.page.waitForSelector('text=Add to which session?');
+    const sessionButton = this.page.locator('button', { hasText: `Session ${sessionNumber}` });
     await sessionButton.click();
   }
 
-  /**
-   * Add first drill to a specific session
-   */
-  async addFirstDrillToSession(sessionNumber: number) {
-    await this.addFirstDrillToPlan();
-    await this.selectSession(sessionNumber);
-  }
-
-  /**
-   * Get count of visible drill cards
-   */
-  async getDrillCount(): Promise<number> {
-    return await this.drillCards.count();
-  }
-
-  /**
-   * Click on a drill card to view details
-   */
-  async clickDrill(title: string) {
-    const drill = this.getDrillByTitle(title);
-    await drill.click();
-  }
-
-  /**
-   * Check if a specific drill is visible
-   */
-  async isDrillVisible(title: string): Promise<boolean> {
-    const drill = this.getDrillByTitle(title);
-    return await this.isVisible(drill);
-  }
-
-  /**
-   * Wait for drills to load
-   */
-  async waitForDrillsToLoad() {
-    await this.drillCards.first().waitFor({ state: 'visible', timeout: 10000 });
-  }
-
-  /**
-   * Check if empty state is shown
-   */
-  async isEmptyStateVisible(): Promise<boolean> {
-    return await this.isVisible(this.emptyStateMessage);
-  }
-
-  /**
-   * Click retry button
-   */
-  async clickRetry() {
-    await this.retryButton.click();
+  async previewExercise(index: number) {
+    const card = this.exerciseCards.nth(index);
+    const previewButton = card.locator('button', { hasText: 'Preview' });
+    await previewButton.click();
   }
 }
