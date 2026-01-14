@@ -166,7 +166,7 @@ export const clearSession = async (page: Page) => {
       // SecurityError in Playwright test contexts - safely ignore
       console.log('localStorage.clear() blocked by security policy');
     }
-    
+
     try {
       sessionStorage.clear();
     } catch (e) {

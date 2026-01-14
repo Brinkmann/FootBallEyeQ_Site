@@ -1,37 +1,34 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { NavigationComponent } from './NavigationComponent';
 
-/**
- * HomePage represents the landing page of the application
- */
-export class HomePage extends BasePage {
-  readonly navigation: NavigationComponent;
-  readonly heading: Locator;
-  readonly ctaButton: Locator;
+export class HomePage {
+  readonly page: Page;
+  readonly heroSection: Locator;
+  readonly getStartedButton: Locator;
+  readonly learnMoreLink: Locator;
+  readonly featuresSection: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.navigation = new NavigationComponent(page);
-
-    // Main page elements
-    this.heading = page.getByRole('heading').first();
-    this.ctaButton = page.getByRole('link', { name: 'Get Started' }).or(
-      page.getByRole('link', { name: 'Sign Up' })
-    );
+    this.page = page;
+    this.heroSection = page.locator('main').first();
+    this.getStartedButton = page.locator('a[href="/signup"]').first();
+    this.learnMoreLink = page.locator('a[href="/how-it-works"]').first();
+    this.featuresSection = page.locator('section').filter({ hasText: /features/i });
   }
 
-  /**
-   * Navigate to the home page
-   */
   async navigate() {
-    await this.goto('/');
+    await this.page.goto('/');
+    await this.page.waitForLoadState('networkidle');
   }
 
-  /**
-   * Click the main CTA button
-   */
-  async clickCTA() {
-    await this.ctaButton.click();
+  async clickGetStarted() {
+    await this.getStartedButton.click();
+  }
+
+  async clickLearnMore() {
+    await this.learnMoreLink.click();
+  }
+
+  async isHeroVisible(): Promise<boolean> {
+    return await this.heroSection.isVisible();
   }
 }

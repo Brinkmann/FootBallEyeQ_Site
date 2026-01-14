@@ -1,136 +1,103 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { NavigationComponent } from './NavigationComponent';
 
-/**
- * PlannerPage represents the session planner page
- */
-export class PlannerPage extends BasePage {
-  readonly navigation: NavigationComponent;
-  readonly pageHeading: Locator;
+export class PlannerPage {
+  readonly page: Page;
+  readonly pageTitle: Locator;
   readonly sessionCards: Locator;
-  readonly emptySlots: Locator;
-  readonly removeButtons: Locator;
-  readonly generateCodeButton: Locator;
-  readonly sessionCodeText: Locator;
-  readonly lockedSessions: Locator;
+  readonly loadingSpinner: Locator;
+  readonly upgradePrompt: Locator;
+  readonly viewStatsLink: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.navigation = new NavigationComponent(page);
-
-    // Main planner elements
-    this.pageHeading = page.getByRole('heading', { name: '12-Session Season Plan' });
-    this.sessionCards = page.getByText(/Session \d+/).first();
-    this.emptySlots = page.getByText('Empty slot');
-    this.removeButtons = page.getByRole('button', { name: 'Remove' });
-    this.generateCodeButton = page.getByRole('button', { name: 'Generate Code' });
-    this.sessionCodeText = page.getByText('Session Code (6 characters):');
-    this.lockedSessions = page.getByText('Locked');
+    this.page = page;
+    // Based on actual selectors from app/planner/page.tsx
+    this.pageTitle = page.locator('h3', { hasText: '12-Session Season Plan' });
+    this.sessionCards = page.locator('.bg-card.rounded.shadow');
+    this.loadingSpinner = page.locator('.animate-spin');
+    this.upgradePrompt = page.locator('.bg-primary-light.border.border-primary', { hasText: 'Unlock Your Full Season' });
+    this.viewStatsLink = page.locator('a[href="/planner/stats"]');
   }
 
-  /**
-   * Navigate to the planner page
-   */
   async navigate() {
-    await this.goto('/planner');
+    await this.page.goto('/planner');
+    await this.page.waitForLoadState('networkidle');
   }
 
-  /**
-   * Get a specific session card
-   */
-  getSession(sessionNumber: number): Locator {
-    return this.page.getByText(`Session ${sessionNumber}`);
-  }
-
-  /**
-   * Check if a session is visible
-   */
-  async isSessionVisible(sessionNumber: number): Promise<boolean> {
-    const session = this.getSession(sessionNumber);
-    return await this.isVisible(session);
-  }
-
-  /**
-   * Check if a session is locked
-   */
-  async isSessionLocked(sessionNumber: number): Promise<boolean> {
-    const sessionContainer = this.page.locator(`[data-session="${sessionNumber}"]`).or(
-      this.getSession(sessionNumber).locator('..')
-    );
-    const lockedText = sessionContainer.getByText('Locked');
-    return await this.isVisible(lockedText);
-  }
-
-  /**
-   * Remove the first drill from a session
-   */
-  async removeFirstDrill() {
-    await this.removeButtons.first().click();
-  }
-
-  /**
-   * Remove a specific drill by index
-   */
-  async removeDrill(index: number) {
-    await this.removeButtons.nth(index).click();
-  }
-
-  /**
-   * Click generate code button
-   */
-  async clickGenerateCode() {
-    await this.generateCodeButton.scrollIntoViewIfNeeded();
-    await this.generateCodeButton.click();
-  }
-
-  /**
-   * Check if session code is displayed
-   */
-  async isSessionCodeVisible(): Promise<boolean> {
-    return await this.isVisible(this.sessionCodeText);
-  }
-
-  /**
-   * Get count of empty slots
-   */
-  async getEmptySlotCount(): Promise<number> {
-    return await this.emptySlots.count();
-  }
-
-  /**
-   * Check if planner is empty
-   */
-  async isEmpty(): Promise<boolean> {
-    const count = await this.getEmptySlotCount();
-    return count > 0;
-  }
-
-  /**
-   * Wait for planner to load
-   */
   async waitForPlannerToLoad() {
-    await this.pageHeading.waitFor({ state: 'visible', timeout: 10000 });
+    await this.loadingSpinner.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
+    await this.sessionCards.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   }
 
-  /**
-   * Check if any sessions are locked
-   */
-  async hasLockedSessions(): Promise<boolean> {
-    return await this.isVisible(this.lockedSessions);
+  async getSessionCardCount(): Promise<number> {
+    return await this.sessionCards.count();
   }
 
-  /**
-   * Get drill title in a session
-   */
-  async getDrillInSession(sessionNumber: number): Promise<string | null> {
-    const session = this.getSession(sessionNumber);
-    const drillHeading = session.locator('..').getByRole('heading').first();
+  async getSessionCard(sessionNumber: number) {
+    return this.page.locator(`text=Session ${sessionNumber}`).locator('..').locator('..');
+  }
 
-    try {
-      return await drillHeading.textContent();
-    } catch {
-      return null;
+  async isSessionLocked(sessionNumber: number): Promise<boolean> {
+    const lockIcon = this.page.locator(`text=Session ${sessionNumber}`).locator('..').locator('svg path[d*="16.5 10.5V6.75"]');
+    return await lockIcon.isVisible({ timeout: 1000 }).catch(() => false);
+  }
+
+  async getExerciseCount(sessionNumber: number): Promise<string> {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const countText = sessionCard.locator('text=/\\d+\\/5 exercises/');
+    return await countText.textContent() || '';
+  }
+
+  async getSessionExercises(sessionNumber: number): Promise<string[]> {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const exercises = sessionCard.locator('.bg-primary-light');
+    const count = await exercises.count();
+    const exerciseNames: string[] = [];
+
+    for (let i = 0; i < count; i++) {
+      const text = await exercises.nth(i).textContent();
+      if (text) {
+        const name = text.replace(/Remove$/, '').trim();
+        exerciseNames.push(name);
+      }
     }
+
+    return exerciseNames;
+  }
+
+  async removeExercise(sessionNumber: number, exerciseIndex: number) {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const removeButtons = sessionCard.locator('button', { hasText: 'Remove' });
+    await removeButtons.nth(exerciseIndex).click();
+  }
+
+  async generateSessionCode(sessionNumber: number) {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const generateButton = sessionCard.locator('button', { hasText: 'Generate Code' });
+    await generateButton.click();
+  }
+
+  async isUpgradePromptVisible(): Promise<boolean> {
+    return await this.upgradePrompt.isVisible({ timeout: 3000 }).catch(() => false);
+  }
+
+  async clickUpgrade() {
+    const upgradeButton = this.upgradePrompt.locator('a[href="/upgrade"]');
+    await upgradeButton.click();
+  }
+
+  async navigateToCatalogFromSession(sessionNumber: number) {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const catalogLink = sessionCard.locator('a[href="/catalog"]');
+    await catalogLink.click();
+  }
+
+  async clickViewStats() {
+    await this.viewStatsLink.click();
+  }
+
+  async hasEmptyState(sessionNumber: number): Promise<boolean> {
+    const sessionCard = await this.getSessionCard(sessionNumber);
+    const emptyMessage = sessionCard.locator('text=No drills added yet');
+    return await emptyMessage.isVisible({ timeout: 1000 }).catch(() => false);
   }
 }
