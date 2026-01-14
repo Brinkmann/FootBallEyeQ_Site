@@ -704,6 +704,30 @@ Understand the "why" behind cognitive training:
 
 ## For Developers
 
+### Documentation
+
+Complete setup and development guides are available in the `/docs` directory:
+
+**Getting Started:**
+- 📚 [**Documentation Index**](./docs/DOCUMENTATION_INDEX.md) - Complete guide to all documentation
+- 🚀 [**Getting Started Guide**](./docs/setup/GETTING_STARTED.md) - Complete setup from clone to deploy
+- 🔥 [**Firebase Setup**](./docs/setup/FIREBASE_SETUP.md) - Configure Firebase authentication & database
+- 🔧 [**Environment Variables**](./docs/setup/ENVIRONMENT_VARIABLES.md) - Reference for all environment variables
+
+**Testing:**
+- ✅ [**E2E Testing Guide**](./docs/testing/E2E_TESTING.md) - Playwright test suite documentation
+- 📋 [**Test Plan**](./docs/testing/TEST_PLAN.md) - Test personas & automation scenarios
+- 📊 [**Test Suite Summary**](./docs/testing/TEST_SUITE_SUMMARY.md) - All 109 tests across 5 areas
+
+**Development:**
+- 🎯 [**Quick Wins Roadmap**](./docs/development/QUICK_WINS_ROADMAP.md) - Implementation roadmap by complexity
+- 🔍 [**Debugging Guides**](./docs/development/debugging/) - Common issue case studies
+- 🔒 [**Security Review**](./docs/development/SECURITY_REVIEW.md) - Security checklist
+
+**Deployment:**
+- 🚢 [**GitHub Actions Setup**](./docs/deployment/GITHUB_ACTIONS.md) - CI/CD configuration
+- 🔑 [**Firebase Secrets for CI**](./docs/deployment/FIREBASE_SECRETS_CI.md) - GitHub secrets setup
+
 ### Tech Stack
 - **Framework:** Next.js 14 with App Router
 - **UI Library:** React 19
@@ -713,66 +737,54 @@ Understand the "why" behind cognitive training:
 - **Styling:** Tailwind CSS
 - **Hardware Integration:** REST API (IP-based LED controller)
 
-### Prerequisites
-- Node.js 18+
-- Firebase project with Firestore and Email/Password auth enabled
-- (Optional) Smart LED cone hardware with HTTP endpoint
+### Quick Start
 
-### Environment Variables
-Create a `.env.local` file in the project root:
+**New to the project?** Follow the [Getting Started Guide](./docs/setup/GETTING_STARTED.md) for complete setup instructions.
 
 ```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
-```
+# Clone repository
+git clone https://github.com/Brinkmann/FootBallEyeQ_Site.git
+cd FootBallEyeQ_Site
 
-### Running Locally
-```bash
 # Install dependencies
 npm install
+
+# Configure Firebase (see Firebase Setup guide)
+cp .env.local.example .env.local
+# Edit .env.local with your Firebase credentials
 
 # Run development server
 npm run dev
 
 # Open browser
-http://localhost:3000
+http://localhost:5000
 ```
+
+**Important:** You must configure Firebase before the app will work. See [Firebase Setup Guide](./docs/setup/FIREBASE_SETUP.md) for detailed instructions.
 
 ### Running E2E Tests (Playwright)
-The Playwright suite lives in `tests/e2e` and stubs Firebase calls, so no real project keys are required.
 
-1) **Install dependencies** (ensure your npm registry allows downloading `@playwright/test`):
+**Quick test run:**
 ```bash
-npm install
-```
-
-2) **Install Playwright browsers and system deps** (one-time):
-```bash
+# Install Playwright browsers (first time only)
 npx playwright install --with-deps
+
+# Run all tests
+npm run test:e2e
+
+# Run with UI
+npm run test:e2e:ui
+
+# View test report
+npm run test:report
 ```
 
-3) **Start the app** in a separate terminal (tests expect port `5000`):
-```bash
-npm run dev
-# or use an existing build: npm run start
-```
+**Test suite:** 109 E2E tests covering navigation, authentication, catalog, planner, and user journeys.
 
-4) **Run the suite** (respects `BASE_URL`, defaults to `http://localhost:5000`):
-```bash
-BASE_URL=http://localhost:5000 npm run test:e2e
-```
-
-5) **Debug options**:
-- Headful run: `npx playwright test --headed`
-- Inspector: `npx playwright test --debug`
-- Single test file: `npx playwright test tests/e2e/catalog-and-planner.spec.ts`
-
-If you encounter registry/firewall 403 errors when installing Playwright, point npm to the public registry (e.g., `npm config set registry https://registry.npmjs.org`) or install via a VPN/allowlist.
+For comprehensive testing documentation, see:
+- [E2E Testing Guide](./docs/testing/E2E_TESTING.md) - Complete Playwright documentation
+- [Test Plan](./docs/testing/TEST_PLAN.md) - Test personas & scenarios
+- [Test Suite Summary](./docs/testing/TEST_SUITE_SUMMARY.md) - All 109 tests explained
 
 ### Project Structure
 ```
