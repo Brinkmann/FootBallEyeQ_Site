@@ -602,11 +602,11 @@ export default function CatalogPage() {
           {!isAuthenticated && selectedExerciseType === "eyeq" && !plasticBannerDismissed && (
             <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
               <p className="text-sm text-blue-800">
-                For plastic cone drills,{" "}
-                <Link href="/login" className="font-medium underline hover:text-blue-900">
-                  sign in
+                You&apos;re viewing EyeQ drills designed for LED equipment.{" "}
+                <Link href="/signup" className="font-medium underline hover:text-blue-900">
+                  Sign up free
                 </Link>{" "}
-                to access our full library.
+                to access plastic cone drills — no special gear needed.
               </p>
               <button
                 onClick={() => setPlasticBannerDismissed(true)}
