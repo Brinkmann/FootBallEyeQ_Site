@@ -36,6 +36,18 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          { key: "Content-Security-Policy", value: "upgrade-insecure-requests" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          {
+            key: "Permissions-Policy",
+            value: "geolocation=(), microphone=(), camera=()",
+          },
         ],
       },
     ];
